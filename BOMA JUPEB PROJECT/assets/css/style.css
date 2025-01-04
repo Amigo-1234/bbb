@@ -3152,7 +3152,7 @@ a.scroll-top i {
   position: relative;
   padding: 75px 0;
   overflow: hidden;
-  background: url(footerred.png);
+  background: url(../images/footerred.png);
   background-size: cover;
 }
 .footer-area .footer-left p {
