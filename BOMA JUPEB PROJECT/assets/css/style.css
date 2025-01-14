@@ -1091,7 +1091,6 @@ a.scroll-top i {
   background:#ff0000;
   color: #fff;
 }
-
 .home-teachers-area {
   position: relative;
   overflow: hidden;
@@ -1192,6 +1191,26 @@ a.scroll-top i {
 .home-teachers-area .single-home-teacher:hover .teacher-social::before {
   box-shadow: 0 6px 7px 0 rgba(0, 0, 0, 0.05);
 }
+.home-teachers-area {
+  position: relative;
+  overflow: hidden;
+  display: flex; /* Use flexbox for alignment */
+  flex-direction: column; /* Align items in a column */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
+  min-height: 100vh; /* Make sure the section covers the full viewport height */
+}
+
+.home-teachers-area .row {
+  display: flex;
+  justify-content: center; /* Center the row items horizontally */
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+}
+
+.home-teachers-area .single-home-teacher {
+  text-align: center; /* Center the teacher card's content */
+}
+
 
 .form-container {
   width: 90%;
@@ -1469,7 +1488,6 @@ a.scroll-top i {
   background: #fff;
   color: #181818;
 }
-
 .class-details {
   position: relative;
   background-size: cover;
@@ -1973,7 +1991,6 @@ a.scroll-top i {
   top: 0;
   background-size: cover;
 }
-
 .single-event {
   padding: 75px 0;
   position: relative;
