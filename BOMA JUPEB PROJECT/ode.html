@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS -->
+    <script src="boma.js" defer type="module"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .profile-container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .profile-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .profile-container h2 {
+            margin: 10px 0;
+            color: #333;
+        }
+        .profile-container p {
+            color: #666;
+            margin: 5px 0;
+        }
+    </style>
+    <body>
+    <div id="profile-container">
+        <img id="userProfilePicture" src="default-profile.png" alt="Profile Picture">
+        <h2 id="userName">Loading...</h2>
+        <p id="userEmail">Loading...</p>
+    </div>
+
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+
+        const auth = getAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Call the function to update the profile
+                updateUserProfile(user);
+                console.log("User ID:", user.uid);
+            } else {
+                // Redirect to signup page if not logged in
+                alert("Please create an account and log in.");
+                window.location.href = "signup.html";
+            }
+        });
+
+        function updateUserProfile(user) {
+            const userName = user.displayName || "Anonymous";
+            const userEmail = user.email || "No email available";
+            const userProfilePicture = user.photoURL || "default-profile.png";
+
+            document.getElementById("userName").textContent = userName;
+            document.getElementById("userEmail").textContent = userEmail;
+            document.getElementById("userProfilePicture").src = userProfilePicture;
+        }
+    </script>
+</body>
+</html>

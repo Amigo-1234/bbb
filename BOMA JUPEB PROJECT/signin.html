@@ -28,7 +28,7 @@
         <link rel="stylesheet" href="assets/css/responsive.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <title>BOMA</title>
-
+        <script src="boma.js" defer type="module" ></script>
         <link rel="icon" type="image/png" href="assets/images/bialogo.png">
     </head>
     <body>
@@ -184,24 +184,30 @@
                                         <input type="text" class="form-control" placeholder="User name">
                                     </div>
                                 </div>
-
+    
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <input type="password" class="form-control" placeholder="Password">
                                     </div>
                                 </div>
-
+    
                                 <div class="col-lg-12">
-                                    <a href="signup.html" class="box-btn">
+                                    <button id="box" class="box-btn">
                                         Sign In
-                                    </a>
+                                    </button>
                                 </div>
-                                <span class="already">New to boma<a href="signup.html">Sign Up</a></span>
+    
+                                <!-- Google Sign-In Button -->
+                                <div class="">
+                                    <button id="google" class="google-btn">
+                                        <i class="fab fa-google"></i>Sign in with Google
+                                    </button>
+                                </div>
+                                
+                                <span class="already">New to boma? <a href="signup.html">Sign Up</a></span>
                             </div>
-
                         </form>
                     </div>
-
                 </div>
                 <div class="col-lg-6">
                     <div class="sign-up-img">
