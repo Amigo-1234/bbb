@@ -203,7 +203,48 @@
                                         <i class="fab fa-google"></i> Sign in with Google
                                     </button>                                    
                                 </div>
-                                
+                                <style>
+                                    /* Container for centering the button */
+.google-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Google button style */
+.google-btn {
+    background-color: #ff0000; /* Google Blue */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Icon style */
+.google-btn i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Hover effect */
+.google-btn:hover {
+    background-color: #ff0000; /* Darker Google Blue */
+    transform: translateY(-2px);
+}
+
+/* Active effect when button is pressed */
+.google-btn:active {
+    transform: translateY(1px);
+}
+
+                                </style>
                                 <span class="already">New to boma? <a href="signup.html">Sign Up</a></span>
                             </div>
                         </form>
