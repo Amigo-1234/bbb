@@ -1,6 +1,6 @@
 // Import Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -15,7 +15,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-auth.languageCode = 'en'; // Set language code (can change to 'it' or others)
+auth.languageCode = 'en'; // Set language code
 
 // Google Provider
 const provider = new GoogleAuthProvider();
@@ -29,24 +29,30 @@ document.getElementById("google").addEventListener("click", () => {
             const token = credential.accessToken;
             // Get signed-in user info
             const user = result.user;
-           window.location.href = "profile.html"
-            // Display a success message
+
             alert(`Welcome, ${user.displayName}! Email: ${user.email}`);
         })
         .catch((error) => {
             // Handle Errors here
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // Log errors
-            console.error("Error Code:", errorCode);
-            console.error("Error Message:", errorMessage);
-            console.error("Email:", email);
-            console.error("Credential:", credential);
-
-            // Display an error message
+            console.error("Sign-In Error", error);
             alert("Google Sign-In failed. Please try again.");
         });
 });
+
+// Check if user is signed in before submitting the form
+document.querySelector("form").addEventListener("submit", (event) => {
+    const user = auth.currentUser;
+
+    if (!user) {
+        event.preventDefault(); // Prevent form submission
+        alert("You must be signed in to submit the form!");
+        return;
+    }
+
+    alert(`Form submitted by: ${user.displayName} (${user.email})`);
+});
+
+// Update user profile display (if needed)
 function updateUserProfile(user) {
     if (!user) {
         console.error("No user object provided!");
@@ -63,3 +69,18 @@ function updateUserProfile(user) {
     document.getElementById("userEmail").textContent = userEmail;
     document.getElementById("userProfilePicture").src = userProfilePicture;
 }
+document.getElementById("login-btn").addEventListener("click", function () {
+    // Simulate a login (replace with actual authentication logic)
+    const email = document.getElementById("email").value;
+
+    if (email) {
+        // Save login state and user data
+        localStorage.setItem("isLoggedIn", "true");
+        localStorage.setItem("userEmail", email);
+
+        // Redirect to the profile page
+        window.location.href = "profile.html";
+    } else {
+        alert("Please enter your email to log in.");
+    }
+});
