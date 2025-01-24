@@ -154,12 +154,12 @@
             <div class="d-table-cell">
                 <div class="container">
                     <div class="page-title-content">
-                        <h2>Sign In</h2>
+                        <h2>Registration</h2>
                         <ul>
                             <li>
                                 <a href="index.html"> Home </a>
                                 <i class="flaticon-fast-forward"></i>
-                                <p class="active"> Sign In </p>
+                                <p class="active">Registration</p>
                             </li>
                         </ul>
                     </div>
@@ -167,102 +167,109 @@
             </div>
         </div>
     </div>
-    <!-- End Page Title Area -->
+    <script>
+        // Display congratulatory message after payment
+        alert("Congratulations! You can now register your form.");
 
-
-    <!-- SignUp -->
-    <section class="signup-area">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <div class="signup-form">
-                        <h2>Welcome Back!</h2>
-                        <form>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" placeholder="User name">
-                                    </div>
-                                </div>
-    
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <input type="password" class="form-control" placeholder="Password">
-                                    </div>
-                                </div>
-    
-                                <div class="col-lg-12">
-                                    <button id="box" class="box-btn">
-                                        Sign In
-                                    </button>
-                                </div>
-    
-                                <!-- Google Sign-In Button -->
-                                <div class="">
-                                    <button id="google" class="google-btn" type="button">
-                                        <i class="fab fa-google"></i> Sign in with Google
-                                    </button>                                    
-                                </div>
-                                <style>
-                                    /* Container for centering the button */
-.google-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
-
-/* Google button style */
-.google-btn {
-    background-color: #ff0000; /* Google Blue */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-/* Icon style */
-.google-btn i {
-    margin-right: 10px;
-    font-size: 18px;
-}
-
-/* Hover effect */
-.google-btn:hover {
-    background-color: #ff0000; /* Darker Google Blue */
-    transform: translateY(-2px);
-}
-
-/* Active effect when button is pressed */
-.google-btn:active {
-    transform: translateY(1px);
-}
-
-                                </style>
-                                <span class="already">New to boma? <a href="signup.html">Sign Up</a></span>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="sign-up-img">
-                        <img src="assets/images/boma.svg" alt="singup">
-                    </div>
-                </div>
+        // Set a flag in localStorage to indicate payment success
+        localStorage.setItem("hasPaid", "true");
+    </script>
+       <!-- JUPEB Registration Area -->
+ 
+       <div class="form-container">
+        <h2 class="form-title">JUPEB Application Form</h2>
+            <form action="https://docs.google.com/forms/d/e/1FAIpQLSeYLSmnhTLHs232Si4C7MOCpOMXV-szP1in2wpEDlvzY8fPkQ/viewform?usp=sharing" method="get" target="_blank">
+            <div class="form-group">
+                <label for="surname">1. Full Name (Surname in Block Letters):</label>
+                <input type="text" id="surname" name="surname" placeholder="Surname">
+                <input type="text" id="other-names" name="other-names" placeholder="Other Names">
             </div>
-        </div>
-    </section>
-    <!-- End SignUp -->
 
-    <!-- Footer Area -->
-  
-   
+            <div class="form-group">
+                <label for="nationality">2. Nationality:</label>
+                <input type="text" id="nationality" name="nationality">
+            </div>
+
+            <div class="form-group">
+                <label for="date-of-birth">3. Date of Birth:</label>
+                <input type="date" id="date-of-birth" name="date-of-birth">
+
+                <label for="place-of-birth">Place of Birth:</label>
+                <input type="text" id="place-of-birth" name="place-of-birth">
+
+                <label for="sex">Sex:</label>
+                <select id="sex" name="sex">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="state-of-origin">4. State of Origin:</label>
+                <input type="text" id="state-of-origin" name="state-of-origin">
+
+                <label for="religion">Religion:</label>
+                <input type="text" id="religion" name="religion">
+            </div>
+
+            <div class="form-group">
+                <label for="marital-status">5. Marital Status:</label>
+                <input type="text" id="marital-status" name="marital-status">
+            </div>
+
+            <div class="form-group">
+                <label for="home-address">6. Permanent Home Address:</label>
+                <textarea id="home-address" name="home-address" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="postal-address">7. Postal Address:</label>
+                <textarea id="postal-address" name="postal-address" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="email">8. Email:</label>
+                <input type="email" id="email" name="email">
+
+                <label for="phone">GSM No:</label>
+                <input type="tel" id="phone" name="phone">
+            </div>
+
+            <div class="form-group">
+                <label for="emergency-contact">9. Emergency Contact (Name, Phone, Address):</label>
+                <textarea id="emergency-contact" name="emergency-contact" rows="3"></textarea>
+                <label for="relationship">Relationship:</label>
+                <input type="text" id="relationship" name="relationship">
+            </div>
+
+            <div class="form-group">
+                <label for="educational-record">10. Educational Record:</label>
+                <textarea id="educational-record" name="educational-record" rows="4" placeholder="Name of Institution, Place, Country, Date, Certificate Obtained"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>11. Subject Combination:</label>
+                <input type="text" name="subject-1" placeholder="i. Subject 1">
+                <input type="text" name="subject-2" placeholder="ii. Subject 2">
+                <input type="text" name="subject-3" placeholder="iii. Subject 3">
+            </div>
+
+            <div class="form-group">
+                <label for="course">12. Intended Course of Study:</label>
+                <input type="text" id="course" name="course">
+            </div>
+
+            <div class="form-group">
+                <label for="signature">13. Signature:</label>
+                <input type="text" id="signature" name="signature" placeholder="Sign here">
+
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date">
+            </div>
+                <button type="submit">Submit</button>
+        </form>
+    </div>
+
    <!-- Footer Area -->
    <div class="footer-area">
     <div class="container">
