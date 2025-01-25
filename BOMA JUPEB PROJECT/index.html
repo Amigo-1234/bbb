@@ -703,15 +703,15 @@
                 return;
             }
 
-            let paymentLink = "https://paystack.com/pay/DEFAULT_LINK"; // Default link
+            let paymentLink = ""; // Default link
 
             // Update payment link based on selection
             if (paymentOption === "registration-fee") {
-                paymentLink = "https://paystack.com/pay/registration-link";
+                paymentLink = "https://paystack.com/pay/biajupebreg";
             } else if (paymentOption === "science-fee") {
-                paymentLink = "https://paystack.com/pay/science-fee-link";
+                paymentLink = "https://paystack.com/pay/biajupebtuitionfee";
             } else if (paymentOption === "non-science-fee") {
-                paymentLink = "https://paystack.com/pay/non-science-fee-link";
+                paymentLink = "https://paystack.com/pay/biajupebtuitionfeensk";
             }
 
             // Redirect to payment link
