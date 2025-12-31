@@ -3624,6 +3624,115 @@ a.scroll-top i {
 .fml-15 {
   margin-left: 13%;
 }
+.bia-location {
+  padding: 80px 20px;
+  background: linear-gradient(180deg, #fff5f5, #ffffff);
+}
+
+.bia-location__title {
+  text-align: center;
+  font-size: 34px;
+  font-weight: 700;
+  color: #c62828;
+  margin-bottom: 50px;
+}
+
+/* Layout: 2 columns on desktop, 1 column on mobile */
+.bia-location__layout {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  max-width: 1200px;
+  margin: auto;
+  align-items: center;
+}
+
+/* Stack layout on tablets and phones */
+@media (max-width: 900px) {
+  .bia-location__layout {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+}
+
+.bia-location__image {
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #fbe9e7, #ffffff);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+}
+
+.bia-location__image img {
+  width: 100%;       /* scales to container width */
+  height: auto;      /* keeps aspect ratio */
+  display: block;    /* removes extra spacing */
+  border-radius: 24px;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.bia-location__image:hover img {
+  transform: scale(1.05);
+}
+
+.bia-location__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  max-width: 1100px;
+  margin: auto;
+}
+
+/* Stack cards on small screens */
+@media (max-width: 600px) {
+  .bia-location__grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+.bia-location__card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.bia-location__card h3 {
+  color: #c62828;
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.bia-location__card p {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #333;
+}
+
+.bia-location__card span {
+  color: #777;
+  font-size: 14px;
+}
+
+.bia-location__note {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+.bia-location__contact {
+  margin-top: 15px;
+  font-weight: 600;
+}
+
+.bia-location__contact a {
+  color: #c62828;
+  text-decoration: none;
+}
+
 
 .footer-area {
   position: relative;

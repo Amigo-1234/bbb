@@ -426,3 +426,28 @@ Default CSS
 .theme-dark .bia-testimonials__card {
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
+.dark-mode .bia-location {
+  background: linear-gradient(180deg, #121212, #1a1a1a);
+}
+
+.dark-mode .bia-location__card {
+  background: rgba(30, 30, 30, 0.8);
+}
+
+.dark-mode .bia-location__card p,
+.dark-mode .bia-location__note {
+  color: #ddd;
+}
+
+.dark-mode .bia-location__card span {
+  color: #aaa;
+}
+
+.dark-mode .bia-location__title,
+.dark-mode .bia-location__card h3,
+.dark-mode .bia-location__contact a {
+  color: #ff6b6b;
+}
+.dark-mode .bia-location__image img {
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8);
+}
