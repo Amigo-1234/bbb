@@ -385,3 +385,44 @@ Default CSS
     display: block;
   }
 }/*# sourceMappingURL=dark.css.map */
+/* =====================================
+   BIA TESTIMONIALS — DARK MODE
+   Scoped & Safe
+===================================== */
+
+.theme-dark .bia-testimonials {
+  background: linear-gradient(180deg, #0f0f10, #141414);
+}
+
+.theme-dark .bia-testimonials__header {
+  color: #ff6b6b !important;
+}
+
+.theme-dark .bia-testimonials__header span {
+  color: #b5b5b5 !important;
+}
+
+.theme-dark .bia-testimonials__card {
+  background: rgba(20, 20, 20, 0.75);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+}
+
+.theme-dark .bia-testimonials__card:hover {
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.85);
+}
+
+.theme-dark .bia-testimonials__card p {
+  color: #eaeaea !important;
+}
+
+.theme-dark .bia-testimonials__card p strong {
+  color: #ff6b6b !important;
+}
+
+.theme-dark .bia-testimonials__card p span {
+  color: #b0b0b0 !important;
+}
+.theme-dark .bia-testimonials__card {
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
