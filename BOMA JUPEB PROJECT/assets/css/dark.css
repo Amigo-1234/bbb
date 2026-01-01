@@ -426,28 +426,104 @@ Default CSS
 .theme-dark .bia-testimonials__card {
   border: 1px solid rgba(255, 255, 255, 0.06);
 }
-.dark-mode .bia-location {
-  background: linear-gradient(180deg, #121212, #1a1a1a);
+.theme-dark .bia-testimonials__card:hover {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+/* =====================================
+   BIA LOCATION — DARK MODE
+   Scoped & Safe
+===================================== */
+.theme-dark .bia-location {
+  padding: 80px 20px;
+  background: linear-gradient(180deg, #0a0a0a, #0a0a0a);
+}
+.theme-dark .bia-location__title {
+  color: #ff6b6b !important;
 }
 
-.dark-mode .bia-location__card {
-  background: rgba(30, 30, 30, 0.8);
+/* Image container */
+.theme-dark .bia-location__image {
+  background: linear-gradient(135deg, #121212, #0a0a0a);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
 }
 
-.dark-mode .bia-location__card p,
-.dark-mode .bia-location__note {
-  color: #ddd;
+/* Cards */
+.theme-dark .bia-location__card {
+  background: rgba(18, 18, 18, 0.85);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.dark-mode .bia-location__card span {
-  color: #aaa;
+/* Card headings */
+.theme-dark .bia-location__card h3 {
+  color: #ff6b6b !important;
 }
 
-.dark-mode .bia-location__title,
-.dark-mode .bia-location__card h3,
-.dark-mode .bia-location__contact a {
-  color: #ff6b6b;
+/* Main text */
+.theme-dark .bia-location__card p {
+  color: #e6e6e6 !important;
 }
-.dark-mode .bia-location__image img {
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8);
+
+/* Sub text */
+.theme-dark .bia-location__card span {
+  color: #b8b8b8 !important;
+}
+
+/* Notes */
+.theme-dark .bia-location__note {
+  color: #cfcfcf !important;
+}
+
+/* Contact links */
+.theme-dark .bia-location__contact a {
+  color: #ff6b6b !important;
+}
+
+.theme-dark .bia-location__contact a:hover {
+  color: #ff8a8a !important;
+  text-decoration: underline;
+}
+/* =====================================
+   UNIQUE SLIDER — DARK MODE
+===================================== */
+
+.theme-dark .unique-header {
+  background: linear-gradient(135deg, #b71c1c, #7f0000);
+  color: #ffffff;
+}
+
+/* Slider container */
+.theme-dark .unique-slider-container {
+  background-color: #0f0f0f;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Slides background */
+.theme-dark .unique-slide {
+  background: linear-gradient(180deg, #121212, #0b0b0b);
+}
+
+/* Images stay clean, no color shift */
+.theme-dark .unique-slide img {
+  filter: brightness(0.95) contrast(1.05);
+}
+
+/* Navigation dots */
+.theme-dark .unique-dot {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.theme-dark .unique-dot.active {
+  background-color: #ff5252;
+}
+
+/* Optional subtle glow on active slide */
+.theme-dark .unique-slide::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
 }
