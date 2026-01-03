@@ -3935,6 +3935,8 @@ a.scroll-top i {
   padding: 25px;
   text-align: center;
   border-radius: 6px;
+  margin-bottom: 30px;
+  margin-top: 10px;
 }
 
 .jupeb-note {
@@ -3980,3 +3982,123 @@ a.scroll-top i {
   height: auto;
   display: block;
 }
+.jupeb-subjects {
+  list-style: none;
+  padding-left: 0;
+}
+
+.jupeb-subjects li {
+  font-size: 15px;
+  padding: 8px 0;
+  color: #333;
+  position: relative;
+  padding-left: 20px;
+}
+
+.jupeb-subjects li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #c62828;
+  font-size: 20px;
+}
+.bia-jupeb-promo {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #fff5f5, #ffffff);
+}
+
+.bia-jupeb-promo__wrap {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.bia-jupeb-promo__image {
+  text-align: center;
+}
+
+.bia-jupeb-promo__image img {
+  max-width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+}
+
+.bia-jupeb-promo__content h2 {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.bia-jupeb-promo__content h2 span {
+  color: #c62828;
+}
+
+.bia-jupeb-promo__content p {
+  font-size: 16px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.bia-jupeb-promo__content ul {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+}
+
+.bia-jupeb-promo__content ul li {
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.bia-jupeb-promo__contact {
+  font-size: 15px;
+  margin-bottom: 25px;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .bia-jupeb-promo__wrap {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+/* =====================================
+   BIA JUPEB PROMO (T-SHIRT SECTION)
+   DARK MODE — Scoped & Safe
+===================================== */
+
+.theme-dark .bia-jupeb-promo {
+  background: linear-gradient(135deg, #0b0b0b, #111111);
+}
+
+/* Card / content area */
+.theme-dark .bia-jupeb-promo__content h2 {
+  color: #ffffff !important;
+}
+
+.theme-dark .bia-jupeb-promo__content h2 span {
+  color: #ff6b6b !important;
+}
+
+.theme-dark .bia-jupeb-promo__content p {
+  color: #e6e6e6 !important;
+}
+
+.theme-dark .bia-jupeb-promo__content ul li {
+  color: #e0e0e0 !important;
+}
+
+/* Image styling */
+.theme-dark .bia-jupeb-promo__image img {
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Contact text */
+.theme-dark .bia-jupeb-promo__contact {
+  color: #cccccc !important;
+}
+
+/* CTA button already handled by .box-btn dark styles */
