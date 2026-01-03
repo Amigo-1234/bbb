@@ -594,3 +594,37 @@ Default CSS
     max-width: 250px;
   }
 }
+.theme-dark .jupeb-card {
+  background: #111;
+  color: #eee;
+}
+
+.theme-dark .jupeb-table th {
+  background: #1a1a1a;
+  color: #eee;
+}
+
+.theme-dark .jupeb-total {
+  background: #ff6b6b;
+  color: #000;
+}
+
+.theme-dark .jupeb-announcement {
+  background: #ff6b6b;
+  color: #000;
+}
+.theme-dark .jupeb-preview {
+  background: #0f0f0f;
+}
+
+.theme-dark .jupeb-preview-card {
+  background: #1a1a1a;
+}
+
+.theme-dark .jupeb-preview-card ul li {
+  color: #e0e0e0;
+}
+
+.theme-dark .jupeb-preview-card ul li i {
+  color: #ff6b6b;
+}

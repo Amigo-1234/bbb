@@ -3897,3 +3897,86 @@ a.scroll-top i {
 .copy-area .copy a:hover {
   color: #ff0000;
 }/*# sourceMappingURL=style.css.map */
+.jupeb-info .section-title h2 {
+  color: #c62828;
+}
+
+.jupeb-card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.jupeb-card-title {
+  color: #c62828;
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
+.jupeb-table th {
+  background: #f8f8f8;
+  font-weight: 600;
+}
+
+.jupeb-table td,
+.jupeb-table th {
+  vertical-align: middle;
+}
+
+.jupeb-total {
+  background: #c62828;
+  color: #fff;
+}
+
+.jupeb-announcement {
+  background: #c62828;
+  color: #fff;
+  padding: 25px;
+  text-align: center;
+  border-radius: 6px;
+}
+
+.jupeb-note {
+  font-size: 14px;
+  color: #555;
+}
+.jupeb-preview {
+  background: #fff;
+}
+
+.jupeb-preview-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 35px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+}
+
+.jupeb-preview-card ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 25px;
+}
+
+.jupeb-preview-card ul li {
+  font-size: 16px;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.jupeb-preview-card ul li i {
+  color: #c62828;
+  margin-right: 8px;
+}
+
+.jupeb-preview-image {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+}
+
+.jupeb-preview-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
