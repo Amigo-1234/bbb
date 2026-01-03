@@ -234,32 +234,45 @@
 
     // Count Time 
     function makeTimer() {
-        var endTime = new Date("April 30, 2025 17:00:00 PDT");
-        var endTime = (Date.parse(endTime)) / 1000;
-        var now = new Date();
-        var now = (Date.parse(now) / 1000);
-        var timeLeft = endTime - now;
-        var days = Math.floor(timeLeft / 86400);
-        var hours = Math.floor((timeLeft - (days * 86400)) / 3600);
-        var minutes = Math.floor((timeLeft - (days * 86400) - (hours * 3600)) / 60);
-        var seconds = Math.floor((timeLeft - (days * 86400) - (hours * 3600) - (minutes * 60)));
-        if (hours < "10") {
-            hours = "0" + hours;
-        }
-        if (minutes < "10") {
-            minutes = "0" + minutes;
-        }
-        if (seconds < "10") {
-            seconds = "0" + seconds;
-        }
-        $("#days").html(days + "");
-        $("#hours").html(hours + "");
-        $("#minutes").html(minutes + "");
-        $("#seconds").html(seconds + "");
+    // Get the current date
+    var now = new Date();
+
+    // Set target date: April 30 of the current year
+    var year = now.getFullYear();
+    var endTime = new Date(`April 30, ${year} 17:00:00 GMT+1`); // adjust timezone if needed
+
+    // If the target date has passed this year, use next year
+    if (now > endTime) {
+        endTime = new Date(`April 30, ${year + 1} 17:00:00 GMT+1`);
     }
-    setInterval(function() {
-        makeTimer();
-    }, 1000);
+
+    // Calculate total seconds left
+    var timeLeft = Math.floor((endTime - now) / 1000);
+
+    // Calculate days, hours, minutes, seconds
+    var days = Math.floor(timeLeft / 86400);
+    var hours = Math.floor((timeLeft % 86400) / 3600);
+    var minutes = Math.floor((timeLeft % 3600) / 60);
+    var seconds = Math.floor(timeLeft % 60);
+
+    // Pad with zeros if less than 10
+    hours = hours < 10 ? "0" + hours : hours;
+    minutes = minutes < 10 ? "0" + minutes : minutes;
+    seconds = seconds < 10 ? "0" + seconds : seconds;
+
+    // Update HTML
+    document.getElementById("days").innerHTML = days;
+    document.getElementById("hours").innerHTML = hours;
+    document.getElementById("minutes").innerHTML = minutes;
+    document.getElementById("seconds").innerHTML = seconds;
+}
+
+// Run every second
+setInterval(makeTimer, 1000);
+
+// Initial call
+makeTimer();
+
 
     // Isotope Filter
     $('.gall-list').isotope({
