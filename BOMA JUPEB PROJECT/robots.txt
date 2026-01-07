@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /profile.html
+Disallow: /private.html
+Disallow: /edit-profile.html
+Disallow: /keep.html
+Sitemap: https://biajupeb.com.ng/sitemap.xml
