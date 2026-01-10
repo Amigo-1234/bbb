@@ -261,11 +261,18 @@
     seconds = seconds < 10 ? "0" + seconds : seconds;
 
     // Update HTML
-    document.getElementById("days").innerHTML = days;
-    document.getElementById("hours").innerHTML = hours;
-    document.getElementById("minutes").innerHTML = minutes;
-    document.getElementById("seconds").innerHTML = seconds;
+    const daysEl = document.getElementById("days");
+const hoursEl = document.getElementById("hours");
+const minutesEl = document.getElementById("minutes");
+const secondsEl = document.getElementById("seconds");
+
+if (daysEl && hoursEl && minutesEl && secondsEl) {
+  daysEl.innerHTML = days;
+  hoursEl.innerHTML = hours;
+  minutesEl.innerHTML = minutes;
+  secondsEl.innerHTML = seconds;
 }
+    }
 
 // Run every second
 setInterval(makeTimer, 1000);
@@ -317,3 +324,7 @@ function toggleTheme() {
     }
 })();
 
+const el = document.getElementById("someElement");
+if (el) {
+    el.innerHTML = 'something';
+}
