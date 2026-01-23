@@ -237,17 +237,14 @@
     // Get the current date
     var now = new Date();
 
-    // Set target date: April 30 of the current year
-    var year = now.getFullYear();
-    var endTime = new Date(`April 30, ${year} 17:00:00 GMT+1`); // adjust timezone if needed
-
-    // If the target date has passed this year, use next year
-    if (now > endTime) {
-        endTime = new Date(`April 30, ${year + 1} 17:00:00 GMT+1`);
-    }
+    // Fixed 2026 admission window
+    var endTime = new Date("April 30, 2026 17:00:00 GMT+1");
 
     // Calculate total seconds left
     var timeLeft = Math.floor((endTime - now) / 1000);
+    if (timeLeft < 0) {
+        timeLeft = 0;
+    }
 
     // Calculate days, hours, minutes, seconds
     var days = Math.floor(timeLeft / 86400);
