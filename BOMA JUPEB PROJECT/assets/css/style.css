@@ -4271,5 +4271,40 @@ SEO content pages (pillar + intent)
 
   .seo-card {
     padding: 26px 22px;
+/* =========================
+   BOMA Results Table Style
+========================= */
+
+.jupeb-table {
+  background: #ffffff;
+  border: 1px solid #eee;
+}
+
+.jupeb-table thead {
+  background-color: #8b0000; /* BOMA red */
+  color: #ffffff;
+}
+
+.jupeb-table th {
+  font-weight: 600;
+  text-align: center;
+  border-color: #8b0000;
+}
+
+.jupeb-table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.jupeb-table tbody tr:hover {
+  background-color: #fdeaea;
+}
+
+/* Mobile friendliness */
+@media (max-width: 767px) {
+  .jupeb-table th,
+  .jupeb-table td {
+    font-size: 14px;
+    padding: 8px;
   }
 }
