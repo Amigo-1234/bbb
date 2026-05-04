@@ -4139,3 +4139,33 @@ a.scroll-top i {
     padding: 8px;
   }
 }
+
+.jupeb-images-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.jupeb-images-grid img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  transition: transform 0.4s ease;
+}
+
+.jupeb-images-grid img:hover {
+  transform: scale(1.05);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .jupeb-images-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .jupeb-images-grid img {
+    height: auto;
+  }
+}
