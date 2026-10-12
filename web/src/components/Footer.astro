@@ -1,5 +1,6 @@
 ---
-import Seal from './Seal.astro';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
 import { address, contacts, guides, primaryContact, site } from '../data/site';
 ---
 
@@ -7,7 +8,7 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
   <div class="wrap footer__grid">
     <div class="footer__brand">
       <div class="footer__mark">
-        <Seal size={44} tone="light" />
+        <Logo height={40} tone="light" />
         <span>
           <span class="footer__name">BIA JUPEB</span>
           <span class="footer__parent">{site.parent}</span>
@@ -24,7 +25,7 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
         {address.lines.map((l) => <span>{l}</span>)}
         <span class="footer__muted">{address.landmark}</span>
       </address>
-      <a class="footer__link" href={address.mapsUrl} rel="noopener" target="_blank">Get directions</a>
+      <a class="footer__link with-icon" href={address.mapsUrl} rel="noopener" target="_blank"><Icon name="pin" size={16} />Get directions</a>
     </div>
 
     <div>
@@ -49,14 +50,14 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
 
   <div class="wrap footer__base">
     <p>© {new Date().getFullYear()} BIA JUPEB · {site.parent}</p>
-    <p><a href={site.facebook} rel="noopener" target="_blank">Facebook</a></p>
+    <p><a class="with-icon" href={site.facebook} rel="noopener" target="_blank"><Icon name="facebook" size={16} />Facebook</a></p>
     <p class="footer__proto">Design preview — not the live website</p>
   </div>
 </footer>
 
 <nav class="actionbar" aria-label="Quick actions">
-  <a class="btn btn--outline actionbar__call" href={`tel:${primaryContact.phone}`}>Call admissions</a>
-  <a class="btn" href="#apply">Apply now</a>
+  <a class="btn btn--outline actionbar__call" href={`tel:${primaryContact.phone}`}><Icon name="phone" size={18} />Call admissions</a>
+  <a class="btn" href="#apply">Apply now<Icon name="arrow-right" size={18} /></a>
 </nav>
 
 <style>
@@ -84,6 +85,8 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
   .footer__mark > span {
     display: grid;
     line-height: 1.2;
+    padding-left: var(--s-3);
+    border-left: 1px solid rgb(255 255 255 / 0.18);
   }
   .footer__name {
     font-family: var(--serif);
@@ -157,7 +160,7 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
     inset: auto 0 0 0;
     z-index: 40;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: var(--s-2);
     padding: var(--s-2) var(--gutter) calc(var(--s-2) + env(safe-area-inset-bottom));
     background: color-mix(in srgb, var(--paper) 94%, transparent);
@@ -165,8 +168,17 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
     -webkit-backdrop-filter: blur(10px);
     border-top: 1px solid var(--line);
   }
+  .actionbar .btn {
+    min-width: 0;
+    padding-inline: var(--s-3);
+  }
   .actionbar__call {
     background: var(--surface);
+  }
+  @media (max-width: 359px) {
+    .actionbar .btn :global(svg) {
+      display: none;
+    }
   }
   @media (max-width: 719px) {
     :global(body) {

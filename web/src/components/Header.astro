@@ -1,5 +1,6 @@
 ---
-import Seal from './Seal.astro';
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
 import { calendar, primaryContact, site } from '../data/site';
 
 const nav = [
@@ -41,10 +42,10 @@ const fmt = (d: string) =>
 <header class="header" data-header>
   <div class="wrap header__inner">
     <a href="/" class="brand" aria-label="BIA JUPEB — home">
-      <Seal size={38} />
+      <Logo height={30} />
       <span class="brand__text">
-        <span class="brand__name">BIA JUPEB</span>
-        <span class="brand__sub">Admission Centre · Lagos</span>
+        <span class="brand__name">JUPEB</span>
+        <span class="brand__sub">Admission Centre</span>
       </span>
     </a>
 
@@ -55,7 +56,8 @@ const fmt = (d: string) =>
     </nav>
 
     <div class="header__actions">
-      <a class="header__call" href={`tel:${primaryContact.phone}`}>
+      <a class="header__call with-icon" href={`tel:${primaryContact.phone}`}>
+        <Icon name="phone" size={17} />
         <span class="sr-only">Call admissions on </span>{primaryContact.display}
       </a>
       <a class="btn header__apply" href="#apply">Apply</a>
@@ -88,7 +90,7 @@ const fmt = (d: string) =>
     </ol>
     <div class="sheet__foot">
       <a class="btn" href="#apply" data-menu-link>Start your application</a>
-      <a class="btn btn--outline" href={`tel:${primaryContact.phone}`}>Call {primaryContact.display}</a>
+      <a class="btn btn--outline" href={`tel:${primaryContact.phone}`}><Icon name="phone" size={18} />Call {primaryContact.display}</a>
     </div>
   </nav>
 </div>
@@ -190,17 +192,20 @@ const fmt = (d: string) =>
   }
   .brand__text {
     display: grid;
-    line-height: 1.1;
+    line-height: 1.05;
+    padding-left: var(--s-3);
+    border-left: 1px solid var(--line-strong);
   }
   .brand__name {
-    font-family: var(--serif);
-    font-size: 1.25rem;
-    font-weight: 560;
-    letter-spacing: 0.01em;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    color: var(--crimson);
   }
   .brand__sub {
-    font-size: 0.72rem;
-    font-weight: 500;
+    font-size: 0.7rem;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--muted);

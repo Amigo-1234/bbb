@@ -1,0 +1,39 @@
+---
+/**
+ * The authentic BIA mark, extracted from the original brand artwork in the
+ * legacy site (assets/images/boma3.png). Rendered as a CSS mask so it can take
+ * the brand crimson or white without redrawing the logo.
+ */
+import mark from '../assets/brand/bia-mark.png';
+
+interface Props {
+  height?: number;
+  tone?: 'crimson' | 'light';
+  class?: string;
+}
+const { height = 34, tone = 'crimson', class: className } = Astro.props;
+const width = Math.round((height * mark.width) / mark.height);
+---
+
+<span
+  class:list={['logo', `logo--${tone}`, className]}
+  role="img"
+  aria-label="BIA"
+  style={`--mark:url(${mark.src});width:${width}px;height:${height}px`}
+></span>
+
+<style>
+  .logo {
+    display: inline-block;
+    flex: none;
+    background: currentColor;
+    -webkit-mask: var(--mark) center / contain no-repeat;
+    mask: var(--mark) center / contain no-repeat;
+  }
+  .logo--crimson {
+    color: var(--crimson);
+  }
+  .logo--light {
+    color: var(--on-ink);
+  }
+</style>
