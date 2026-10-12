@@ -1,0 +1,181 @@
+---
+import Seal from './Seal.astro';
+import { address, contacts, guides, primaryContact, site } from '../data/site';
+---
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div class="footer__brand">
+      <div class="footer__mark">
+        <Seal size={44} tone="light" />
+        <span>
+          <span class="footer__name">BIA JUPEB</span>
+          <span class="footer__parent">{site.parent}</span>
+        </span>
+      </div>
+      <p class="footer__line">
+        A JUPEB admission centre preparing Science and Non-Science students for Direct Entry into 200 Level.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="footer__h">Visit</h2>
+      <address>
+        {address.lines.map((l) => <span>{l}</span>)}
+        <span class="footer__muted">{address.landmark}</span>
+      </address>
+      <a class="footer__link" href={address.mapsUrl} rel="noopener" target="_blank">Get directions</a>
+    </div>
+
+    <div>
+      <h2 class="footer__h">Admissions</h2>
+      <ul class="footer__list">
+        {contacts.map((c) => (
+          <li>
+            <a href={`tel:${c.phone}`} class="num">{c.display}</a>
+            <span class="footer__muted">{c.name ? `${c.name}, ${c.role}` : c.role}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer__h">Guides</h2>
+      <ul class="footer__list">
+        {guides.map((g) => <li><a href={g.href}>{g.title}</a></li>)}
+      </ul>
+    </div>
+  </div>
+
+  <div class="wrap footer__base">
+    <p>© {new Date().getFullYear()} BIA JUPEB · {site.parent}</p>
+    <p><a href={site.facebook} rel="noopener" target="_blank">Facebook</a></p>
+    <p class="footer__proto">Design preview — not the live website</p>
+  </div>
+</footer>
+
+<nav class="actionbar" aria-label="Quick actions">
+  <a class="btn btn--outline actionbar__call" href={`tel:${primaryContact.phone}`}>Call admissions</a>
+  <a class="btn" href="#apply">Apply now</a>
+</nav>
+
+<style>
+  .footer {
+    background: var(--ink);
+    color: var(--on-ink);
+    padding-block: var(--s-8) var(--s-6);
+    font-size: 0.95rem;
+  }
+  .footer a {
+    text-decoration-color: rgb(255 255 255 / 0.3);
+  }
+  .footer a:hover {
+    text-decoration-color: currentColor;
+  }
+  .footer__grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+  .footer__mark {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+  }
+  .footer__mark > span {
+    display: grid;
+    line-height: 1.2;
+  }
+  .footer__name {
+    font-family: var(--serif);
+    font-size: 1.35rem;
+  }
+  .footer__parent,
+  .footer__muted {
+    color: var(--on-ink-muted);
+    font-size: 0.85rem;
+  }
+  .footer__line {
+    margin-top: var(--s-4);
+    max-width: 34ch;
+    color: var(--on-ink-muted);
+  }
+  .footer__h {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-ink-muted);
+    margin-bottom: var(--s-3);
+  }
+  address {
+    display: grid;
+    font-style: normal;
+    margin-bottom: var(--s-3);
+  }
+  .footer__link {
+    font-weight: 600;
+  }
+  .footer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--s-3);
+  }
+  .footer__list li {
+    display: grid;
+  }
+  .footer__base {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+    margin-top: var(--s-8);
+    padding-top: var(--s-5);
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+    color: var(--on-ink-muted);
+    font-size: 0.85rem;
+  }
+  .footer__proto {
+    margin-left: auto;
+  }
+
+  @media (min-width: 720px) {
+    .footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1040px) {
+    .footer__grid {
+      grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    }
+  }
+
+  /* Mobile quick-action bar */
+  .actionbar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 40;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-2);
+    padding: var(--s-2) var(--gutter) calc(var(--s-2) + env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--line);
+  }
+  .actionbar__call {
+    background: var(--surface);
+  }
+  @media (max-width: 719px) {
+    :global(body) {
+      padding-bottom: calc(64px + env(safe-area-inset-bottom));
+    }
+  }
+  @media (min-width: 720px) {
+    .actionbar {
+      display: none;
+    }
+  }
+</style>
