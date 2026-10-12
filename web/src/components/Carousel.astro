@@ -185,8 +185,14 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
       bar.style.animation = '';
     }
 
+    last = -1;
+
     render() {
       const n = this.slides.length;
+      if (this.index !== this.last) {
+        this.last = this.index;
+        this.root.dispatchEvent(new CustomEvent('carousel:change', { detail: { index: this.index } }));
+      }
       this.root.querySelector('[data-current]')!.textContent = String(this.index + 1).padStart(2, '0');
       this.slides.forEach((s, i) => s.toggleAttribute('data-active', i === this.index));
       const wrap = this.autoplay || this.root.classList.contains('carousel--hero');
@@ -315,10 +321,15 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
     background: var(--surface);
     color: var(--ink);
     cursor: pointer;
-    transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease), color 0.18s var(--ease);
+    transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease), color 0.18s var(--ease), transform 0.15s var(--ease);
   }
   .carousel__btn:hover:not(:disabled) {
     border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .carousel__btn:active:not(:disabled) {
+    transform: scale(0.92);
   }
   .carousel__btn:disabled {
     opacity: 0.35;
@@ -331,6 +342,8 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
   }
   .carousel--ink .carousel__btn:hover:not(:disabled) {
     border-color: var(--on-ink);
+    background: var(--on-ink);
+    color: var(--ink);
   }
   .carousel__btn[hidden],
   .carousel__btn [hidden] {

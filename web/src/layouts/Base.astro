@@ -12,9 +12,11 @@ interface Props {
   description: string;
   /** Prototype previews must never be indexed. */
   noindex?: boolean;
+  /** Page runs the GSAP motion layer (enables the hero pre-hide). */
+  motion?: boolean;
 }
 
-const { title, description, noindex = true } = Astro.props;
+const { title, description, noindex = true, motion = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 
@@ -35,6 +37,21 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="en_NG" />
+    {
+      motion && (
+        <script is:inline>
+          (function () {
+            var d = document.documentElement;
+            if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            d.classList.add('js-motion');
+            // Failsafe: never leave content hidden if the motion script fails to start.
+            setTimeout(function () {
+              if (d.dataset.motion !== 'running') d.classList.remove('js-motion');
+            }, 3000);
+          })();
+        </script>
+      )
+    }
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>

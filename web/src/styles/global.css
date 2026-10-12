@@ -55,6 +55,12 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  /* Guard against animation offsets ever creating sideways scroll. */
+  overflow-x: clip;
+}
+
 html {
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
@@ -107,6 +113,17 @@ a {
   outline: 2px solid var(--crimson);
   outline-offset: 3px;
   border-radius: 2px;
+  transition: outline-offset 0.15s var(--ease);
+}
+
+/* Motion: only the hero is pre-hidden, and only when the motion script is
+   expected to run (class added inline in <head>; removed on failure). */
+.js-motion .notice,
+.js-motion .header,
+.js-motion .hero__copy > *,
+.js-motion .hero__media,
+.js-motion .facts {
+  opacity: 0;
 }
 
 .wrap {
@@ -155,7 +172,30 @@ a {
   letter-spacing: 0.01em;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.18s var(--ease), border-color 0.18s var(--ease), color 0.18s var(--ease);
+  transition:
+    background-color 0.18s var(--ease),
+    border-color 0.18s var(--ease),
+    color 0.18s var(--ease),
+    transform 0.18s var(--ease),
+    box-shadow 0.25s var(--ease);
+}
+.btn svg {
+  transition: transform 0.25s var(--ease);
+}
+.btn:hover svg:last-child:not(:first-child) {
+  transform: translateX(3px);
+}
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px -10px rgb(122 15 32 / 0.55);
+}
+.btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+.btn--outline:hover,
+.btn--on-ink:hover {
+  box-shadow: none;
 }
 .btn:hover {
   --_bg: var(--crimson-ink);

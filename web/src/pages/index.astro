@@ -62,6 +62,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
 ---
 
 <Base
+  motion
   title="BIA JUPEB — JUPEB Admission Centre in Lagos | Direct Entry into 200 Level"
   description="Prepare for JUPEB with BIA JUPEB: an 8–9 month Science and Non-Science programme in Bariga, Lagos and online, with weekly tests, tutorials and Direct Entry admission guidance."
 >
@@ -176,6 +177,8 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
         </p>
       </SectionHead>
 
+      <div class="journey">
+      <div class="route__rail" aria-hidden="true"><span class="route__fill"></span></div>
       <ol class="route">
         <li>
           <span class="route__n num">01</span>
@@ -196,8 +199,10 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
           <span class="route__n num">04</span>
           <h3>Apply for Direct Entry</h3>
           <p>We guide you through the Direct Entry window, timelines and documentation for 200 Level.</p>
+          <span class="route__dest">Destination · 200 Level</span>
         </li>
       </ol>
+      </div>
 
       <div class="scale">
         <p class="scale__title">JUPEB points scale</p>
@@ -366,7 +371,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
       <SectionHead index="07" eyebrow="Leadership & admissions" title="The people who will guide you." id="people" />
 
       <div class="people">
-        <figure class="founder">
+        <figure class="founder" data-clip>
           <Picture
             src={founder}
             formats={formats}
@@ -461,7 +466,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
         </div>
       </div>
 
-      <figure class="apply__visit">
+      <figure class="apply__visit" data-clip>
         <Picture
           src={centre}
           formats={formats}
@@ -478,6 +483,11 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     </div>
   </section>
 </Base>
+
+<script>
+  import { initMotion } from '../scripts/motion';
+  initMotion();
+</script>
 
 <style>
   .section {
@@ -560,6 +570,19 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+    transform: scale(1.06);
+    transition: transform 8s linear;
+  }
+  .hero__slide[data-active] :global(img) {
+    transform: scale(1);
+  }
+  .hero__slide figcaption {
+    transition: opacity 0.5s var(--ease) 0.25s, transform 0.6s var(--ease) 0.25s;
+  }
+  :global(html[data-motion]) .hero__slide:not([data-active]) figcaption {
+    opacity: 0;
+    transform: translateY(10px);
+    transition-delay: 0s;
   }
   .hero__slide figcaption {
     position: absolute;
@@ -674,6 +697,12 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     border-radius: var(--radius);
     background: rgb(255 255 255 / 0.03);
     min-height: 100%;
+    transition: transform 0.35s var(--ease), border-color 0.35s var(--ease), background-color 0.35s var(--ease);
+  }
+  .result:hover {
+    transform: translateY(-4px);
+    border-color: rgb(214 182 121 / 0.45);
+    background: rgb(255 255 255 / 0.05);
   }
   .result__top {
     display: flex;
@@ -697,6 +726,8 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     font-weight: 380;
     line-height: 1;
     color: var(--brass-light);
+    overflow: hidden;
+    padding-block: 0.06em;
   }
   .result__course {
     margin-top: var(--s-3);
@@ -715,6 +746,85 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   }
 
   /* ---------- Route (how it works) ---------- */
+  .journey {
+    position: relative;
+  }
+  .route__rail {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    left: -1px;
+    top: 7px;
+    width: 2px;
+    pointer-events: none;
+  }
+  .journey.is-live .route__rail {
+    display: block;
+  }
+  .route__fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--crimson);
+    transform-origin: top;
+    transform: scaleY(0);
+  }
+  .route li::before {
+    z-index: 2;
+    transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.4s var(--ease);
+  }
+  .journey.is-live .route li > :not(.route__n) {
+    transition: opacity 0.4s var(--ease);
+  }
+  .journey.is-live .route li:not(.is-active) h3,
+  .journey.is-live .route li:not(.is-active) p {
+    opacity: 0.45;
+  }
+  .journey.is-live .route li.is-active::before {
+    background: var(--crimson);
+    border-color: var(--crimson);
+    transform: scale(1.15);
+  }
+  .journey.is-live .route li.route__end:not(.is-active)::before {
+    background: var(--paper);
+    border-color: var(--ink);
+    box-shadow: none;
+  }
+  @media (min-width: 900px) {
+    .journey.is-live .route li.route__end:not(.is-active) {
+      border-top: 1px dashed var(--line-strong);
+    }
+  }
+  .journey.is-live .route li.route__end:not(.is-active) .route__dest {
+    background: var(--line-strong);
+    color: var(--ink-2);
+  }
+  .route__dest {
+    transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
+  }
+  .journey.is-live .route li.route__end.is-active::before {
+    animation: route-pulse 1.5s var(--ease) 3;
+  }
+  @keyframes route-pulse {
+    0% {
+      box-shadow: 0 0 0 5px var(--crimson-wash), 0 0 0 5px rgb(163 22 43 / 0.4);
+    }
+    100% {
+      box-shadow: 0 0 0 5px var(--crimson-wash), 0 0 0 22px rgb(163 22 43 / 0);
+    }
+  }
+  .route__dest {
+    justify-self: start;
+    margin-top: var(--s-2);
+    padding: 0.3em 0.75em;
+    border-radius: 999px;
+    background: var(--crimson);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
   .route {
     list-style: none;
     margin: 0;
@@ -776,6 +886,17 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     }
     .route li.route__end {
       border-top: 1px solid var(--crimson);
+    }
+    .route__rail {
+      left: 0;
+      right: 0;
+      top: -1px;
+      width: auto;
+      height: 2px;
+    }
+    .route__fill {
+      transform-origin: left;
+      transform: scaleX(0);
     }
   }
 
@@ -858,6 +979,17 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   .stream__art {
     width: 150px;
     margin-bottom: var(--s-2);
+    transition: transform 0.5s var(--ease);
+  }
+  .stream:hover .stream__art {
+    transform: translateY(-4px);
+  }
+  .stream__total dd {
+    transition: transform 0.4s var(--ease);
+    transform-origin: right;
+  }
+  .stream:hover .stream__total dd {
+    transform: scale(1.04);
   }
   .stream__kicker {
     font-size: var(--step--1);
@@ -1204,12 +1336,16 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   .founder {
     margin: 0;
   }
+  .founder :global(picture) {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
   .founder :global(img) {
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
     object-position: center 20%;
-    border-radius: var(--radius);
   }
   .founder figcaption {
     display: grid;
@@ -1463,11 +1599,15 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   .apply__visit {
     margin: 0;
   }
+  .apply__visit :global(picture) {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
   .apply__visit :global(img) {
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
-    border-radius: var(--radius);
   }
   .apply__visit figcaption {
     display: grid;
