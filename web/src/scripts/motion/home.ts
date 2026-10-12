@@ -1,64 +1,8 @@
 /**
- * BIA JUPEB motion layer (homepage only).
- *
- * Principles
- * - Progressive enhancement: markup is fully visible without JS. Only the hero
- *   is pre-hidden (html.js-motion, set inline in <head>) and a 3s failsafe
- *   removes that if this module never starts.
- * - Everything runs inside gsap.matchMedia(): nothing animates under
- *   prefers-reduced-motion, parallax is desktop-only, and all tweens,
- *   ScrollTriggers and SplitText instances are reverted automatically.
- * - Transform / opacity / clip-path only; no pinning, no scroll hijacking.
- * - Each section block is isolated: if one throws, the rest still run and the
- *   failed block's content is restored to visible.
+ * Homepage motion. See ./core.ts for the shared principles and helpers.
  */
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { SplitText } from 'gsap/SplitText';
-import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin';
+import { gsap, ScrollTrigger, SplitText, root, EASE, EASE_TEXT, $, $$, safely, onEnter, maskLines, parallax, footer, chromeIn, runMotion, headings } from './core';
 
-gsap.registerPlugin(ScrollTrigger, SplitText, DrawSVGPlugin);
-
-const root = document.documentElement;
-const EASE = 'power3.out';
-const EASE_TEXT = 'power4.out';
-
-const $ = <T extends Element = HTMLElement>(sel: string, scope: ParentNode = document) =>
-  scope.querySelector<T>(sel);
-const $$ = <T extends Element = HTMLElement>(sel: string, scope: ParentNode = document) =>
-  [...scope.querySelectorAll<T>(sel)];
-
-/** Run a block; on failure make sure nothing it touched stays hidden. */
-function safely(name: string, targets: string, fn: () => void) {
-  try {
-    fn();
-  } catch (err) {
-    console.warn(`[motion] ${name} skipped`, err);
-    root.classList.remove('js-motion');
-    gsap.set(targets, { clearProps: 'opacity,visibility,transform,clipPath' });
-  }
-}
-
-/** Fire once when `trigger` scrolls into view (also fires on load if already passed). */
-function onEnter(trigger: Element, fn: () => void, start = 'top 82%') {
-  ScrollTrigger.create({ trigger, start, once: true, onEnter: fn });
-}
-
-/** Masked line-by-line text reveal. The split is reverted afterwards so text reflows naturally. */
-function maskLines(el: HTMLElement, vars: gsap.TweenVars = {}) {
-  const split = SplitText.create(el, { type: 'lines', mask: 'lines', aria: 'auto' });
-  gsap.set(el, { autoAlpha: 1 });
-  return gsap.from(split.lines, {
-    yPercent: 110,
-    duration: 1,
-    ease: EASE_TEXT,
-    stagger: 0.09,
-    ...vars,
-    onComplete: () => split.revert(),
-  });
-}
-
-/* ------------------------------------------------------------------------ */
 
 function hero() {
   const title = $('.hero__title')!;
@@ -67,12 +11,9 @@ function hero() {
   const track = $('.hero__media .carousel__track');
   const bar = $('.hero__media .carousel__bar');
   const facts = $$('.facts > div');
-  const chrome = $$('.notice, .header');
 
   // Take over from the CSS pre-hide with inline state, then animate with explicit end values.
-  gsap.set([...chrome, ...copy, title, media, '.facts'], { autoAlpha: 0 });
-  gsap.set(chrome, { transition: 'none' });
-  root.classList.remove('js-motion');
+  gsap.set([...copy, title, media, '.facts'], { autoAlpha: 0 });
   const split = SplitText.create(title, { type: 'lines', mask: 'lines', aria: 'auto' });
   const show = { autoAlpha: 1 };
 
@@ -80,12 +21,13 @@ function hero() {
     defaults: { ease: EASE, duration: 0.8 },
     onComplete: () => {
       split.revert();
-      gsap.set([...chrome, ...copy, ...facts, bar], { clearProps: 'transform,transition' });
+      gsap.set([...copy, ...facts, bar], { clearProps: 'transform' });
     },
   });
 
-  tl.fromTo(chrome, { yPercent: -100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.7, stagger: 0.05 })
-    .fromTo(copy[0], { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, '-=0.35')
+  chromeIn(tl);
+  root.classList.remove('js-motion');
+  tl.fromTo(copy[0], { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, '-=0.35')
     .set(title, show, '<')
     .from(split.lines, { yPercent: 110, duration: 1.05, ease: EASE_TEXT, stagger: 0.1 }, '<0.1')
     .fromTo(copy.slice(1), { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.09 }, '-=0.7')
@@ -101,22 +43,6 @@ function hero() {
     .fromTo(facts, { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.07, duration: 0.6 }, '<');
 }
 
-/** Section headings: label slides in, title reveals line by line, intro follows. */
-function headings() {
-  for (const head of $$('.head')) {
-    const label = $('.head__label', head);
-    const title = $('.head__title', head)!;
-    const intro = $('.head__intro', head);
-    gsap.set([label, title, intro].filter(Boolean), { autoAlpha: 0 });
-    onEnter(head, () => {
-      const tl = gsap.timeline({ defaults: { ease: EASE } });
-      tl.fromTo(label, { x: -16, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.6 })
-        .add(maskLines(title), 0.05);
-      if (intro) tl.fromTo(intro, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7 }, 0.35);
-    });
-  }
-}
-
 /** Honours: cards rise with a slight tilt, grade letters climb out of a mask, watermark drifts. */
 function honours(desktop: boolean) {
   const section = $('.honours')!;
@@ -129,7 +55,7 @@ function honours(desktop: boolean) {
       { y: 70, rotateX: -10, autoAlpha: 0, transformPerspective: 900, transformOrigin: '50% 100%', transition: 'none' },
       { y: 0, rotateX: 0, autoAlpha: 1, duration: 1, ease: 'expo.out', stagger: 0.09, clearProps: 'transform,transition' },
     ).from(
-      $$('.result__grade span', section),
+      $$('.result__grade span[aria-hidden]', section),
       { yPercent: 105, duration: 0.9, ease: EASE_TEXT, stagger: { each: 0.045 } },
       0.25,
     );
@@ -140,11 +66,27 @@ function honours(desktop: boolean) {
     const card = cards[(e as CustomEvent<{ index: number }>).detail.index];
     if (!card || !ScrollTrigger.isInViewport(card)) return;
     gsap.fromTo(
-      $$('.result__grade span', card),
+      $$('.result__grade span[aria-hidden]', card),
       { yPercent: 60, autoAlpha: 0.2 },
       { yPercent: 0, autoAlpha: 1, duration: 0.6, ease: EASE, stagger: 0.05, overwrite: true },
     );
   });
+
+  // Congratulations panel: the laurel draws itself, the title rises, details follow.
+  const panel = $('.congrats', section);
+  if (panel) {
+    const strokes = $$('.laurel path, .laurel ellipse', panel);
+    const title = $('.congrats__title', panel)!;
+    const rest = $$('.congrats__kicker, .congrats__text, .congrats__unis, .congrats__ctas', panel);
+    gsap.set(strokes, { drawSVG: '0%' });
+    gsap.set([title, ...rest], { autoAlpha: 0 });
+    onEnter(panel, () => {
+      const tl = gsap.timeline({ defaults: { ease: EASE } });
+      tl.to(strokes, { drawSVG: '100%', duration: 1.1, ease: 'power2.inOut', stagger: { each: 0.025, from: 'end' } })
+        .add(maskLines(title, { duration: 1.1 }), 0.25)
+        .fromTo(rest, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.1 }, 0.5);
+    }, 'top 80%');
+  }
 
   const mark = $('.honours__mark', section);
   if (mark) {
@@ -306,16 +248,6 @@ function gallery() {
   }, 'top 78%');
 }
 
-/** Parallax for a photo inside an overflow-hidden frame (desktop only). */
-function parallax(img: Element | null, trigger: Element | null, amount = 8) {
-  if (!img || !trigger) return;
-  gsap.fromTo(
-    img,
-    { yPercent: -amount, scale: 1.16 },
-    { yPercent: amount, scale: 1.16, ease: 'none', scrollTrigger: { trigger, start: 'top bottom', end: 'bottom top', scrub: true } },
-  );
-}
-
 /** Leadership: portrait unveils, mission sets line by line, team rows slide in. */
 function people(desktop: boolean) {
   const frame = $('.founder picture');
@@ -379,64 +311,29 @@ function apply(desktop: boolean) {
   if (desktop) parallax($('.apply__visit img'), $('.apply__visit'), 6);
 }
 
-/** Footer columns settle in. */
-function footer() {
-  const cols = $$('.footer__grid > *');
-  gsap.set(cols, { autoAlpha: 0 });
-  onEnter($('.footer')!, () =>
-    gsap.fromTo(cols, { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, ease: EASE, stagger: 0.08 }),
-  'top 90%');
-}
-
-/* ------------------------------------------------------------------------ */
-
 let heroPlayed = false;
 
-export async function initMotion() {
-  const mm = gsap.matchMedia();
-  mm.add('(prefers-reduced-motion: reduce)', () => {
-    root.classList.remove('js-motion');
-    root.dataset.motion = 'reduced';
+export function initHomeMotion() {
+  runMotion((desktop) => {
+    let undoJourney: (() => void) | undefined;
+    // The entrance plays once per visit, even if a breakpoint change re-runs this block.
+    if (!heroPlayed) {
+      heroPlayed = true;
+      safely('hero', '.preview-banner, .notice, .header, .hero__copy > *, .hero__media, .facts, .facts > div', hero);
+    }
+    safely('headings', '.head__label, .head__title, .head__intro', headings);
+    safely('honours', '.result, .congrats *, .honours__mark', () => honours(desktop));
+    safely('journey', '.route > li', () => (undoJourney = journey(desktop)));
+    safely('scale', '.scale__bar', scale);
+    safely('programme', '.stream *, .plan, .combos *', programme);
+    safely('calendar', '.timeline, .timeline__item', calendar);
+    safely('modes', '.mode', modes);
+    safely('gallery', '.shot, .shot img', gallery);
+    safely('people', '.founder *, .mission *, .team *', () => people(desktop));
+    safely('faq', '.faq__item', faq);
+    safely('guides', '.guides li', guides);
+    safely('apply', '.apply *', () => apply(desktop));
+    safely('footer', '.footer__grid > *', footer);
+    return () => undoJourney?.();
   });
-  mm.add(
-    {
-      motion: '(prefers-reduced-motion: no-preference)',
-      desktop: '(min-width: 960px)',
-    },
-    (ctx) => {
-      const { motion, desktop } = ctx.conditions as { motion: boolean; desktop: boolean };
-      if (!motion) {
-        root.classList.remove('js-motion');
-        root.dataset.motion = 'reduced';
-        return;
-      }
-      root.dataset.motion = 'running';
-
-      let undoJourney: (() => void) | undefined;
-      // The entrance plays once per visit, even if a breakpoint change re-runs this block.
-      if (!heroPlayed) {
-        heroPlayed = true;
-        safely('hero', '.notice, .header, .hero__copy > *, .hero__media, .facts, .facts > div', hero);
-      }
-      safely('headings', '.head__label, .head__title, .head__intro', headings);
-      safely('honours', '.result, .honours__mark', () => honours(desktop));
-      safely('journey', '.route > li', () => (undoJourney = journey(desktop)));
-      safely('scale', '.scale__bar', scale);
-      safely('programme', '.stream *, .plan, .combos *', programme);
-      safely('calendar', '.timeline, .timeline__item', calendar);
-      safely('modes', '.mode', modes);
-      safely('gallery', '.shot, .shot img', gallery);
-      safely('people', '.founder *, .mission *, .team *', () => people(desktop));
-      safely('faq', '.faq__item', faq);
-      safely('guides', '.guides li', guides);
-      safely('apply', '.apply *', () => apply(desktop));
-      safely('footer', '.footer__grid > *', footer);
-
-      return () => undoJourney?.();
-    },
-  );
-
-  // Positions depend on web fonts and lazy images; re-measure once they settle.
-  document.fonts?.ready.then(() => ScrollTrigger.refresh());
-  window.addEventListener('load', () => ScrollTrigger.refresh(), { once: true });
 }

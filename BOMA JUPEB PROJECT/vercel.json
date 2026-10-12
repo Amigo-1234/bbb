@@ -3,5 +3,16 @@
   "installCommand": "echo 'install runs in ../web'",
   "buildCommand": "cd ../web && npm ci && npm run build && cd - && rm -rf .preview-dist && cp -r ../web/dist .preview-dist",
   "outputDirectory": ".preview-dist",
-  "framework": null
+  "framework": null,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ]
 }

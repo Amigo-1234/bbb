@@ -12,7 +12,7 @@ import Icon from './Icon.astro';
 
 interface Props {
   label: string;
-  variant?: 'hero' | 'showcase' | 'strip';
+  variant?: 'hero' | 'showcase' | 'strip' | 'pair';
   tone?: 'paper' | 'ink';
   autoplay?: boolean;
   interval?: number;
@@ -29,9 +29,9 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
   data-autoplay={autoplay ? 'true' : undefined}
   data-interval={interval}
 >
-  <ul class="carousel__track" data-track tabindex="0" aria-label={`${label} — use arrow keys to browse`}>
+  <div class="carousel__track" data-track tabindex="0" role="group" aria-label={`${label} — use arrow keys to browse`}>
     <slot />
-  </ul>
+  </div>
 
   <div class="carousel__bar">
     <p class="carousel__count num" aria-hidden="true"><span data-current>01</span> / <span data-total>01</span></p>
@@ -247,12 +247,18 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
   .carousel--strip .carousel__track {
     grid-auto-columns: 86%;
   }
+  .carousel--pair .carousel__track {
+    grid-auto-columns: 80%;
+  }
   @media (min-width: 720px) {
     .carousel--showcase .carousel__track {
       grid-auto-columns: calc((100% - var(--s-4)) / 2);
     }
     .carousel--strip .carousel__track {
       grid-auto-columns: 58%;
+    }
+    .carousel--pair .carousel__track {
+      grid-auto-columns: calc((100% - var(--s-4)) / 2);
     }
   }
   @media (min-width: 1040px) {

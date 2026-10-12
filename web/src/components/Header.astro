@@ -4,12 +4,12 @@ import Icon from './Icon.astro';
 import { calendar, primaryContact, site } from '../data/site';
 
 const nav = [
-  { label: 'Programme', href: '#programme' },
-  { label: 'Fees', href: '#fees' },
-  { label: 'Calendar', href: '#calendar' },
-  { label: 'Outcomes', href: '#outcomes' },
-  { label: 'FAQ', href: '#faq' },
-  { label: 'Visit', href: '#apply' },
+  { label: 'Programme', href: '/#programme' },
+  { label: 'Fees', href: '/#fees' },
+  { label: 'Calendar', href: '/#calendar' },
+  { label: 'Success stories', href: '/success-stories' },
+  { label: 'FAQ', href: '/#faq' },
+  { label: 'Visit', href: '/#apply' },
 ];
 
 // Notice bar shows the next confirmed milestone, worked out at build time.
@@ -35,13 +35,13 @@ const fmt = (d: string) =>
         </span>
       )}
     </p>
-    <a href="#calendar" class="notice__link">Full calendar</a>
+    <a href="/#calendar" class="notice__link">Full calendar</a>
   </div>
 </div>
 
 <header class="header" data-header>
   <div class="wrap header__inner">
-    <a href="/" class="brand" aria-label="BIA JUPEB — home">
+    <a href="/" class="brand">
       <Logo height={30} />
       <span class="brand__text">
         <span class="brand__name">JUPEB</span>
@@ -51,16 +51,16 @@ const fmt = (d: string) =>
 
     <nav class="nav" aria-label="Primary">
       <ul>
-        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        {nav.map((n) => <li><a href={n.href} aria-current={Astro.url.pathname === n.href ? 'page' : undefined}>{n.label}</a></li>)}
       </ul>
     </nav>
 
     <div class="header__actions">
-      <a class="header__call with-icon" href={`tel:${primaryContact.phone}`}>
+      <a class="header__call with-icon" href={`tel:${primaryContact.phone}`} data-cta="header-call">
         <Icon name="phone" size={17} />
         <span class="sr-only">Call admissions on </span>{primaryContact.display}
       </a>
-      <a class="btn header__apply" href="#apply">Apply</a>
+      <a class="btn header__apply" href="/#apply" data-cta="header-apply">Enquire</a>
       <button
         class="menu-btn"
         type="button"
@@ -89,8 +89,8 @@ const fmt = (d: string) =>
       ))}
     </ol>
     <div class="sheet__foot">
-      <a class="btn" href="#apply" data-menu-link>Start your application</a>
-      <a class="btn btn--outline" href={`tel:${primaryContact.phone}`}><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+      <a class="btn" href="/#apply" data-menu-link data-cta="menu-apply">Enquire about JUPEB admission</a>
+      <a class="btn btn--outline" href={`tel:${primaryContact.phone}`} data-cta="menu-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
     </div>
   </nav>
 </div>
@@ -257,6 +257,10 @@ const fmt = (d: string) =>
     background: linear-gradient(currentColor, currentColor) left calc(100% - 4px) / 0 1px no-repeat;
     background-origin: content-box;
     transition: color 0.2s var(--ease), background-size 0.3s var(--ease);
+  }
+  .nav a[aria-current='page'] {
+    color: var(--crimson);
+    background-size: 100% 1px;
   }
   .nav a:hover,
   .nav a:focus-visible {

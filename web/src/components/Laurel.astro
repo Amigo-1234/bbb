@@ -1,0 +1,83 @@
+---
+/**
+ * A laurel wreath drawn for this site: two arcing stems with leaves set along
+ * the tangent. Strokes only, so the motion layer can draw it with DrawSVG.
+ * Optional centre text (e.g. a grade) is decorative unless `label` is given.
+ */
+interface Props {
+  size?: number;
+  centre?: string;
+  label?: string;
+  class?: string;
+}
+const { size = 200, centre, label, class: className } = Astro.props;
+
+const C = 100;
+const R = 76;
+const LEAVES = 9;
+const rad = (d: number) => (d * Math.PI) / 180;
+const pt = (deg: number, r = R) => [C + r * Math.cos(rad(deg)), C + r * Math.sin(rad(deg))] as const;
+
+// Left branch runs from the bottom (100°) up around to the top-left (230°); right mirrors it.
+function branch(side: 1 | -1) {
+  const a0 = 100, a1 = 228;
+  const map = (deg: number) => (side === 1 ? deg : 180 - deg);
+  const [x0, y0] = pt(map(a0));
+  const [x1, y1] = pt(map(a1));
+  const stem = `M${x0.toFixed(1)} ${y0.toFixed(1)} A${R} ${R} 0 0 ${side === 1 ? 1 : 0} ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+  const leaves = Array.from({ length: LEAVES }, (_, i) => {
+    const deg = map(a0 + 8 + (i * (a1 - a0 - 14)) / (LEAVES - 1));
+    const size = 1 - i * 0.045;
+    return [-1, 1].map((outward) => {
+      const [x, y] = pt(deg, R + outward * 9 * size);
+      const tangent = deg + 90 + outward * 28 * side;
+      return { x: x.toFixed(1), y: y.toFixed(1), rx: (10 * size).toFixed(1), ry: (4 * size).toFixed(1), rot: tangent.toFixed(0) };
+    });
+  }).flat();
+  return { stem, leaves };
+}
+const branches = [branch(1), branch(-1)];
+---
+
+<svg
+  class:list={['laurel', className]}
+  width={size}
+  height={size}
+  viewBox="0 0 200 200"
+  role={label ? 'img' : undefined}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+>
+  <g class="laurel__wreath" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round">
+    {
+      branches.map((b) => (
+        <g class="laurel__branch">
+          <path class="laurel__stem" d={b.stem} />
+          {b.leaves.map((l) => (
+            <ellipse class="laurel__leaf" cx={l.x} cy={l.y} rx={l.rx} ry={l.ry} transform={`rotate(${l.rot} ${l.x} ${l.y})`} />
+          ))}
+        </g>
+      ))
+    }
+    <path class="laurel__tie" d="M92 178c4-3 12-3 16 0M96 176l-6 10M104 176l6 10" />
+  </g>
+  {centre && (
+    <text class="laurel__centre" x="100" y="114" text-anchor="middle">{centre}</text>
+  )}
+</svg>
+
+<style>
+  .laurel {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+  .laurel__centre {
+    font-family: var(--serif);
+    font-size: 44px;
+    font-weight: 380;
+    letter-spacing: 2px;
+    fill: currentColor;
+  }
+</style>

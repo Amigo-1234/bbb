@@ -1,0 +1,544 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Icon from '../components/Icon.astro';
+import Laurel from '../components/Laurel.astro';
+import Logo from '../components/Logo.astro';
+import { admissionsByInstitution, address, outcomeCategories, outcomes, primaryContact } from '../data/site';
+
+const featured = outcomes.filter((o) => o.featured);
+const categoryLabel = Object.fromEntries(outcomeCategories.map((c) => [c.id, c.label]));
+const tel = `tel:${primaryContact.phone}`;
+---
+
+<Base
+  motion
+  title="Success Stories — BIA JUPEB Alumni Results & University Admissions"
+  description="JUPEB results and university admissions achieved by BIA JUPEB students, as recorded by BIA JUPEB. Names and photographs are published only with consent."
+>
+  <!-- HERO -->
+  <section class="sh" aria-labelledby="sh-title">
+    <div class="wrap sh__grid">
+      <div class="sh__copy">
+        <p class="eyebrow">Success stories · BIA JUPEB alumni</p>
+        <h1 id="sh-title" class="sh__title">Results that opened <em>university doors.</em></h1>
+        <p class="lead sh__lead">
+          JUPEB grades and university places achieved by BIA JUPEB students, as recorded by BIA JUPEB. We celebrate
+          every one of them.
+        </p>
+        <div class="sh__ctas">
+          <a class="btn" href={tel} data-cta="stories-hero-enquire"><Icon name="phone" size={18} />Enquire about JUPEB admission</a>
+          <a class="btn btn--outline" href="/#programme" data-cta="stories-hero-programmes">Explore programmes</a>
+        </div>
+        <p class="sh__privacy">Names, photographs and testimonials appear only with each student’s written consent.</p>
+      </div>
+      <div class="sh__art" aria-hidden="true">
+        <Laurel class="sh__laurel" size={360} centre="AAA" />
+        <p class="sh__art-caption">Congratulations</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 FEATURED -->
+  <section class="section section--ink" aria-labelledby="featured">
+    <div class="wrap">
+      <SectionHead index="01" eyebrow="Featured achievements" title="Straight As, straight into university." id="featured" tone="ink" />
+      <ol class="plates">
+        {featured.map((o, i) => (
+          <li class:list={['plate', i === 0 && 'plate--lead']}>
+            <div class="plate__frame">
+              <p class="plate__top">
+                <Logo height={18} tone="light" />
+                <span>Congratulations</span>
+              </p>
+              <p class="plate__grade"><span class="sr-only">Grades {o.grade.split('').join(', ')}</span>{o.grade.split('').map((g) => <span aria-hidden="true">{g}</span>)}</p>
+              <p class="plate__course">{o.course}</p>
+              <p class="plate__inst">{[o.institution, o.level].filter(Boolean).join(' · ')}</p>
+              <p class="plate__who">{o.consentVerified && o.name ? o.name : 'BIA JUPEB alumnus'}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 02 ALL RESULTS -->
+  <section class="section" aria-labelledby="results">
+    <div class="wrap">
+      <SectionHead index="02" eyebrow="Every recorded result" title="The honours roll, course by course." id="results">
+        <p>Filter by field of study. Grades are shown as recorded; entries without a recorded grade show the admission achieved.</p>
+      </SectionHead>
+
+      <div class="filters" role="group" aria-label="Filter results by field of study" data-filters hidden>
+        <button type="button" class="filters__btn" aria-pressed="true" data-filter="all">All</button>
+        {outcomeCategories.map((c) => (
+          <button type="button" class="filters__btn" aria-pressed="false" data-filter={c.id}>{c.label}</button>
+        ))}
+      </div>
+      <p class="sr-only" aria-live="polite" data-filter-status></p>
+
+      <ol class="ledger" data-ledger>
+        {outcomes.map((o) => (
+          <li class="ledger__row" data-category={o.category}>
+            <span class:list={['ledger__grade', !o.grade && 'ledger__grade--admit']}>
+              {o.grade ? <><span class="sr-only">Grades {o.grade.split('').join(', ')}</span><span aria-hidden="true">{o.grade}</span></> : 'Admitted'}
+            </span>
+            <span class="ledger__main">
+              <span class="ledger__course">{o.course}</span>
+              <span class="ledger__inst">{[o.institution, o.level].filter(Boolean).join(' · ') || 'BIA JUPEB alumnus'}</span>
+            </span>
+            <span class="ledger__cat">{categoryLabel[o.category]}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 03 ADMISSIONS BY UNIVERSITY -->
+  <section class="section section--tint" aria-labelledby="universities">
+    <div class="wrap">
+      <SectionHead index="03" eyebrow="University admissions" title="Where our students went next." id="universities">
+        <p>Universities named in BIA JUPEB’s recorded outcomes, with the courses recorded for each.</p>
+      </SectionHead>
+      <div class="unis">
+        {admissionsByInstitution.map((u) => (
+          <article class="uni">
+            <h3 class="uni__name">{u.institution}</h3>
+            <ul class="uni__courses">
+              {u.courses.map((c) => <li><Icon name="check" size={16} />{c}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 TESTIMONIALS & CONSENT -->
+  <section class="section" aria-labelledby="voices">
+    <div class="wrap voices">
+      <SectionHead index="04" eyebrow="In their own words" title="Testimonials, published with consent." id="voices" />
+      <div class="voices__body">
+        <svg class="voices__mark" viewBox="0 0 48 36" aria-hidden="true">
+          <path d="M0 36V20C0 8 7 1 19 0v7c-6 1-10 5-10 12h10v17Zm29 0V20C29 8 36 1 48 0v7c-6 1-10 5-10 12h10v17Z" />
+        </svg>
+        <p class="voices__text">
+          Our alumni’s own words — and their photographs — will appear here only once each student has given written
+          permission. Until then, we celebrate their results without naming them.
+        </p>
+        <div class="voices__alumni">
+          <p><strong>Are you a BIA JUPEB alumnus?</strong> We would love to feature your story with your permission.</p>
+          <a class="btn btn--outline" href={tel} data-cta="stories-alumni-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="wrap cta__grid">
+      <div>
+        <p class="eyebrow cta__eyebrow">Admissions</p>
+        <h2 id="cta-title" class="cta__title">Begin your own <em>JUPEB journey.</em></h2>
+      </div>
+      <div class="cta__actions">
+        <a class="btn" href={tel} data-cta="stories-cta-enquire"><Icon name="phone" size={18} />Enquire about JUPEB admission</a>
+        <a class="btn btn--on-ink" href="/#programme" data-cta="stories-cta-programmes">Explore programmes<Icon name="arrow-right" size={18} /></a>
+        <a class="cta__visit with-icon" href={address.mapsUrl} rel="noopener" target="_blank"><Icon name="pin" size={16} />Visit the Bariga centre</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { initSuccessPage } from '../scripts/motion/success';
+  initSuccessPage();
+</script>
+
+<style>
+  .section {
+    padding-block: var(--section);
+  }
+  .section--tint {
+    background: var(--paper-2);
+  }
+  .section--ink {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+
+  /* Hero */
+  .sh {
+    padding-block: var(--s-7) var(--section);
+    overflow: hidden;
+  }
+  .sh__grid {
+    display: grid;
+    gap: var(--s-7);
+    align-items: center;
+  }
+  .sh__copy {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .sh__title {
+    font-size: var(--step-5);
+    font-weight: 380;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    max-width: 11ch;
+  }
+  .sh__title em {
+    color: var(--crimson);
+  }
+  .sh__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .sh__ctas .btn {
+    white-space: normal;
+  }
+  .sh__privacy {
+    font-size: var(--step--1);
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  .sh__art {
+    position: relative;
+    justify-self: center;
+    width: min(78vw, 400px);
+    color: var(--brass);
+  }
+  .sh__art :global(.sh__laurel) {
+    width: 100%;
+  }
+  .sh__art :global(.laurel__centre) {
+    fill: var(--crimson);
+  }
+  .sh__art-caption {
+    margin-top: calc(-1 * var(--s-5));
+    text-align: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-2);
+    color: var(--ink-2);
+  }
+  @media (min-width: 960px) {
+    .sh {
+      padding-top: var(--s-8);
+    }
+    .sh__grid {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+
+  /* Featured plates */
+  .plates {
+    display: grid;
+    gap: var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .plate__frame {
+    position: relative;
+    display: grid;
+    gap: var(--s-2);
+    height: 100%;
+    padding: var(--s-6) var(--s-5);
+    border: 1px solid rgb(214 182 121 / 0.45);
+    border-radius: var(--radius);
+    outline: 1px solid rgb(214 182 121 / 0.18);
+    outline-offset: -8px;
+    background: radial-gradient(120% 90% at 0% 0%, rgb(214 182 121 / 0.1), transparent 55%);
+  }
+  .plate__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    color: var(--brass-light);
+  }
+  .plate__grade {
+    display: flex;
+    gap: 0.06em;
+    margin-top: var(--s-4);
+    overflow: hidden;
+    padding-block: 0.06em;
+    font-family: var(--serif);
+    font-size: clamp(4.5rem, 3rem + 6vw, 7.5rem);
+    font-weight: 360;
+    line-height: 1;
+    color: var(--brass-light);
+  }
+  .plate__course {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.15;
+  }
+  .plate__inst {
+    color: var(--on-ink-muted);
+  }
+  .plate__who {
+    margin-top: var(--s-3);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-muted);
+  }
+  @media (min-width: 900px) {
+    .plates {
+      grid-template-columns: 7fr 5fr;
+      grid-template-rows: auto auto;
+    }
+    .plate--lead {
+      grid-row: span 2;
+    }
+    .plate--lead .plate__frame {
+      align-content: end;
+      padding: var(--s-8) var(--s-7);
+    }
+    .plate--lead .plate__grade {
+      font-size: clamp(6rem, 3rem + 8vw, 10rem);
+    }
+    .plate--lead .plate__course {
+      font-size: var(--step-3);
+    }
+  }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: var(--s-2);
+    margin-bottom: var(--s-5);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: var(--s-1);
+  }
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+  .filters__btn {
+    flex: none;
+    min-height: 44px;
+    padding: 0 var(--s-4);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font: 600 0.88rem/1 var(--sans);
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease), transform 0.15s var(--ease);
+  }
+  .filters__btn:hover {
+    border-color: var(--ink);
+  }
+  .filters__btn:active {
+    transform: scale(0.96);
+  }
+  .filters__btn[aria-pressed='true'] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+  }
+  @media (min-width: 900px) {
+    .filters {
+      flex-wrap: wrap;
+      overflow: visible;
+    }
+  }
+
+  /* Ledger */
+  .ledger {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--ink);
+  }
+  .ledger__row {
+    display: grid;
+    grid-template-columns: 5.2rem 1fr;
+    gap: var(--s-1) var(--s-4);
+    align-items: baseline;
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .filters[hidden],
+  .ledger__row[hidden] {
+    display: none;
+  }
+  .ledger__grade {
+    grid-row: span 2;
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: var(--brass);
+  }
+  .ledger__grade--admit {
+    font-family: var(--sans);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  .ledger__main {
+    display: grid;
+  }
+  .ledger__course {
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .ledger__inst {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .ledger__cat {
+    grid-column: 2;
+    justify-self: start;
+    padding: 0.15em 0.6em;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  @media (min-width: 840px) {
+    .ledger {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--s-7);
+    }
+    .ledger__row {
+      grid-template-columns: 7rem 1fr;
+    }
+  }
+
+  /* Universities */
+  .unis {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .uni {
+    padding-top: var(--s-4);
+    border-top: 2px solid var(--ink);
+  }
+  .uni__name {
+    font-size: var(--step-3);
+    margin-bottom: var(--s-4);
+  }
+  .uni__courses {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .uni__courses li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-bottom: var(--s-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .uni__courses :global(svg) {
+    color: var(--crimson);
+  }
+  @media (min-width: 900px) {
+    .unis {
+      grid-template-columns: 1.4fr 1fr 1fr;
+      gap: var(--s-7);
+    }
+  }
+
+  /* Voices */
+  .voices__body {
+    display: grid;
+    gap: var(--s-5);
+    max-width: 58rem;
+  }
+  .voices__mark {
+    width: 44px;
+    fill: var(--crimson);
+  }
+  .voices__text {
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    font-weight: 380;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .voices__alumni {
+    display: grid;
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border: 1px solid var(--line-strong);
+    border-left: 3px solid var(--crimson);
+    border-radius: var(--radius);
+    background: var(--surface);
+    justify-items: start;
+  }
+  @media (min-width: 960px) {
+    .voices {
+      display: grid;
+      grid-template-columns: 4fr 8fr;
+      column-gap: var(--s-6);
+    }
+    .voices :global(.head) {
+      grid-template-columns: 1fr;
+      border-top: 0;
+      padding-top: 0;
+    }
+    .voices :global(.head__label) {
+      grid-row: auto;
+    }
+  }
+
+  /* CTA */
+  .cta {
+    background: var(--ink);
+    color: var(--on-ink);
+    padding-block: var(--section);
+  }
+  .cta__grid {
+    display: grid;
+    gap: var(--s-6);
+    align-items: end;
+  }
+  .cta__eyebrow {
+    color: #e8a3ad;
+  }
+  .cta__title {
+    margin-top: var(--s-3);
+    font-size: var(--step-5);
+    font-weight: 380;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+  }
+  .cta__title em {
+    color: #f0b7bf;
+  }
+  .cta__actions {
+    display: grid;
+    gap: var(--s-3);
+    justify-items: start;
+  }
+  .cta__actions .btn {
+    white-space: normal;
+  }
+  .cta__visit {
+    color: var(--on-ink-muted);
+    font-weight: 600;
+    min-height: 44px;
+  }
+  @media (min-width: 960px) {
+    .cta__grid {
+      grid-template-columns: 7fr 5fr;
+    }
+  }
+</style>

@@ -118,6 +118,9 @@ a {
 
 /* Motion: only the hero is pre-hidden, and only when the motion script is
    expected to run (class added inline in <head>; removed on failure). */
+.js-motion .preview-banner,
+.js-motion .sh__copy > *,
+.js-motion .sh__art,
 .js-motion .notice,
 .js-motion .header,
 .js-motion .hero__copy > *,
@@ -280,6 +283,17 @@ a {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+}
+
+/* Preview banner (V2 presentation builds only) */
+.preview-banner {
+  margin: 0;
+  padding: 0.45rem var(--gutter);
+  background: var(--crimson);
+  color: #fff;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  text-align: center;
 }
 
 /* Inline icon + text */

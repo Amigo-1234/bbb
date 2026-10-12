@@ -6,7 +6,9 @@ import SectionHead from '../components/SectionHead.astro';
 import Carousel from '../components/Carousel.astro';
 import Icon from '../components/Icon.astro';
 import StreamArt from '../components/StreamArt.astro';
+import Laurel from '../components/Laurel.astro';
 import {
+  admissionsByInstitution,
   address,
   calendar,
   combinations,
@@ -80,10 +82,10 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
           guidance.
         </p>
         <div class="hero__ctas">
-          <a class="btn" href="#apply">Apply for {site.session}<Icon name="arrow-right" size={18} /></a>
-          <a class="btn btn--outline" href="#fees">See fees &amp; dates</a>
+          <a class="btn" href="#apply" data-cta="home-hero-enquire">Enquire about JUPEB admission<Icon name="arrow-right" size={18} /></a>
+          <a class="btn btn--outline" href="#programme">Explore programmes</a>
         </div>
-        <a class="hero__call" href={`tel:${primaryContact.phone}`}>
+        <a class="hero__call" href={`tel:${primaryContact.phone}`} data-cta="home-hero-call">
           <span class="hero__call-icon"><Icon name="phone" size={18} /></span>
           <span>
             <span class="hero__call-label">Speak to admissions</span>
@@ -95,7 +97,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
       <div class="hero__media">
         <Carousel label="Classes at BIA JUPEB" variant="hero" autoplay>
           {heroPhotos.map((p, i) => (
-            <li data-slide class="hero__slide">
+            <div data-slide class="hero__slide">
               <figure>
                 <Picture
                   src={p.src}
@@ -109,7 +111,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
                 />
                 <figcaption>{p.caption}</figcaption>
               </figure>
-            </li>
+            </div>
           ))}
         </Carousel>
       </div>
@@ -137,32 +139,49 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     </div>
   </section>
 
-  <!-- 01 OUTCOMES -->
-  <section class="section section--ink honours" aria-labelledby="outcomes">
+  <!-- 01 STUDENT SUCCESS -->
+  <section class="section section--ink honours" id="success" aria-labelledby="outcomes">
     <svg class="honours__mark" viewBox="0 0 400 400" aria-hidden="true" data-clip>
       <text x="200" y="330" text-anchor="middle">A</text>
     </svg>
     <div class="wrap">
-      <SectionHead index="01" eyebrow="Honours roll" title="Results our students have carried into university." id="outcomes" tone="ink">
-        <p>A selection of JUPEB grades and the courses our alumni went on to study, recorded by BIA JUPEB from past sessions.</p>
+      <SectionHead index="01" eyebrow="Student success" title="Results our students have carried into university." id="outcomes" tone="ink">
+        <p>JUPEB grades and university places achieved by BIA JUPEB students, as recorded by BIA JUPEB.</p>
       </SectionHead>
 
-      <Carousel label="Student outcomes" variant="showcase" tone="ink">
-        {outcomes.map((o) => (
-          <li data-slide class="result">
-            <p class="result__top">
-              <span>{o.consentVerified && o.name ? o.name : 'BIA JUPEB alumnus'}</span>
-              {o.level && <span class="result__level">{o.level}</span>}
-            </p>
-            <p class="result__grade" aria-label={`Grades ${o.grade.split('').join(', ')}`}>
-              {o.grade.split('').map((g) => <span>{g}</span>)}
-            </p>
-            <p class="result__course">{o.course}</p>
-            {o.institution && <p class="result__inst">{o.institution}</p>}
-          </li>
-        ))}
-      </Carousel>
-      <p class="honours__note">Student names and photographs are published only with verified consent.</p>
+      <div class="honours__grid">
+        <aside class="congrats" aria-labelledby="congrats-title">
+          <Laurel class="congrats__laurel" size={120} />
+          <p class="congrats__kicker">With pride, from all of us at BIA JUPEB</p>
+          <h3 id="congrats-title" class="congrats__title">Congratulations</h3>
+          <p class="congrats__text">to every student who turned months of focused work into a university place.</p>
+          <div class="congrats__unis">
+            <p class="congrats__label">Admissions recorded at</p>
+            <ul>{admissionsByInstitution.map((a) => <li>{a.institution}</li>)}</ul>
+          </div>
+          <div class="congrats__ctas">
+            <a class="btn" href="/success-stories" data-cta="home-success-stories">Read success stories<Icon name="arrow-right" size={18} /></a>
+            <a class="btn btn--on-ink" href="#apply" data-cta="home-success-enquire">Enquire about admission</a>
+          </div>
+        </aside>
+
+        <div class="honours__slider">
+          <Carousel label="Student results" variant="pair" tone="ink">
+            {outcomes.filter((o) => o.grade).slice(0, 10).map((o) => (
+              <div data-slide class="result">
+                <p class="result__top">
+                  <span>Congratulations</span>
+                  {o.level && <span class="result__level">{o.level}</span>}
+                </p>
+                <p class="result__grade"><span class="sr-only">Grades {o.grade.split('').join(', ')}</span>{o.grade.split('').map((g) => <span aria-hidden="true">{g}</span>)}</p>
+                <p class="result__course">{o.course}</p>
+                <p class="result__inst">{o.institution ?? (o.consentVerified && o.name ? o.name : 'BIA JUPEB alumnus')}</p>
+              </div>
+            ))}
+          </Carousel>
+        </div>
+      </div>
+      <p class="honours__note">Names, photographs and testimonials are published only with each student’s written consent.</p>
     </div>
   </section>
 
@@ -347,7 +366,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
       </SectionHead>
       <Carousel label="Photographs from BIA JUPEB classes" variant="strip">
         {gallery.map((p) => (
-          <li data-slide class="shot">
+          <div data-slide class="shot">
             <figure>
               <Picture
                 src={p.src}
@@ -359,7 +378,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
               />
               <figcaption>{p.caption}</figcaption>
             </figure>
-          </li>
+          </div>
         ))}
       </Carousel>
     </div>
@@ -455,14 +474,14 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     <div class="wrap apply__grid">
       <div class="apply__copy">
         <p class="eyebrow apply__eyebrow">Apply · {site.session}</p>
-        <h2 id="apply-title" class="apply__title">Start your <em>application.</em></h2>
+        <h2 id="apply-title" class="apply__title">Enquire about <em>admission.</em></h2>
         <p class="apply__lead">
           Registration is handled by our admissions office. Call to begin your application, or visit the centre with
           your O-Level result (or evidence of an awaiting result) and a passport photograph.
         </p>
         <div class="apply__ctas">
-          <a class="btn" href={`tel:${primaryContact.phone}`}><Icon name="phone" size={18} />Call {primaryContact.display}</a>
-          <a class="btn btn--on-ink" href={address.mapsUrl} rel="noopener" target="_blank"><Icon name="pin" size={18} />Get directions</a>
+          <a class="btn" href={`tel:${primaryContact.phone}`} data-cta="home-apply-call"><Icon name="phone" size={18} />Speak to admissions · {primaryContact.display}</a>
+          <a class="btn btn--on-ink" href={address.mapsUrl} rel="noopener" target="_blank" data-cta="home-apply-directions"><Icon name="pin" size={18} />Get directions</a>
         </div>
       </div>
 
@@ -485,8 +504,8 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
 </Base>
 
 <script>
-  import { initMotion } from '../scripts/motion';
-  initMotion();
+  import { initHomeMotion } from '../scripts/motion/home';
+  initHomeMotion();
 </script>
 
 <style>
@@ -525,6 +544,9 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   .hero__title em {
     color: var(--crimson);
     font-weight: 400;
+  }
+  .hero__ctas .btn {
+    white-space: normal;
   }
   .hero__ctas {
     display: flex;
@@ -686,6 +708,89 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   }
   .honours .wrap {
     position: relative;
+  }
+  .honours__grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+  .honours__grid > * {
+    min-width: 0;
+  }
+  .congrats {
+    display: grid;
+    align-content: start;
+    gap: var(--s-3);
+    padding: var(--s-6) var(--s-5);
+    border: 1px solid rgb(214 182 121 / 0.35);
+    border-radius: var(--radius);
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgb(214 182 121 / 0.12), transparent 60%),
+      rgb(255 255 255 / 0.02);
+    text-align: center;
+    justify-items: center;
+  }
+  .congrats :global(.congrats__laurel) {
+    width: 104px;
+    color: var(--brass-light);
+  }
+  .congrats__kicker {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-muted);
+  }
+  .congrats__title {
+    font-size: clamp(2.6rem, 1.8rem + 3vw, 3.6rem);
+    font-style: italic;
+    font-weight: 380;
+    color: var(--brass-light);
+  }
+  .congrats__text {
+    max-width: 30ch;
+    color: var(--on-ink);
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.35;
+  }
+  .congrats__unis {
+    width: 100%;
+    margin-top: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .congrats__label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-ink-muted);
+  }
+  .congrats__unis ul {
+    display: grid;
+    gap: var(--s-1);
+    margin: var(--s-2) 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--serif);
+    font-size: var(--step-1);
+  }
+  .congrats__ctas {
+    display: grid;
+    gap: var(--s-2);
+    width: 100%;
+    margin-top: var(--s-4);
+  }
+  .congrats__ctas .btn {
+    white-space: normal;
+    text-align: center;
+  }
+  @media (min-width: 960px) {
+    .honours__grid {
+      grid-template-columns: 5fr 7fr;
+      gap: var(--s-7);
+      align-items: start;
+    }
   }
   .result {
     display: grid;
@@ -1207,8 +1312,9 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     border: 1px solid rgb(255 255 255 / 0.35);
     color: var(--on-ink-muted);
   }
-  .is-past {
-    opacity: 0.5;
+  .is-past .timeline__day,
+  .is-past .timeline__label {
+    color: var(--on-ink-muted);
   }
   .is-next .timeline__day {
     color: #f0b7bf;
@@ -1590,6 +1696,9 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     color: var(--on-ink-muted);
     font-size: var(--step-1);
     line-height: 1.5;
+  }
+  .apply__ctas .btn {
+    white-space: normal;
   }
   .apply__ctas {
     display: flex;

@@ -41,8 +41,10 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
     </div>
 
     <div>
-      <h2 class="footer__h">Guides</h2>
+      <h2 class="footer__h">Explore</h2>
       <ul class="footer__list">
+        <li><a href="/success-stories">Success stories</a></li>
+        <li><a href="/#programme">Programme &amp; fees</a></li>
         {guides.map((g) => <li><a href={g.href}>{g.title}</a></li>)}
       </ul>
     </div>
@@ -56,8 +58,8 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
 </footer>
 
 <nav class="actionbar" aria-label="Quick actions">
-  <a class="btn btn--outline actionbar__call" href={`tel:${primaryContact.phone}`}><Icon name="phone" size={18} />Call admissions</a>
-  <a class="btn" href="#apply">Apply now<Icon name="arrow-right" size={18} /></a>
+  <a class="btn btn--outline actionbar__call" href={`tel:${primaryContact.phone}`} data-cta="actionbar-call"><Icon name="phone" size={18} />Call admissions</a>
+  <a class="btn" href="/#apply" data-cta="actionbar-apply">Enquire<Icon name="arrow-right" size={18} /></a>
 </nav>
 
 <style>

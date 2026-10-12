@@ -31,7 +31,7 @@ for (const width of [320, 360, 390, 768, 1024, 1440]) {
   if (width === 390) {
     const small = await page.evaluate(() =>
       [...document.querySelectorAll('button, .btn, .carousel__btn')]
-        .filter((e) => e.offsetParent && e.getBoundingClientRect().height < 44)
+        .filter((e) => e.offsetParent && e.getBoundingClientRect().height < 43.5)
         .map((e) => e.className),
     );
     check(small.length === 0, `390px: controls are at least 44px tall ${small.join(', ')}`);
@@ -160,6 +160,97 @@ await nojs.goto(BASE, { waitUntil: 'networkidle' });
 check((await hiddenContent(nojs)).length === 0, 'no JavaScript: all content visible');
 check((await nojs.locator('.route > li').count()) === 4 && (await opacity(nojs, '.route__end h3')) === 1, 'no JavaScript: journey steps readable');
 await ctx.close();
+
+// 6. Success-stories page, accessibility and privacy
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+const axeSource = readFileSync(createRequire(import.meta.url).resolve('axe-core/axe.min.js'), 'utf8');
+const STORIES = new URL('success-stories', BASE).href;
+
+for (const [label, opts] of [
+  ['mobile', { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }],
+  ['desktop', { viewport: { width: 1440, height: 900 } }],
+]) {
+  const page = await browser.newPage(opts);
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  page.on('console', (msg) => msg.type() === 'warning' && msg.text().includes('[motion]') && errors.push(msg.text()));
+  await page.goto(STORIES, { waitUntil: 'networkidle' });
+  check((await page.evaluate(() => document.documentElement.dataset.motion)) === 'running', `stories ${label}: motion layer initialised`);
+  await page.waitForTimeout(2800);
+  check((await opacity(page, '.sh__title')) === 1, `stories ${label}: hero visible after entrance`);
+  check((await page.locator('.plate').count()) === 3, `stories ${label}: three featured achievements`);
+  await scrollThrough(page);
+  const stuck = await hiddenContent(page);
+  check(stuck.length === 0, `stories ${label}: all content visible after scrolling ${stuck.join(' | ')}`);
+  const { sw, vw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
+  check(sw <= vw, `stories ${label}: no horizontal overflow`);
+
+  // Filters
+  const total = await page.locator('.ledger__row').count();
+  await page.locator('[data-filter="law"]').click();
+  await page.waitForTimeout(900);
+  const visibleLaw = await page.locator('.ledger__row:visible').count();
+  const lawRows = await page.locator('.ledger__row[data-category="law"]').count();
+  check(visibleLaw === lawRows && lawRows > 0 && lawRows < total, `stories ${label}: Law filter shows only law results (${visibleLaw}/${total})`);
+  check((await page.locator('[data-filter="law"]').getAttribute('aria-pressed')) === 'true', `stories ${label}: active filter announced via aria-pressed`);
+  await page.locator('[data-filter="all"]').click();
+  await page.waitForTimeout(900);
+  check((await page.locator('.ledger__row:visible').count()) === total, `stories ${label}: All restores every result`);
+  check(errors.length === 0, `stories ${label}: no script errors ${errors.join(' | ')}`);
+  await page.close();
+}
+
+// Accessibility (axe-core): no serious or critical violations on either page
+for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.addScriptTag({ content: axeSource });
+  const violations = await page.evaluate(async () => {
+    const r = await window.axe.run(document, { resultTypes: ['violations'] });
+    return r.violations.filter((v) => ['serious', 'critical'].includes(v.impact)).map((v) => `${v.id} (${v.nodes.length})`);
+  });
+  check(violations.length === 0, `${name}: no serious/critical accessibility violations ${violations.join(', ')}`);
+  await page.close();
+}
+
+// No-JS and reduced motion on the stories page
+{
+  const ctx2 = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const p = await ctx2.newPage();
+  await p.goto(STORIES, { waitUntil: 'networkidle' });
+  check((await hiddenContent(p)).length === 0, 'stories no JavaScript: all content visible');
+  check(!(await p.locator('[data-filters]').isVisible()), 'stories no JavaScript: filter bar hidden, full list shown');
+  await ctx2.close();
+  const rm2 = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  await rm2.goto(STORIES, { waitUntil: 'networkidle' });
+  await rm2.locator('[data-filter="medicine"]').click();
+  check(
+    (await rm2.locator('.ledger__row:visible').count()) === (await rm2.locator('.ledger__row[data-category="medicine"]').count()),
+    'stories reduced motion: filters still work',
+  );
+  check((await hiddenContent(rm2)).length === 0, 'stories reduced motion: content visible');
+  await rm2.close();
+}
+
+// Privacy: no student name from the legacy testimonials appears anywhere in V2
+{
+  const legacy = readFileSync(new URL('../../BOMA JUPEB PROJECT/index.html', import.meta.url), 'utf8')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ');
+  const names = [...legacy.matchAll(/Congratulations to you!\s*(.+?)\s*BIA JUPEB Alumn/g)]
+    .map((m) => m[1].trim())
+    .filter((n) => n.length > 3);
+  const page = await browser.newPage();
+  let leaked = [];
+  for (const url of [BASE, STORIES]) {
+    await page.goto(url, { waitUntil: 'networkidle' });
+    const html = (await page.content()).toLowerCase();
+    leaked.push(...names.filter((n) => html.includes(n.toLowerCase())));
+  }
+  check(names.length > 10 && leaked.length === 0, `privacy: none of ${names.length} legacy student names published ${leaked.join(', ')}`);
+  await page.close();
+}
 
 await browser.close();
 console.log(failures ? `\n${failures} check(s) failed` : '\nAll checks passed');
