@@ -1,0 +1,83 @@
+---
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import guides from '../../data/guides.json';
+---
+
+<Base
+  title="JUPEB Guides 2026 — Registration, UNILAG Admission, Past Questions | BIA JUPEB"
+  description="Guides from BIA JUPEB on JUPEB registration, fees, points, subject combinations, UNILAG Direct Entry, awaiting results and past questions."
+>
+  <section class="gi wrap">
+    <p class="eyebrow">Guides</p>
+    <h1 class="gi__title">Read before you register.</h1>
+    <p class="lead">Straight answers to the questions JUPEB applicants ask most.</p>
+    <ul class="gi__list">
+      {guides.map((g, i) => (
+        <li>
+          <a href={`/guides/${g.slug}`}>
+            <span class="gi__n num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="gi__body">
+              <span class="gi__t" set:html={g.title} />
+              <span class="gi__d">{g.description}</span>
+            </span>
+            <Icon name="arrow-up-right" size={20} class="gi__arrow" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .gi {
+    display: grid;
+    gap: var(--s-4);
+    padding-block: var(--s-7) var(--section);
+  }
+  .gi__title {
+    font-size: var(--step-4);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+  }
+  .gi__list {
+    list-style: none;
+    margin: var(--s-6) 0 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+  }
+  .gi__list a {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--line-strong);
+    text-decoration: none;
+  }
+  .gi__n {
+    font-size: var(--step--1);
+    font-weight: 800;
+    color: var(--crimson);
+  }
+  .gi__body {
+    display: grid;
+    gap: var(--s-1);
+  }
+  .gi__t {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.2;
+  }
+  .gi__d {
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+  .gi__list a:hover .gi__t {
+    color: var(--crimson);
+  }
+  .gi__list a :global(.gi__arrow) {
+    align-self: center;
+    color: var(--muted);
+  }
+</style>

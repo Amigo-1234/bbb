@@ -82,7 +82,7 @@ export function footer() {
 
 /** Site header + notice bar entrance used at the start of each page's hero timeline. */
 export function chromeIn(tl: gsap.core.Timeline) {
-  const chrome = $$('.preview-banner, .notice, .header');
+  const chrome = $$('.notice, .header');
   gsap.set(chrome, { transition: 'none' });
   tl.fromTo(chrome, { yPercent: -100, autoAlpha: 0 }, { yPercent: 0, autoAlpha: 1, duration: 0.7, stagger: 0.05, clearProps: 'transform,transition' });
   return chrome;

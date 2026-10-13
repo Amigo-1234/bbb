@@ -197,13 +197,13 @@ export const faqs = [
   },
 ];
 
-/** Existing guide URLs are kept as-is to preserve search rankings. */
+/** Guide articles (ported from the legacy site; old .html URLs redirect here). */
 export const guides = [
-  { title: 'JUPEB Guide 2026: registration, fees and admissions', href: '/jupeb-guide.html' },
-  { title: 'How to gain admission into UNILAG via JUPEB', href: '/jupeb-unilag-admission.html' },
-  { title: 'JUPEB vs IJMB: which is easier?', href: '/jupeb-vs-ijmb.html' },
-  { title: 'Can I use an awaiting result for JUPEB?', href: '/awaiting-result-jupeb-2026.html' },
-  { title: 'JUPEB past questions and answers', href: '/jupeb-past-questions.html' },
+  { title: 'JUPEB Guide 2026: registration, fees and admissions', href: '/guides/jupeb-guide' },
+  { title: 'How to gain admission into UNILAG via JUPEB', href: '/guides/jupeb-unilag-admission' },
+  { title: 'JUPEB vs IJMB: which is easier?', href: '/guides/jupeb-vs-ijmb' },
+  { title: 'Can I use an awaiting result for JUPEB?', href: '/guides/awaiting-result-jupeb-2026' },
+  { title: 'JUPEB past questions and answers', href: '/guides/jupeb-past-questions' },
 ];
 
 export const naira = (n: number) => '₦' + n.toLocaleString('en-NG');

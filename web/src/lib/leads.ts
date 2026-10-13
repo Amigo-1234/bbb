@@ -46,6 +46,7 @@ export const CTA_SOURCES = [
   'stories-alumni-call',
   'stories-cta-enquire',
   'stories-cta-programmes',
+  'guide-call',
   'actionbar-call',
   'actionbar-apply',
 ] as const;

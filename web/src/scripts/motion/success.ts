@@ -151,7 +151,7 @@ export function initSuccessPage() {
   runMotion((desktop) => {
     if (!heroPlayed) {
       heroPlayed = true;
-      safely('hero', '.preview-banner, .notice, .header, .sh__copy > *, .sh__art, .sh__art *', hero);
+      safely('hero', '.notice, .header, .sh__copy > *, .sh__art, .sh__art *', hero);
     }
     safely('headings', '.head__label, .head__title, .head__intro', headings);
     safely('plates', '.plate, .plate *', () => plates(desktop));

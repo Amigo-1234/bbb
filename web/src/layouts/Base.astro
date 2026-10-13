@@ -10,13 +10,13 @@ import { site } from '../data/site';
 interface Props {
   title: string;
   description: string;
-  /** Prototype previews must never be indexed. */
+  /** Exclude this page from search engines (e.g. the 404 page). */
   noindex?: boolean;
   /** Page runs the GSAP motion layer (enables the hero pre-hide). */
   motion?: boolean;
 }
 
-const { title, description, noindex = true, motion = false } = Astro.props;
+const { title, description, noindex = false, motion = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 ---
 
@@ -37,6 +37,8 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="en_NG" />
+    <meta property="og:site_name" content="BIA JUPEB" />
+    <meta name="twitter:card" content="summary" />
     {
       motion && (
         <script is:inline>
@@ -55,7 +57,6 @@ const canonical = new URL(Astro.url.pathname, site.url).href;
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <p class="preview-banner"><strong>V2 design preview</strong> — not the live BIA JUPEB website</p>
     <Header />
     <main id="main">
       <slot />

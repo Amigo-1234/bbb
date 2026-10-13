@@ -252,6 +252,63 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await page.close();
 }
 
+// 7. Launch readiness: indexing, guides, redirects, build contents, contacts
+{
+  const { existsSync, readdirSync, statSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
+  for (const path of ['', 'success-stories', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+    const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
+    const robots = await page.locator('meta[name="robots"]').count();
+    const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
+    const h1 = await page.locator('h1').count();
+    check(res.status() === 200 && robots === 0 && canonical?.startsWith('https://biajupeb.com.ng/') && h1 === 1, `/${path}: 200, indexable, canonical, one h1`);
+    check((await page.locator('.preview-banner').count()) === 0 && !(await page.content()).includes('Design preview'), `/${path}: no preview markers`);
+  }
+  // Accessibility on a guide page
+  await page.goto(new URL('guides/jupeb-guide', BASE).href, { waitUntil: 'networkidle' });
+  await page.addScriptTag({ content: axeSource });
+  const v = await page.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
+  check(v.length === 0, `guide: no serious/critical accessibility violations ${v.join(', ')}`);
+  // 404 page exists and is noindex
+  const html404 = readFileSync(join(dist, '404.html'), 'utf8');
+  check(html404.includes('noindex'), '404 page exists and is noindex');
+  // robots + sitemap
+  const robotsTxt = readFileSync(join(dist, 'robots.txt'), 'utf8');
+  check(/Allow: \//.test(robotsTxt) && !/Disallow: \/\s*$/m.test(robotsTxt) && robotsTxt.includes('sitemap.xml'), 'robots.txt allows indexing and lists the sitemap');
+  const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8');
+  const locs = [...sitemap.matchAll(/<loc>https:\/\/biajupeb\.com\.ng(\/[^<]*)<\/loc>/g)].map((m) => m[1]);
+  check(locs.length >= 8 && locs.every((l) => existsSync(join(dist, l === '/' ? 'index.html' : `${l}/index.html`))), `sitemap lists ${locs.length} URLs that all exist`);
+  // Redirect destinations (and #anchors) exist in the build; both vercel.json files agree
+  const cfgA = JSON.parse(readFileSync(new URL('../../vercel.json', import.meta.url), 'utf8'));
+  const cfgB = JSON.parse(readFileSync(new URL('../../BOMA JUPEB PROJECT/vercel.json', import.meta.url), 'utf8'));
+  check(JSON.stringify(cfgA.redirects) === JSON.stringify(cfgB.redirects), 'both vercel.json files define identical redirects');
+  check(!JSON.stringify(cfgA).includes('noindex') && !JSON.stringify(cfgB).includes('noindex'), 'vercel.json files carry no noindex headers');
+  const bad = cfgA.redirects.filter(({ destination }) => {
+    const [path, hash] = destination.split('#');
+    const file = join(dist, path === '/' ? 'index.html' : `${path}/index.html`);
+    if (!existsSync(file)) return true;
+    return hash ? !readFileSync(file, 'utf8').includes(`id="${hash}"`) : false;
+  });
+  check(cfgA.redirects.length === 20 && bad.length === 0, `all ${cfgA.redirects.length} legacy redirects resolve ${bad.map((b) => b.source).join(', ')}`);
+  // No legacy V1 / sensitive files in the build output
+  const files = [];
+  const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : files.push(join(d, f).slice(dist.length))));
+  walk(dist);
+  const sensitive = files.filter((f) => /admin|firebase|profile|private|signin|signup|keep|text\.html|assets\/images\/(testii|scroll)|\.env/i.test(f));
+  check(sensitive.length === 0, `build output contains no legacy or sensitive files ${sensitive.slice(0, 5).join(', ')}`);
+  const builtText = files.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(join(dist, f), 'utf8')).join('\n');
+  check(!/AIzaSy|firebaseapp|apiKey/.test(builtText), 'build output contains no Firebase keys or config');
+  // Contacts on V2 all appear on the published V1 homepage
+  const v1 = readFileSync(new URL('../../BOMA JUPEB PROJECT/index.html', import.meta.url), 'utf8').replace(/[^\d]/g, '');
+  const phones = [...new Set([...builtText.matchAll(/tel:\+234(\d{10})/g)].map((m) => m[1]))];
+  const missing = phones.filter((p) => !v1.includes('0' + p) && !v1.includes('234' + p));
+  check(phones.length >= 4 && missing.length === 0, `all ${phones.length} V2 phone numbers are published on V1 ${missing.join(', ')}`);
+  await page.close();
+}
+
 await browser.close();
 console.log(failures ? `\n${failures} check(s) failed` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

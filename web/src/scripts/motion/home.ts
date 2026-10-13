@@ -319,7 +319,7 @@ export function initHomeMotion() {
     // The entrance plays once per visit, even if a breakpoint change re-runs this block.
     if (!heroPlayed) {
       heroPlayed = true;
-      safely('hero', '.preview-banner, .notice, .header, .hero__copy > *, .hero__media, .facts, .facts > div', hero);
+      safely('hero', '.notice, .header, .hero__copy > *, .hero__media, .facts, .facts > div', hero);
     }
     safely('headings', '.head__label, .head__title, .head__intro', headings);
     safely('honours', '.result, .congrats *, .honours__mark', () => honours(desktop));

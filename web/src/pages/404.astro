@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { primaryContact } from '../data/site';
+---
+
+<Base title="Page not found | BIA JUPEB" description="This page could not be found." noindex>
+  <section class="nf wrap">
+    <p class="eyebrow">404</p>
+    <h1 class="nf__title">This page has moved or no longer exists.</h1>
+    <p class="lead">Our website has been redesigned. Everything you need is a click away.</p>
+    <div class="nf__links">
+      <a class="btn" href="/">Go to the homepage</a>
+      <a class="btn btn--outline" href="/#programme">Programme &amp; fees</a>
+      <a class="btn btn--outline" href="/guides">JUPEB guides</a>
+      <a class="btn btn--outline" href={`tel:${primaryContact.phone}`}>Call {primaryContact.display}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    display: grid;
+    gap: var(--s-5);
+    padding-block: var(--s-8) var(--section);
+  }
+  .nf__title {
+    font-size: var(--step-4);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    max-width: 16ch;
+  }
+  .nf__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .nf__links .btn {
+    white-space: normal;
+  }
+</style>
