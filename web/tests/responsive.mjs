@@ -659,9 +659,15 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const distFiles = walk(dist);
   const leaked = distFiles.filter((f) => privHashes.has(sha(f)));
   const distText = distFiles.filter((f) => f.endsWith('.html')).map((f) => rf(f, 'utf8')).join('');
-  check(leaked.length === 0 && !existsSync(join(dist, 'review-media')) && !distText.includes('Private review build'), `public build contains no private review media (${privHashes.size} private files checked)`);
+  check(leaked.length === 0 && !distText.includes('Private review'), `no private original or unpublished photo reaches the build (${privHashes.size} private files checked)`);
   const tracked = execSync('git ls-files', { cwd: new URL('..', import.meta.url).pathname, encoding: 'utf8' });
   check(!/^private-media\//m.test(tracked) && rf(new URL('../.gitignore', import.meta.url), 'utf8').includes('private-media/'), 'private-media/ is gitignored and nothing in it is tracked');
+  // Only the 15 approved Phase 6 photographs (plus 3 video posters) are published — no duplicates, screenshots or extras
+  const approved = ['p031', 'p041', 'p047', 'p053', 'p054', 'p059', 'p060', 'p064', 'p080', 'p086', 'p096', 'p106', 'p112', 'p123', 'p124', 'v010-poster', 'v011-poster', 'v012-poster'];
+  const p6 = readdirSync(new URL('../src/assets/photos/phase6/', import.meta.url)).map((f) => f.replace(/\.jpg$/, '')).sort();
+  check(JSON.stringify(p6) === JSON.stringify(approved), `only the ${approved.length} approved Phase 6 images are in the site assets`);
+  const exifFree = p6.every((f) => !rf(new URL(`../src/assets/photos/phase6/${f}.jpg`, import.meta.url)).includes(Buffer.from('Exif\0\0')));
+  check(exifFree, 'published photographs carry no EXIF metadata (no GPS or device data)');
 
   const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
   const requested = [];
@@ -697,6 +703,17 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(!(await dlg.isVisible()) && (await m.evaluate(() => document.activeElement?.hasAttribute('data-life-open'))), 'gallery: Escape closes and returns focus');
   const vreq = requested.filter((u) => /\.(mp4|mov)(\?|$)/.test(u));
   check(vreq.length === 0, `no video is downloaded before a visitor presses play ${vreq.join(', ')}`);
+  // Lesson videos: three click-to-play cards with lazy posters
+  const lv = await m.evaluate(() => [...document.querySelectorAll('.lv__frame')].map((f) => ({ src: f.dataset.src, poster: f.querySelector('img')?.loading, label: f.querySelector('[data-lv-play]')?.getAttribute('aria-label') })));
+  check(lv.length === 3 && lv.every((v) => v.poster === 'lazy' && /^Play video: /.test(v.label ?? '')), 'lesson videos: 3 cards, lazy posters, labelled play buttons');
+  const sizes = await Promise.all(lv.map(async (v) => { const r = await m.request.get(new URL(v.src, BASE).href); return r.ok() && (r.headers()['content-type'] ?? '').startsWith('video/mp4') ? (await r.body()).length : 0; }));
+  check(sizes.every((b) => b > 5e5 && b < 8e6), `lesson video files served as MP4 (${sizes.map((b) => (b / 1e6).toFixed(1) + ' MB').join(', ')})`);
+  const play = m.locator('[data-lv-play]').first();
+  await play.scrollIntoViewIfNeeded();
+  await play.click();
+  await m.waitForTimeout(600);
+  const vid = await m.evaluate(() => { const v = document.querySelector('.lv video'); return v && { controls: v.controls, inline: v.playsInline, focused: document.activeElement === v, src: v.getAttribute('src') }; });
+  check(vid && vid.controls && vid.inline && vid.focused && requested.some((u) => u.endsWith(vid.src)), 'lesson video: pressing play loads that video only, with native controls and focus');
   await m.close();
 
   // 320px: gallery, band and ribbon fit

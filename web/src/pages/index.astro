@@ -39,7 +39,7 @@ import centre from '../assets/photos/centre-entrance.jpg';
 import Ribbon from '../components/Ribbon.astro';
 import LifeGallery from '../components/LifeGallery.astro';
 import LessonVideos from '../components/LessonVideos.astro';
-import { bandPhoto, heroPhotos, isReview, lessonVideos, lifePhotos, modePhotos, tutorPhoto } from '../data/media';
+import { bandPhoto, heroPhotos, lessonVideos, lifePhotos, modePhotos, tutorPhoto } from '../data/media';
 
 const today = new Date().toISOString().slice(0, 10);
 const nextIndex = calendar.findIndex((c) => !c.unconfirmed && (c.end ?? c.start) >= today);
@@ -69,7 +69,6 @@ const week = firstSemester.days.map((d) => ({
   title="BIA JUPEB — JUPEB Admission Centre in Lagos | Direct Entry into 200 Level"
   description="Prepare for JUPEB with BIA JUPEB: Boma’s Intellectual Academy’s 8–9 month Science and Non-Science programme in Akoka, Lagos and online, with weekly tests, tutorials and Direct Entry admission guidance."
 >
-  {isReview && <p class="review-flag" role="note">Private review build — includes Phase 6 media awaiting publication consent. Not for publishing.</p>}
 
   <!-- HERO -->
   <section class="hero" aria-labelledby="hero-title">
@@ -1548,17 +1547,6 @@ const week = firstSemester.days.map((d) => ({
   }
 
   /* ---------- Phase 6 photography ---------- */
-  .review-flag {
-    position: sticky;
-    top: 0;
-    z-index: 60;
-    padding: var(--s-2) var(--gutter);
-    background: #ffd84d;
-    color: #000;
-    font-size: var(--step--1);
-    font-weight: 800;
-    text-align: center;
-  }
   .band {
     position: relative;
     margin: 0;
