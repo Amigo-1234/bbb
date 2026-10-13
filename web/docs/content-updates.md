@@ -96,3 +96,13 @@ then merge to `main` to publish.
 (`assets/images/testii`). All are `pending`. Entries with a `review` note need
 a human check before consent is requested (possible duplicates, captions that
 do not match the photo, or group photos).
+
+## Fees and timetables
+
+Official fees live in `src/data/fees.ts`; timetables in `src/data/timetable.ts`.
+Change the figures there (never in page files) and update the expected values
+in `tests/fees.test.ts` to the new official document, so the tests prove the
+site matches it. Do not add bank account numbers to the website. To replace the
+"view the official timetable" image, crop out any bank details first and save
+it in `src/assets/official/`. Open questions on the 2026/27 documents are listed
+in `docs/official-content-2026.md`.

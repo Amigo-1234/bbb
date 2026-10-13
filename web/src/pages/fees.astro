@@ -1,0 +1,312 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Icon from '../components/Icon.astro';
+import FeePaths from '../components/FeePaths.astro';
+import ProgrammeFees from '../components/ProgrammeFees.astro';
+import InstalmentPlan from '../components/InstalmentPlan.astro';
+import TutorialPackage from '../components/TutorialPackage.astro';
+import {
+  entranceExam,
+  lectureBanksNotice,
+  naira,
+  programmes,
+  registration,
+  terms,
+  tutorialPackage,
+} from '../data/fees';
+import { primaryContact, site } from '../data/site';
+
+const tel = `tel:${primaryContact.phone}`;
+const fmt = (s: string) =>
+  new Date(s + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'Africa/Lagos' });
+const glance = [
+  { label: 'Registration', value: naira(registration.amount), note: 'Application form · both streams' },
+  ...programmes.map((p) => ({ label: `${p.name} programme`, value: naira(p.total), note: 'Programme fee' })),
+  {
+    label: 'Physical tutorials only',
+    value: naira(tutorialPackage.oneTime.amount),
+    note: `or ${naira(tutorialPackage.monthly.amount)} per month`,
+  },
+];
+---
+
+<Base
+  title={`JUPEB Fees ${site.session} — Science, Non-Science & Physical Tutorials | BIA JUPEB`}
+  description="Official BIA JUPEB 2026/27 fees: ₦45,000 registration, Science ₦686,700 and Non-Science ₦671,000 programme fees, the three-instalment payment plan, and the ₦150,000 physical tutorial package."
+>
+  <section class="fh" aria-labelledby="fh-title">
+    <div class="wrap fh__inner">
+      <p class="eyebrow">Fees &amp; payment · {site.session} session</p>
+      <h1 id="fh-title" class="fh__title">Clear fees, <em>published in full.</em></h1>
+      <p class="lead">
+        Every figure on this page comes from BIA JUPEB’s official 2026/27 payment advice and tutorial package.
+      </p>
+      <dl class="glance num">
+        {glance.map((g) => (
+          <div>
+            <dt>{g.label}</dt>
+            <dd>{g.value}<small>{g.note}</small></dd>
+          </div>
+        ))}
+      </dl>
+      <FeePaths cta="fees" />
+    </div>
+  </section>
+
+  <!-- A · FULL PROGRAMME -->
+  <section class="section section--tint" aria-labelledby="programme-fees">
+    <div class="wrap">
+      <SectionHead index="A" eyebrow="Full JUPEB admission programme" title="Programme fees by stream." id="programme-fees">
+        <p>
+          Register first with the {naira(registration.amount)} application form, then pay the programme fee for your
+          stream — in full or in three instalments.
+        </p>
+      </SectionHead>
+
+      <ProgrammeFees />
+
+      <div class="fx">
+        <InstalmentPlan />
+
+        <div class="fx__side">
+          <article class="card" aria-labelledby="req-title">
+            <h3 id="req-title" class="card__title">What you need to register</h3>
+            <ul class="ticks">
+              {registration.requirements.map((r) => (
+                <li><Icon name="check" size={18} />{r}</li>
+              ))}
+            </ul>
+          </article>
+
+          <article class="card card--notice" aria-labelledby="terms-title">
+            <h3 id="terms-title" class="card__title">Important notice</h3>
+            <ul class="terms">
+              {terms.map((t) => <li>{t}</li>)}
+            </ul>
+            <p class="card__aside"><strong>Online learners:</strong> {lectureBanksNotice}</p>
+          </article>
+        </div>
+      </div>
+
+      <div class="exam">
+        <article>
+          <p class="exam__n num">01</p>
+          <h3>BIA Entrance Examination</h3>
+          <p>{entranceExam.purpose}</p>
+        </article>
+        <article>
+          <p class="exam__n num">02</p>
+          <h3>{entranceExam.marathon.label}</h3>
+          <p>{entranceExam.marathon.detail}</p>
+          <p class="exam__date">
+            <Icon name="calendar" size={16} />
+            {fmt(entranceExam.marathon.start)} – {fmt(entranceExam.marathon.end)} 2026 · Free
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- B · TUTORIALS ONLY -->
+  <section class="section" id="tutorials" aria-label="Physical tutorials only">
+    <div class="wrap">
+      <TutorialPackage variant="full" level={2} ctaZone="fees" />
+    </div>
+  </section>
+
+  <!-- HOW TO PAY -->
+  <section class="section section--tint pay" aria-labelledby="pay-title">
+    <div class="wrap pay__inner">
+      <div>
+        <h2 id="pay-title" class="pay__title">How to register and pay</h2>
+        <p class="pay__text">
+          Registration and payments are handled directly by the BIA JUPEB admissions office — there is no online
+          payment on this website. Call or visit us for payment details, and always keep your receipt.
+        </p>
+      </div>
+      <div class="pay__ctas" data-cta-zone>
+        <a class="btn" href={tel} data-cta="fees-pay-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+        <a class="btn btn--outline" href="/#apply" data-cta="fees-pay-enquire">Enquire or visit</a>
+        <a class="btn btn--outline" href="/timetable" data-cta="fees-pay-timetable">Class timetable</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .section {
+    padding-block: var(--section);
+  }
+  .section--tint {
+    background: var(--paper-2);
+  }
+  .fh {
+    padding-block: var(--s-8) var(--s-7);
+  }
+  .fh__inner {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .fh__title {
+    font-size: var(--step-4);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    max-width: 14ch;
+  }
+  .fh__title em {
+    color: var(--crimson);
+  }
+  .glance {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    margin: var(--s-4) 0 var(--s-2);
+    border-top: 1px solid var(--ink);
+  }
+  .glance > div {
+    display: grid;
+    gap: var(--s-1);
+    padding: var(--s-4) var(--s-4) var(--s-4) 0;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .glance dt {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .glance dd {
+    display: grid;
+    margin: 0;
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    line-height: 1.05;
+    color: var(--crimson);
+  }
+  .glance small {
+    margin-top: var(--s-1);
+    font-family: var(--sans);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+
+  .fx {
+    display: grid;
+    gap: var(--s-6);
+    margin-top: var(--s-7);
+  }
+  .fx__side {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+  .card {
+    padding: var(--s-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .card--notice {
+    border-top: 3px solid var(--ink);
+  }
+  .card__title {
+    margin-bottom: var(--s-3);
+    font-size: var(--step-1);
+  }
+  .ticks,
+  .terms {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ticks li {
+    display: flex;
+    gap: var(--s-2);
+  }
+  .ticks :global(svg) {
+    flex: none;
+    margin-top: 0.2em;
+    color: var(--crimson);
+  }
+  .terms li {
+    padding-left: var(--s-3);
+    border-left: 2px solid var(--crimson);
+    font-size: var(--step--1);
+  }
+  .card__aside {
+    margin-top: var(--s-4);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--line);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+
+  .exam {
+    display: grid;
+    gap: var(--s-5);
+    margin-top: var(--s-8);
+    border-top: 1px solid var(--line-strong);
+    padding-top: var(--s-6);
+  }
+  .exam article {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+  }
+  .exam__n {
+    font-size: var(--step--1);
+    font-weight: 800;
+    color: var(--crimson);
+  }
+  .exam h3 {
+    font-size: var(--step-2);
+  }
+  .exam p {
+    color: var(--ink-2);
+    max-width: 52ch;
+  }
+  .exam__date {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-weight: 700;
+    color: var(--crimson) !important;
+  }
+
+  .pay__inner {
+    display: grid;
+    gap: var(--s-5);
+    align-items: center;
+  }
+  .pay__title {
+    font-size: var(--step-3);
+    margin-bottom: var(--s-3);
+  }
+  .pay__text {
+    max-width: 52ch;
+    color: var(--ink-2);
+  }
+  .pay__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+
+  @media (min-width: 960px) {
+    .fx {
+      grid-template-columns: 5fr 6fr;
+      gap: var(--s-7);
+    }
+    .exam {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--s-8);
+    }
+    .pay__inner {
+      grid-template-columns: 1fr auto;
+      gap: var(--s-8);
+    }
+  }
+</style>

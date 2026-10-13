@@ -5,8 +5,8 @@ import { calendar, primaryContact, site } from '../data/site';
 
 const nav = [
   { label: 'Programme', href: '/#programme' },
-  { label: 'Fees', href: '/#fees' },
-  { label: 'Calendar', href: '/#calendar' },
+  { label: 'Fees', href: '/fees' },
+  { label: 'Timetable', href: '/timetable' },
   { label: 'Success stories', href: '/success-stories' },
   { label: 'FAQ', href: '/#faq' },
   { label: 'Visit', href: '/#apply' },
@@ -22,6 +22,8 @@ const fmt = (d: string) =>
     year: 'numeric',
     timeZone: 'Africa/Lagos',
   });
+// An event already under way shows its end date instead of its start.
+const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.end) : fmt(next.start)) : '';
 ---
 
 <div class="notice">
@@ -31,7 +33,7 @@ const fmt = (d: string) =>
       {next && (
         <span>
           <span class="notice__sep" aria-hidden="true">·</span>
-          {next.label}: <strong>{fmt(next.start)}</strong>
+          {next.label}: <strong>{nextWhen}</strong>
         </span>
       )}
     </p>

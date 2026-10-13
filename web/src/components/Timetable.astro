@@ -1,0 +1,407 @@
+---
+/**
+ * Readable, mobile-first rendering of an official BIA JUPEB timetable.
+ * Each day is a row; sessions keep the printed times, titles and subject
+ * codes. A small script marks today's row (Africa/Lagos time).
+ */
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+import Icon from './Icon.astro';
+import { subjectKey, type Timetable } from '../data/timetable';
+
+interface Props {
+  timetable: Timetable;
+  /** The official image (bank details cropped out), offered as a full-size view. */
+  original?: ImageMetadata;
+  originalAlt?: string;
+}
+const { timetable: tt, original, originalAlt } = Astro.props;
+const full = original ? await getImage({ src: original, format: 'webp', width: Math.min(original.width, 1600) }) : null;
+const kindLabel: Record<string, string> = {
+  'self-study': 'Self study',
+  lectures: 'Self study & lectures',
+  class: 'Lecture',
+  private: 'Private class',
+  marathon: 'Marathon',
+  test: 'Test',
+  online: 'Online',
+  physical: 'Physical tutorial',
+};
+---
+
+<div class="tt" data-timetable={tt.id}>
+  <div class="tt__meta">
+    <p class="tt__heading">{tt.heading}</p>
+    <p class="tt__audience">{tt.audience}</p>
+    {tt.intro && <p class="tt__intro"><Icon name="calendar" size={16} />{tt.intro}</p>}
+  </div>
+
+  <nav class="tt__jump" aria-label={`Jump to a day — ${tt.title}`}>
+    {tt.days.map((d) => <a href={`#${tt.id}-${d.day}`} data-jump={d.day}>{d.day}</a>)}
+  </nav>
+
+  <ol class="tt__days">
+    {
+      tt.days.map((d) => (
+        <li class="tt__day" id={`${tt.id}-${d.day}`} data-day={d.day}>
+          <h3 class="tt__dayname">
+            <span aria-hidden="true">{d.day}</span>
+            <span class="sr-only">{d.name}</span>
+            <span class="tt__today" hidden>Today</span>
+          </h3>
+          <ul class="tt__sessions">
+            {d.sessions.map((s) => (
+              <li class:list={['tt__s', `tt__s--${s.kind}`]} data-start={s.start} data-end={s.end}>
+                {s.time ? <p class="tt__time num">{s.time}</p> : <p class="tt__time tt__time--none">Time not stated</p>}
+                {s.title && <p class="tt__title">{s.title}</p>}
+                {s.subjects && (
+                  <p class="tt__subjects">
+                    <span class="sr-only">Subjects: </span>
+                    {s.subjects.map((c) =>
+                      subjectKey[c] ? <abbr title={subjectKey[c]!}>{c}</abbr> : <span class="tt__code">{c}</span>,
+                    )}
+                  </p>
+                )}
+                {(s.paid || s.kind === 'online' || s.venue) && (
+                  <p class="tt__tags">
+                    {s.kind === 'online' && <span class="tt__tag tt__tag--free">Free</span>}
+                    {s.paid && <span class="tt__tag tt__tag--paid">Paid</span>}
+                    {s.venue && <span class="tt__venue"><Icon name="pin" size={14} />{s.venue}</span>}
+                  </p>
+                )}
+                <span class="sr-only">({kindLabel[s.kind]})</span>
+              </li>
+            ))}
+          </ul>
+          {d.note && (
+            <p class="tt__note">
+              <Icon name="pin" size={14} />
+              <span><strong>{d.note.label}:</strong> {d.note.text}</span>
+            </p>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+
+  <ul class="tt__footnotes">
+    {tt.footnotes.map((f) => <li>{f}</li>)}
+  </ul>
+
+  <div class="tt__key">
+    <p class="tt__key-title">Subject codes</p>
+    <dl>
+      {Object.entries(subjectKey).filter(([, v]) => v).map(([k, v]) => (
+        <div><dt>{k}</dt><dd>{v}</dd></div>
+      ))}
+    </dl>
+  </div>
+
+  {
+    full && (
+      <p class="tt__original">
+        <a class="link-arrow" href={full.src} target="_blank" rel="noopener" data-cta={`timetable-original-${tt.id}`}>
+          View the official timetable image<Icon name="arrow-up-right" size={16} />
+        </a>
+        <span class="sr-only">{originalAlt}</span>
+      </p>
+    )
+  }
+</div>
+
+<script>
+  // Mark today's row (Lagos time) and the session in progress, if any.
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Africa/Lagos',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(now);
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? '';
+  const today = get('weekday'); // Mon, Tue, …
+  const hm = `${get('hour')}:${get('minute')}`;
+  for (const day of document.querySelectorAll<HTMLElement>(`.tt__day[data-day="${today}"]`)) {
+    day.classList.add('is-today');
+    day.querySelector<HTMLElement>('.tt__today')?.removeAttribute('hidden');
+    for (const s of day.querySelectorAll<HTMLElement>('.tt__s[data-start]')) {
+      if (s.dataset.start! <= hm && hm < s.dataset.end!) s.classList.add('is-now');
+    }
+  }
+  for (const a of document.querySelectorAll<HTMLElement>(`.tt__jump [data-jump="${today}"]`)) a.classList.add('is-today');
+</script>
+
+<style>
+  .tt {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .tt__meta {
+    display: grid;
+    gap: var(--s-1);
+  }
+  .tt__heading {
+    font-weight: 800;
+  }
+  .tt__audience {
+    color: var(--ink-2);
+  }
+  .tt__intro {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    margin-top: var(--s-2);
+    font-weight: 700;
+    color: var(--crimson);
+  }
+
+  /* Day jump chips (mobile convenience) */
+  .tt__jump {
+    position: sticky;
+    top: calc(var(--header-h) + var(--s-2));
+    z-index: 2;
+    display: flex;
+    gap: var(--s-1);
+    padding: var(--s-2);
+    margin-inline: calc(-1 * var(--s-2));
+    overflow-x: auto;
+    background: rgb(248 246 241 / 0.94);
+    border-radius: 999px;
+    scrollbar-width: none;
+  }
+  .tt__jump a {
+    flex: 1 0 auto;
+    min-width: 44px;
+    min-height: 44px;
+    display: grid;
+    place-items: center;
+    padding: 0 0.6rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    font-size: var(--step--1);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .tt__jump a.is-today {
+    background: var(--crimson);
+    border-color: var(--crimson);
+    color: #fff;
+  }
+
+  .tt__days {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--ink);
+  }
+  .tt__day {
+    display: grid;
+    grid-template-columns: 3.6rem 1fr;
+    gap: var(--s-2) var(--s-4);
+    padding: var(--s-4) 0;
+    border-bottom: 1px solid var(--line-strong);
+    scroll-margin-top: calc(var(--header-h) + 5rem);
+  }
+  .tt__day.is-today {
+    background: linear-gradient(90deg, var(--crimson-wash), transparent 70%);
+    box-shadow: inset 3px 0 0 var(--crimson);
+    padding-left: var(--s-3);
+  }
+  .tt__dayname {
+    display: grid;
+    align-content: start;
+    gap: var(--s-1);
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    font-weight: 400;
+    line-height: 1;
+  }
+  .tt__today {
+    justify-self: start;
+    padding: 0.2em 0.5em;
+    border-radius: 999px;
+    background: var(--crimson);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tt__sessions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tt__s {
+    display: grid;
+    gap: 2px;
+    padding: var(--s-3) var(--s-4);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--line-strong);
+    border-radius: var(--radius);
+  }
+  .tt__s--class,
+  .tt__s--physical {
+    border-left-color: var(--crimson);
+  }
+  .tt__s--lectures {
+    border-left-color: var(--ink);
+  }
+  .tt__s--private {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--on-ink);
+  }
+  .tt__s--marathon {
+    border-left-color: var(--brass);
+    background: #fbf6ec;
+  }
+  .tt__s--test {
+    background: var(--crimson-wash);
+    border-left-color: var(--crimson);
+  }
+  .tt__s--online {
+    border-left-color: var(--brass);
+  }
+  .tt__s.is-now {
+    outline: 2px solid var(--crimson);
+    outline-offset: 1px;
+  }
+  .tt__time {
+    font-size: var(--step--1);
+    font-weight: 800;
+    color: var(--crimson);
+    font-variant-numeric: tabular-nums;
+  }
+  .tt__s--private .tt__time {
+    color: var(--brass-light);
+  }
+  .tt__time--none {
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .tt__title {
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .tt__s > .tt__subjects:nth-child(2) {
+    margin-top: var(--s-2);
+  }
+  .tt__subjects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1);
+    margin-top: var(--s-1);
+  }
+  .tt__subjects abbr,
+  .tt__code {
+    padding: 0.1em 0.55em;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--paper);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .tt__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-2);
+    margin-top: var(--s-1);
+  }
+  .tt__tag {
+    padding: 0.1em 0.55em;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .tt__tag--paid {
+    background: var(--crimson);
+    color: #fff;
+  }
+  .tt__tag--free {
+    background: var(--ink);
+    color: #fff;
+  }
+  .tt__venue,
+  .tt__note {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: var(--s-1);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .tt__venue :global(svg),
+  .tt__note :global(svg) {
+    flex: none;
+    margin-top: 0.25em;
+    color: var(--crimson);
+  }
+  .tt__note {
+    grid-column: 2;
+  }
+  .tt__footnotes {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tt__footnotes li {
+    padding-left: var(--s-3);
+    border-left: 3px solid var(--crimson);
+    font-weight: 600;
+  }
+  .tt__key-title {
+    margin-bottom: var(--s-2);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tt__key dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-4);
+    margin: 0;
+    font-size: var(--step--1);
+  }
+  .tt__key dl > div {
+    display: flex;
+    gap: 0.4em;
+  }
+  .tt__key dt {
+    font-weight: 800;
+  }
+  .tt__key dd {
+    margin: 0;
+    color: var(--ink-2);
+  }
+
+  @media (min-width: 760px) {
+    .tt__jump {
+      display: none;
+    }
+    .tt__day {
+      grid-template-columns: 6.5rem 1fr;
+      padding: var(--s-5) 0;
+    }
+    .tt__day.is-today {
+      padding-left: var(--s-4);
+    }
+    .tt__dayname {
+      font-size: var(--step-3);
+    }
+  }
+</style>

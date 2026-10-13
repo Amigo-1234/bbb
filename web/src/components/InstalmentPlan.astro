@@ -1,0 +1,82 @@
+---
+/** Official 2026/27 three-instalment payment structure (full programme). */
+import { instalmentNote, instalments, naira } from '../data/fees';
+interface Props {
+  level?: 2 | 3;
+}
+const { level = 3 } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+---
+
+<aside class="plan" aria-labelledby="plan-title" data-fees="instalments">
+  <H id="plan-title" class="plan__title">Flexible payment structure</H>
+  <p class="plan__intro">The full programme fee can be paid in three instalments.</p>
+  <ol class="plan__list">
+    {
+      instalments.map((s, i) => (
+        <li>
+          <span class="plan__n num">{i + 1}</span>
+          <span class="plan__amt num">{naira(s.amount)}</span>
+          <span class="plan__label">
+            <strong>{s.when}</strong> · {s.detail}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="plan__note">{instalmentNote}</p>
+</aside>
+
+<style>
+  .plan {
+    align-self: start;
+    padding: var(--s-6) var(--s-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--crimson);
+    border-radius: var(--radius);
+  }
+  .plan__title {
+    font-size: var(--step-2);
+    margin-bottom: var(--s-4);
+  }
+  .plan__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .plan__list li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .plan__n {
+    grid-row: span 2;
+    font-size: var(--step--1);
+    font-weight: 800;
+    color: var(--crimson);
+    padding-top: 0.3em;
+  }
+  .plan__amt {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+  }
+  .plan__label {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .plan__note {
+    margin-top: var(--s-4);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .plan__intro {
+    margin: calc(-1 * var(--s-2)) 0 var(--s-3);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .plan__label strong {
+    color: var(--ink);
+  }
+</style>

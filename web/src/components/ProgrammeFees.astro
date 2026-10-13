@@ -1,0 +1,177 @@
+---
+/**
+ * A · Full JUPEB admission programme — the two streams with every fee item
+ * exactly as printed on the official 2026/27 payment advices.
+ */
+import StreamArt from './StreamArt.astro';
+import { naira, programmes, registration } from '../data/fees';
+
+interface Props {
+  /** Heading level for the stream names. */
+  level?: 3 | 4;
+}
+const { level = 3 } = Astro.props;
+const H = `h${level}` as 'h3' | 'h4';
+---
+
+<div class="streams" data-fees="programme">
+  {
+    programmes.map((p, i) => (
+      <article class="stream" aria-labelledby={`stream-${p.id}`} data-stream={p.id}>
+        <div class="stream__art">
+          <StreamArt stream={p.id} />
+        </div>
+        <p class="stream__kicker">Stream {String(i + 1).padStart(2, '0')}</p>
+        <H id={`stream-${p.id}`} class="stream__name">
+          {p.name}
+          {p.sub && <span class="stream__sub">{p.sub}</span>}
+        </H>
+        <p class="stream__blurb">{p.blurb}</p>
+        <dl class="stream__fees num">
+          {p.items.map((it) => (
+            <div>
+              <dt>{it.label}</dt>
+              <dd>{naira(it.amount)}</dd>
+            </div>
+          ))}
+          <div class="stream__total">
+            <dt>Programme fee</dt>
+            <dd data-total>{naira(p.total)}</dd>
+          </div>
+        </dl>
+      </article>
+    ))
+  }
+</div>
+<p class="streams__reg">
+  <span class="streams__reg-amt num" data-registration>{naira(registration.amount)}</span>
+  <span>
+    <strong>Registration (compulsory)</strong> — {registration.label.toLowerCase()}, paid first and separately from the
+    programme fee. Same for both streams.
+  </span>
+</p>
+
+<style>
+  .streams {
+    display: grid;
+    border-top: 1px solid var(--ink);
+  }
+  .stream {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-6) 0;
+    border-bottom: 1px solid var(--line-strong);
+  }
+  .stream__art {
+    width: 150px;
+    margin-bottom: var(--s-2);
+    transition: transform 0.5s var(--ease);
+  }
+  .stream:hover .stream__art {
+    transform: translateY(-4px);
+  }
+  .stream__total dd {
+    transition: transform 0.4s var(--ease);
+    transform-origin: right;
+  }
+  .stream:hover .stream__total dd {
+    transform: scale(1.04);
+  }
+  .stream__kicker {
+    font-size: var(--step--1);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  .stream__name {
+    font-size: var(--step-3);
+  }
+  .stream__sub {
+    display: block;
+    margin-top: var(--s-1);
+    font-family: var(--sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+  }
+  .stream__blurb {
+    color: var(--ink-2);
+    max-width: 36ch;
+  }
+  .stream__fees {
+    margin: var(--s-3) 0 0;
+  }
+  .stream__fees > div {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .stream__fees dt {
+    color: var(--ink-2);
+  }
+  .stream__fees dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .stream__fees .stream__total {
+    border-bottom: 0;
+    padding-top: var(--s-4);
+  }
+  .stream__total dt {
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .stream__total dd {
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    font-weight: 400;
+    color: var(--crimson);
+  }
+  @media (min-width: 840px) {
+    .streams {
+      grid-template-columns: 1fr 1fr;
+    }
+    .stream {
+      padding: var(--s-7) var(--s-7) var(--s-6) 0;
+      border-bottom: 0;
+    }
+    .stream + .stream {
+      padding-left: var(--s-7);
+      padding-right: 0;
+      border-left: 1px solid var(--line-strong);
+    }
+  }
+
+  .stream__fees dt {
+    padding-right: var(--s-4);
+    font-size: var(--step--1);
+  }
+  .stream__fees dd {
+    white-space: nowrap;
+  }
+  .streams__reg {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-4);
+    margin-top: var(--s-5);
+    padding: var(--s-4) var(--s-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--crimson);
+    border-radius: var(--radius);
+    color: var(--ink-2);
+  }
+  .streams__reg span:last-child {
+    flex: 1 1 22ch;
+  }
+  .streams__reg-amt {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    color: var(--crimson);
+  }
+</style>

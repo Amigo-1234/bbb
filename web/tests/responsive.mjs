@@ -259,7 +259,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const dist = new URL('../dist/', import.meta.url).pathname;
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
-  for (const path of ['', 'success-stories', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+  for (const path of ['', 'success-stories', 'fees', 'timetable', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
     const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
     const robots = await page.locator('meta[name="robots"]').count();
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -400,6 +400,138 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   });
   check(Math.abs(dh.right - dh.vw) <= 1 && dh.inset, 'desktop hero: photograph bleeds to the right edge with the inset photo');
   await d.close();
+}
+
+// 9. Official 2026/27 fees, tutorials and timetable
+{
+  const { readdirSync, statSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const FEES = new URL('fees', BASE).href;
+  const TT = new URL('timetable', BASE).href;
+  const files = [];
+  const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : files.push(join(d, f))));
+  walk(dist);
+  const text = files.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(f, 'utf8')).join('\n');
+
+  // Outdated figures are gone; bank details never published
+  check(!/₦40,000|₦437,000|₦421,000|₦250,000|₦687,000/.test(text), 'no outdated fees (₦40,000 registration, old school/tutorial split) remain');
+  check(!/1027749868|1022749868|\bUBA\b/.test(text), 'no bank account details are published');
+  check(!/pay online|pay now|checkout|card payment/i.test(text) && !/<form[^>]+action=/i.test(text), 'no online payment claims or payment forms');
+
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  for (const url of [BASE, FEES]) {
+    await page.goto(url, { waitUntil: 'networkidle' });
+    const where = url === BASE ? 'home' : '/fees';
+    const reg = await page.locator('[data-registration]').first().textContent();
+    check(reg === '₦45,000', `${where}: registration fee shows ₦45,000`);
+    const sci = await page.locator('[data-stream="science"]').first().innerText();
+    const non = await page.locator('[data-stream="non-science"]').first().innerText();
+    check(
+      sci.includes('₦235,000') && sci.includes('₦686,700') && !sci.includes('₦219,000') && !sci.includes('₦671,000') &&
+        non.includes('₦219,000') && non.includes('₦671,000') && !non.includes('₦235,000') && !non.includes('₦686,700'),
+      `${where}: Science and Non-Science fees are separate and correct`,
+    );
+    const tut = page.locator('[data-fees="tutorials"]').first();
+    check(
+      (await tut.locator('[data-tutorial-one-time]').textContent()) === '₦150,000' &&
+        (await tut.locator('[data-tutorial-monthly]').textContent()).startsWith('₦25,000') &&
+        (await tut.locator('[data-tutorial-form]').textContent()).includes('₦5,000'),
+      `${where}: tutorial package shows ₦150,000, ₦25,000/month and the ₦5,000 form`,
+    );
+    const tutText = await tut.innerText();
+    check(
+      (await page.locator('[data-fees="programme"] [data-fees="tutorials"], [data-fees="tutorials"] [data-fees="programme"]').count()) === 0 &&
+        !/₦686,700|₦671,000|₦45,000/.test(tutText),
+      `${where}: tutorials (B) are presented separately from the admission programme (A)`,
+    );
+    const plan = await page.locator('[data-fees="instalments"]').innerText();
+    check(plan.includes('₦200,000') && plan.includes('₦287,000') && plan.includes('4 May 2027'), `${where}: three-instalment plan with the 4 May 2027 deadline`);
+  }
+  // Fees reachable from the header on every page
+  check((await page.locator('header a[href="/fees"], #mobile-menu a[href="/fees"]').count()) >= 1 && (await page.locator('a[href="/timetable"]').count()) >= 1, 'fees and timetable are linked from the navigation');
+  await page.close();
+
+  // Timetable: rendered rows match the official image
+  const expected = {
+    Mon: ['8:00 AM – 7:00 PM|Self Study & Lectures'],
+    Tue: ['8am – 1pm|Self Study', '2pm – 3pm|PHY GOV BUS', '3pm – 4pm|CHM ECO CRS', '4pm – 5pm|BIO ACC LIT F/MTH', '5pm – 7pm|Special Private Class'],
+    Wed: ['8:00 AM – 7:00 PM|Self Study & Lectures'],
+    Thu: ['8am – 1pm|Self Study', '2pm – 3pm|PHY GOV BUS', '3pm – 4pm|CHM ECO CRS', '4pm – 5pm|BIO ACC LIT F/MTH', '5pm – 7pm|Special Private Class'],
+    Fri: ['8am – 1pm|Self Study', '2:30 PM – 7:30 PM|Marathon 001 for SFS Students'],
+    Sat: ['10:00 AM – 4:00 PM|001 & 002 Tests'],
+    Sun: ['2:00 PM – 7:00 PM|Marathon 002 for SFS Students'],
+  };
+  for (const [label, opts] of [
+    ['mobile', { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }],
+    ['320px', { viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true }],
+    ['desktop', { viewport: { width: 1440, height: 900 } }],
+  ]) {
+    const p = await browser.newPage(opts);
+    const errors = [];
+    p.on('pageerror', (e) => errors.push(e.message));
+    await p.goto(TT, { waitUntil: 'networkidle' });
+    const rendered = await p.evaluate(() =>
+      Object.fromEntries(
+        [...document.querySelectorAll('[data-timetable="first-semester"] .tt__day')].map((d) => [
+          d.dataset.day,
+          [...d.querySelectorAll('.tt__s')].map((s) => {
+            const time = s.querySelector('.tt__time')?.textContent.trim();
+            const what = s.querySelector('.tt__title')?.textContent.trim() ?? [...s.querySelectorAll('.tt__subjects abbr, .tt__subjects .tt__code')].map((a) => a.textContent).join(' ');
+            return `${time}|${what}`;
+          }),
+        ]),
+      ),
+    );
+    check(JSON.stringify(rendered) === JSON.stringify(expected), `timetable ${label}: first semester matches the official timetable`);
+    const read = await p.evaluate(() => {
+      const vw = document.documentElement.clientWidth;
+      const cards = [...document.querySelectorAll('.tt__s')].filter((e) => e.offsetParent);
+      const tiny = [...document.querySelectorAll('.tt__s *')].filter((e) => e.offsetParent && e.childNodes.length && [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim()) && parseFloat(getComputedStyle(e).fontSize) < 12);
+      return {
+        overflow: document.documentElement.scrollWidth > vw,
+        narrow: cards.filter((c) => c.getBoundingClientRect().width < 120).length,
+        tiny: tiny.length,
+        img: document.querySelectorAll('.tt img').length,
+      };
+    });
+    check(!read.overflow && read.narrow === 0 && read.tiny === 0 && read.img === 0, `timetable ${label}: readable without zooming (text ≥ 12px, cards ≥ 120px, no image-only timetable)`);
+    check(errors.length === 0, `timetable ${label}: no script errors ${errors.join(' | ')}`);
+    if (label === 'mobile') {
+      const chips = await p.evaluate(() => [...document.querySelectorAll('.tt__jump a')].filter((a) => a.offsetParent).map((a) => a.getBoundingClientRect().height));
+      check(chips.length >= 7 && chips.every((h) => h >= 44), 'timetable mobile: day shortcuts are at least 44px tall');
+      // Tabs: keyboard switches between timetables
+      const tab1 = p.locator('[role="tab"]').first();
+      await tab1.focus();
+      await p.keyboard.press('ArrowRight');
+      check(
+        (await p.locator('#panel-pre-resumption').isVisible()) && !(await p.locator('#panel-first-semester').isVisible()) &&
+          (await p.locator('[role="tab"]').nth(1).getAttribute('aria-selected')) === 'true',
+        'timetable tabs: ArrowRight shows the pre-resumption timetable',
+      );
+      const original = await p.locator('#panel-pre-resumption .tt__original a').getAttribute('href');
+      const res = await p.request.get(new URL(original, TT).href);
+      check(res.ok() && (res.headers()['content-type'] ?? '').startsWith('image/'), 'timetable: official image is available as an optional full view');
+    }
+    await p.close();
+  }
+  // No JavaScript: both timetables shown in full
+  {
+    const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+    const p = await ctx.newPage();
+    await p.goto(TT, { waitUntil: 'networkidle' });
+    check((await p.locator('#panel-first-semester').isVisible()) && (await p.locator('#panel-pre-resumption').isVisible()), 'timetable no JavaScript: both timetables visible');
+    await ctx.close();
+  }
+  // Accessibility
+  for (const url of [FEES, TT]) {
+    const p = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+    await p.goto(url, { waitUntil: 'networkidle' });
+    await p.addScriptTag({ content: axeSource });
+    const v = await p.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => `${x.id} (${x.nodes.length})`));
+    check(v.length === 0, `${new URL(url).pathname}: no serious/critical accessibility violations ${v.join(', ')}`);
+    await p.close();
+  }
 }
 
 await browser.close();

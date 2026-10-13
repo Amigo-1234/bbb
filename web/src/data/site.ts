@@ -50,42 +50,16 @@ export const address = {
     'https://www.google.com/maps/search/?api=1&query=56+Igi+Olugbin+Street+Bariga+Lagos',
 };
 
-export const fees = {
-  registration: 40000,
-  programmes: [
-    {
-      id: 'science',
-      name: 'Science',
-      blurb: 'Intensive tutorials, tests and academic monitoring.',
-      school: 437000,
-      tutorial: 250000,
-      total: 687000,
-    },
-    {
-      id: 'non-science',
-      name: 'Non-Science',
-      sub: 'Art & Commercial',
-      blurb: 'Full academic support for Art and Commercial students.',
-      school: 421000,
-      tutorial: 250000,
-      total: 671000,
-    },
-  ],
-  plan: [
-    { amount: 200000, label: 'Initial deposit + registration' },
-    { amount: 200000, label: 'Upon resumption' },
-    { amount: null, label: 'Balance', when: 'Paid in January' },
-  ],
-  planNote:
-    'Students who do not meet the initial payment must pay ₦400,000 before resumption.',
-};
+// Official 2026/27 fees and tutorial package now live in fees.ts.
+export { registration, programmes, instalments, instalmentNote, tutorialPackage } from './fees';
 
 export const calendar: CalendarItem[] = [
   { label: 'Registration', start: '2026-04-27', end: '2026-06-12' },
   { label: 'Online resumption', start: '2026-05-04' },
   { label: 'Entrance assessment', start: '2026-08-29' },
-  { label: 'Special tutorials', start: '2026-08-31', unconfirmed: true },
+  { label: 'Free marathon class & online tutorials', start: '2026-10-05', end: '2026-10-31' },
   { label: 'Physical resumption', start: '2026-11-02' },
+  { label: 'Final instalment due (before Second Semester resumption)', start: '2027-05-04' },
 ];
 
 // Student outcomes now come from content/achievements/records.json.
@@ -109,7 +83,7 @@ export const combinations = [
 export const faqs = [
   {
     q: 'Can I register with an awaiting result?',
-    a: 'Yes. Candidates awaiting WAEC, NECO or NABTEB results can register, but your O-Level requirements must be complete before final JUPEB registration closes. Bring a recent passport photograph, a valid ID if available, and your O-Level result or evidence of registration.',
+    a: "Yes — awaiting results are acceptable. To register you need the full ₦45,000 registration fee, your O'Level result (or awaiting result), your National Identification Number (NIN) and your birth certificate.",
   },
   {
     q: 'How are JUPEB points calculated?',
@@ -129,7 +103,11 @@ export const faqs = [
   },
   {
     q: 'Can I pay in instalments?',
-    a: 'Yes. You can pay in full or follow the instalment plan: ₦200,000 with registration, ₦200,000 on resumption, and the balance in January.',
+    a: 'Yes. The 2026/27 plan has three instalments: ₦200,000 upon registration (before the BIA Entrance Examination), ₦200,000 upon resumption (by January), and the final ₦287,000 on or before 4 May 2027, before Second Semester resumption. All payments are non-refundable.',
+  },
+  {
+    q: 'Can I join only the physical tutorials?',
+    a: "Yes. The Physical Tutorial Services Package is for students who want to join BIA's physical tutorials only — including students from other institutions. It costs ₦150,000 from now until the exam, or ₦25,000 per month, plus a ₦5,000 tutorial registration form fee. It is separate from the full JUPEB admission programme, which already includes physical tutorials.",
   },
   {
     q: 'Do you provide past questions?',

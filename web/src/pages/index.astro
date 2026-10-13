@@ -5,7 +5,10 @@ import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Carousel from '../components/Carousel.astro';
 import Icon from '../components/Icon.astro';
-import StreamArt from '../components/StreamArt.astro';
+import ProgrammeFees from '../components/ProgrammeFees.astro';
+import InstalmentPlan from '../components/InstalmentPlan.astro';
+import TutorialPackage from '../components/TutorialPackage.astro';
+import FeePaths from '../components/FeePaths.astro';
 import Laurel from '../components/Laurel.astro';
 import {
   admissionsByInstitution,
@@ -14,7 +17,7 @@ import {
   combinations,
   contacts,
   faqs,
-  fees,
+  registration,
   gradePoints,
   guides,
   naira,
@@ -143,7 +146,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
         </div>
         <div>
           <dt>Registration fee</dt>
-          <dd class="num">{naira(fees.registration)}<small>Non-refundable</small></dd>
+          <dd class="num">{naira(registration.amount)}<small>Non-refundable</small></dd>
         </div>
       </dl>
     </div>
@@ -251,46 +254,20 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   <!-- 03 PROGRAMME & FEES -->
   <section class="section section--tint" id="programme" aria-labelledby="fees">
     <div class="wrap">
-      <SectionHead index="03" eyebrow={`Programme & fees · ${site.session}`} title="Two streams. Clear, published fees." id="fees">
+      <SectionHead index="03" eyebrow={`Programme & fees · ${site.session}`} title="Two ways to study with BIA. Clear, published fees." id="fees">
         <p>
-          A {naira(fees.registration)} registration fee (non-refundable) applies to both streams. Fees can be paid in
-          full or in instalments.
+          Join the full JUPEB admission programme, or take our physical tutorials only. Fees below are from BIA JUPEB’s
+          official 2026/27 payment advice. All payments are non-refundable.
         </p>
       </SectionHead>
 
-      <div class="streams">
-        {fees.programmes.map((p, i) => (
-          <article class="stream" aria-labelledby={`stream-${p.id}`}>
-            <div class="stream__art"><StreamArt stream={p.id as 'science' | 'non-science'} /></div>
-            <p class="stream__kicker">Stream {String(i + 1).padStart(2, '0')}</p>
-            <h3 id={`stream-${p.id}`} class="stream__name">
-              {p.name}
-              {p.sub && <span class="stream__sub">{p.sub}</span>}
-            </h3>
-            <p class="stream__blurb">{p.blurb}</p>
-            <dl class="stream__fees num">
-              <div><dt>School fees</dt><dd>{naira(p.school)}</dd></div>
-              <div><dt>Tutorial fees</dt><dd>{naira(p.tutorial)}</dd></div>
-              <div class="stream__total"><dt>Total</dt><dd>{naira(p.total)}</dd></div>
-            </dl>
-          </article>
-        ))}
-      </div>
+      <FeePaths base="" cta="home" />
+
+      <h3 class="path-title" id="programme-fees"><span class="path-badge">A</span>Full JUPEB admission programme</h3>
+      <ProgrammeFees level={4} />
 
       <div class="fees-foot">
-        <aside class="plan" aria-labelledby="plan-title">
-          <h3 id="plan-title" class="plan__title">Instalment plan</h3>
-          <ol class="plan__list">
-            {fees.plan.map((s, i) => (
-              <li>
-                <span class="plan__n num">{i + 1}</span>
-                <span class="plan__amt num">{s.amount ? naira(s.amount) : s.label}</span>
-                <span class="plan__label">{s.amount ? s.label : s.when}</span>
-              </li>
-            ))}
-          </ol>
-          <p class="plan__note">{fees.planNote}</p>
-        </aside>
+        <InstalmentPlan />
 
         <div class="combos">
           <h3 class="combos__title">Popular subject combinations</h3>
@@ -305,6 +282,13 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
             ))}
           </dl>
         </div>
+      </div>
+      <p class="fees-more">
+        <a class="link-arrow" href="/fees" data-cta="home-fees-details">Requirements, payment terms &amp; full fee details<Icon name="arrow-right" size={16} /></a>
+      </p>
+
+      <div class="tutorials" id="tutorials">
+        <TutorialPackage />
       </div>
     </div>
   </section>
@@ -1169,148 +1153,38 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     }
   }
 
-  /* ---------- Streams & fees ---------- */
-  .streams {
-    display: grid;
-    border-top: 1px solid var(--ink);
-  }
-  .stream {
-    display: grid;
-    gap: var(--s-3);
-    padding: var(--s-6) 0;
-    border-bottom: 1px solid var(--line-strong);
-  }
-  .stream__art {
-    width: 150px;
-    margin-bottom: var(--s-2);
-    transition: transform 0.5s var(--ease);
-  }
-  .stream:hover .stream__art {
-    transform: translateY(-4px);
-  }
-  .stream__total dd {
-    transition: transform 0.4s var(--ease);
-    transform-origin: right;
-  }
-  .stream:hover .stream__total dd {
-    transform: scale(1.04);
-  }
-  .stream__kicker {
-    font-size: var(--step--1);
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--crimson);
-  }
-  .stream__name {
-    font-size: var(--step-3);
-  }
-  .stream__sub {
-    display: block;
-    margin-top: var(--s-1);
-    font-family: var(--sans);
-    font-size: var(--step--1);
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--muted);
-  }
-  .stream__blurb {
-    color: var(--ink-2);
-    max-width: 36ch;
-  }
-  .stream__fees {
-    margin: var(--s-3) 0 0;
-  }
-  .stream__fees > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: var(--s-3) 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .stream__fees dt {
-    color: var(--ink-2);
-  }
-  .stream__fees dd {
-    margin: 0;
-    font-weight: 600;
-  }
-  .stream__fees .stream__total {
-    border-bottom: 0;
-    padding-top: var(--s-4);
-  }
-  .stream__total dt {
-    font-weight: 800;
-    color: var(--ink);
-  }
-  .stream__total dd {
+  /* ---------- Fees ---------- */
+  .path-badge {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--crimson);
+    color: #fff;
     font-family: var(--serif);
-    font-size: var(--step-3);
-    font-weight: 400;
-    color: var(--crimson);
+    font-size: 1.1rem;
   }
-  @media (min-width: 840px) {
-    .streams {
-      grid-template-columns: 1fr 1fr;
-    }
-    .stream {
-      padding: var(--s-7) var(--s-7) var(--s-6) 0;
-      border-bottom: 0;
-    }
-    .stream + .stream {
-      padding-left: var(--s-7);
-      padding-right: 0;
-      border-left: 1px solid var(--line-strong);
-    }
+  .path-title {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+    font-size: var(--step-2);
+    scroll-margin-top: calc(var(--header-h) + var(--s-5));
   }
-
+  .fees-more {
+    margin-top: var(--s-6);
+  }
+  .tutorials {
+    margin-top: var(--s-8);
+    scroll-margin-top: calc(var(--header-h) + var(--s-5));
+  }
   .fees-foot {
     display: grid;
     gap: var(--s-7);
     margin-top: var(--s-7);
-  }
-  .plan {
-    align-self: start;
-    padding: var(--s-6) var(--s-5);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-top: 3px solid var(--crimson);
-    border-radius: var(--radius);
-  }
-  .plan__title {
-    font-size: var(--step-2);
-    margin-bottom: var(--s-4);
-  }
-  .plan__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .plan__list li {
-    display: grid;
-    grid-template-columns: 2rem 1fr;
-    padding: var(--s-3) 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .plan__n {
-    grid-row: span 2;
-    font-size: var(--step--1);
-    font-weight: 800;
-    color: var(--crimson);
-    padding-top: 0.3em;
-  }
-  .plan__amt {
-    font-family: var(--serif);
-    font-size: var(--step-1);
-  }
-  .plan__label {
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-  .plan__note {
-    margin-top: var(--s-4);
-    font-size: var(--step--1);
-    color: var(--ink-2);
   }
   .combos__title {
     font-size: var(--step-2);

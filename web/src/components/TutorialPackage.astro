@@ -1,0 +1,319 @@
+---
+/**
+ * B · Physical Tutorial Services Package — for students joining BIA's
+ * physical tutorials only (including students from other institutions).
+ * Kept visually distinct from the full admission programme (A).
+ */
+import Icon from './Icon.astro';
+import { naira, sum, tutorialPackage as t } from '../data/fees';
+import { primaryContact } from '../data/site';
+
+interface Props {
+  /** `full` adds the itemised breakdown (used on /fees). */
+  variant?: 'compact' | 'full';
+  level?: 2 | 3;
+  ctaZone?: string;
+}
+const { variant = 'compact', level = 3, ctaZone = 'home' } = Astro.props;
+const H = `h${level}` as 'h2' | 'h3';
+---
+
+<section class:list={['tut', `tut--${variant}`]} aria-labelledby={`tut-title-${variant}`} data-fees="tutorials">
+  <div class="tut__head">
+    <p class="tut__kicker"><span class="tut__badge">B</span>Physical tutorials only</p>
+    <H id={`tut-title-${variant}`} class="tut__title">{t.name}</H>
+    <p class="tut__audience">{t.audience}</p>
+    <p class="tut__aside">
+      <Icon name="arrow-right" size={16} />
+      <span>Enrolled in the full JUPEB programme? Physical tutorials are already part of your programme fee.</span>
+    </p>
+  </div>
+
+  <div class="tut__options">
+    <div class="tut__opt tut__opt--lead">
+      <p class="tut__opt-label">One-time</p>
+      <p class="tut__price num" data-tutorial-one-time>{naira(t.oneTime.amount)}</p>
+      <p class="tut__opt-name">{t.oneTime.label}</p>
+      <ul>{t.oneTime.points.map((p) => <li>{p}</li>)}</ul>
+    </div>
+    <p class="tut__or" aria-hidden="true">or</p>
+    <div class="tut__opt">
+      <p class="tut__opt-label">Monthly</p>
+      <p class="tut__price num" data-tutorial-monthly>{naira(t.monthly.amount)}<small>/month</small></p>
+      <p class="tut__opt-name">{t.monthly.label}</p>
+      <ul>{t.monthly.points.map((p) => <li>{p}</li>)}</ul>
+    </div>
+  </div>
+
+  <div class="tut__foot">
+    <p class="tut__inst">
+      <strong>Paying by semester?</strong>
+      {t.semesterInstalments.map((s, i) => (
+        <span>{i > 0 && ' + '}{naira(s.amount)} {s.label.toLowerCase()}</span>
+      ))}
+      <span class="tut__muted"> ({naira(sum(t.semesterInstalments))} in total)</span>
+    </p>
+    <p class="tut__form num" data-tutorial-form>
+      + {naira(t.registrationForm.amount)} <span>{t.registrationForm.label.toLowerCase()}</span>
+    </p>
+  </div>
+
+  {
+    variant === 'full' && (
+      <div class="tut__includes">
+        <h3 class="tut__inc-title">What the {naira(t.oneTime.amount)} package covers</h3>
+        <dl class="num">
+          {t.includes.map((i) => (
+            <div>
+              <dt>{i.label}</dt>
+              <dd>{naira(i.amount)}</dd>
+            </div>
+          ))}
+          <div class="tut__inc-total">
+            <dt>Package price</dt>
+            <dd>{naira(sum(t.includes))}</dd>
+          </div>
+        </dl>
+        <p class="tut__muted">The ₦150,000 physical tutorial fee covers you from the beginning until the end of the programme.</p>
+      </div>
+    )
+  }
+
+  <div class="tut__ctas" data-cta-zone>
+    <a class="btn" href="/timetable" data-cta={`${ctaZone}-tutorials-timetable`}>
+      See the class timetable<Icon name="arrow-right" size={18} />
+    </a>
+    {
+      variant === 'compact' ? (
+        <a class="btn btn--on-ink" href="/fees#tutorials" data-cta={`${ctaZone}-tutorials-details`}>What the package covers</a>
+      ) : (
+        <a class="btn btn--on-ink" href={`tel:${primaryContact.phone}`} data-cta={`${ctaZone}-tutorials-call`}>
+          <Icon name="phone" size={18} />Ask about tutorials
+        </a>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .tut {
+    display: grid;
+    gap: var(--s-6);
+    padding: var(--s-7) var(--s-5);
+    background: var(--ink);
+    color: var(--on-ink);
+    border-radius: var(--radius);
+  }
+  .tut__head {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+  }
+  .tut__kicker {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    font-size: var(--step--1);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brass-light);
+  }
+  .tut__badge {
+    display: inline-grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border-radius: 50%;
+    background: var(--crimson);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+  .tut__title {
+    font-size: var(--step-3);
+    color: #fff;
+  }
+  .tut__audience {
+    max-width: 44ch;
+    color: var(--on-ink);
+  }
+  .tut__aside {
+    display: flex;
+    gap: var(--s-2);
+    max-width: 46ch;
+    font-size: var(--step--1);
+    color: var(--on-ink-muted);
+  }
+  .tut__aside :global(svg) {
+    flex: none;
+    margin-top: 0.2em;
+    color: var(--brass-light);
+  }
+  .tut__options {
+    display: grid;
+    gap: var(--s-3);
+    align-items: stretch;
+  }
+  .tut__opt {
+    display: grid;
+    align-content: start;
+    gap: var(--s-1);
+    padding: var(--s-5);
+    border: 1px solid rgb(255 255 255 / 0.18);
+    border-radius: var(--radius);
+  }
+  .tut__opt--lead {
+    background: var(--paper);
+    color: var(--ink);
+    border-color: var(--paper);
+  }
+  .tut__opt-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brass-light);
+  }
+  .tut__opt--lead .tut__opt-label {
+    color: var(--crimson);
+  }
+  .tut__price {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 1.9rem + 1.6vw, 3.4rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .tut__opt--lead .tut__price {
+    color: var(--crimson);
+  }
+  .tut__price small {
+    margin-left: 0.15em;
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    letter-spacing: 0;
+    color: var(--on-ink-muted);
+  }
+  .tut__opt-name {
+    font-weight: 800;
+    margin-bottom: var(--s-2);
+  }
+  .tut__opt ul {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--step--1);
+  }
+  .tut__opt li {
+    position: relative;
+    padding-left: 1.1rem;
+  }
+  .tut__opt li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--crimson);
+  }
+  .tut__opt:not(.tut__opt--lead) li::before {
+    background: var(--brass-light);
+  }
+  .tut__or {
+    justify-self: center;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    color: var(--brass-light);
+  }
+  .tut__foot {
+    display: grid;
+    gap: var(--s-2);
+    padding-top: var(--s-4);
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+    font-size: var(--step--1);
+  }
+  .tut__inst strong {
+    margin-right: 0.4em;
+    color: #fff;
+  }
+  .tut__muted {
+    color: var(--on-ink-muted);
+  }
+  .tut__form {
+    font-weight: 700;
+    color: #fff;
+  }
+  .tut__form span {
+    font-weight: 400;
+    color: var(--on-ink-muted);
+  }
+  .tut__includes {
+    display: grid;
+    gap: var(--s-3);
+  }
+  .tut__inc-title {
+    font-size: var(--step-1);
+    color: #fff;
+  }
+  .tut__includes dl {
+    margin: 0;
+  }
+  .tut__includes dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.14);
+  }
+  .tut__includes dd {
+    margin: 0;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .tut__includes .tut__inc-total {
+    border-bottom: 0;
+  }
+  .tut__inc-total dt {
+    font-weight: 800;
+  }
+  .tut__inc-total dd {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    font-weight: 400;
+    color: var(--brass-light);
+  }
+  .tut__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  @media (min-width: 720px) {
+    .tut__options {
+      grid-template-columns: 1fr auto 1fr;
+      align-items: stretch;
+    }
+    .tut__or {
+      align-self: center;
+    }
+  }
+  @media (min-width: 1040px) {
+    .tut {
+      grid-template-columns: minmax(17rem, 4fr) 8fr;
+      column-gap: var(--s-7);
+      padding: var(--s-8) var(--s-7);
+    }
+    .tut__head {
+      grid-row: span 2;
+    }
+    .tut__includes,
+    .tut__ctas {
+      grid-column: 2;
+    }
+  }
+</style>
