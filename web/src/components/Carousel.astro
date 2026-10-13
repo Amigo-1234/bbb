@@ -1,0 +1,358 @@
+---
+/**
+ * Accessible scroll-snap carousel.
+ * - Native touch/trackpad swiping (CSS scroll snap)
+ * - Previous / next buttons, Arrow / Home / End keys on the focused track
+ * - Optional autoplay with a visible pause control; autoplay pauses on hover,
+ *   focus and touch, when the tab is hidden, and never runs under
+ *   prefers-reduced-motion
+ * Slides are passed as <li data-slide> children.
+ */
+import Icon from './Icon.astro';
+
+interface Props {
+  label: string;
+  variant?: 'hero' | 'showcase' | 'strip' | 'pair';
+  tone?: 'paper' | 'ink';
+  autoplay?: boolean;
+  interval?: number;
+  class?: string;
+}
+const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6500, class: className } = Astro.props;
+---
+
+<section
+  class:list={['carousel', `carousel--${variant}`, `carousel--${tone}`, className]}
+  aria-roledescription="carousel"
+  aria-label={label}
+  data-carousel
+  data-autoplay={autoplay ? 'true' : undefined}
+  data-interval={interval}
+>
+  <div class="carousel__track" data-track tabindex="0" role="group" aria-label={`${label} — use arrow keys to browse`}>
+    <slot />
+  </div>
+
+  <div class="carousel__bar">
+    <p class="carousel__count num" aria-hidden="true"><span data-current>01</span> / <span data-total>01</span></p>
+    {autoplay && <span class="carousel__progress" aria-hidden="true"><span data-progress></span></span>}
+    <div class="carousel__controls">
+      {autoplay && (
+        <button type="button" class="carousel__btn" data-toggle aria-pressed="false" aria-label="Pause slideshow">
+          <span data-icon-pause><Icon name="pause" size={18} /></span>
+          <span data-icon-play hidden><Icon name="play" size={16} /></span>
+        </button>
+      )}
+      <button type="button" class="carousel__btn" data-prev aria-label="Previous slide">
+        <Icon name="chevron-left" size={20} />
+      </button>
+      <button type="button" class="carousel__btn" data-next aria-label="Next slide">
+        <Icon name="chevron-right" size={20} />
+      </button>
+    </div>
+  </div>
+  <p class="sr-only" aria-live="polite" data-status></p>
+</section>
+
+<script>
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  class Carousel {
+    root: HTMLElement;
+    track: HTMLElement;
+    slides: HTMLElement[];
+    index = 0;
+    timer = 0;
+    paused = false; // user-chosen pause (sticky)
+    held = false; // temporary pause: hover / focus / touch
+    autoplay: boolean;
+    interval: number;
+
+    constructor(root: HTMLElement) {
+      this.root = root;
+      this.track = root.querySelector('[data-track]')!;
+      this.slides = [...this.track.querySelectorAll<HTMLElement>('[data-slide]')];
+      this.autoplay = root.dataset.autoplay === 'true' && !reduceMotion.matches;
+      this.interval = Number(root.dataset.interval) || 6500;
+      root.style.setProperty('--interval', `${this.interval}ms`);
+
+      const n = this.slides.length;
+      root.querySelector('[data-total]')!.textContent = String(n).padStart(2, '0');
+      this.slides.forEach((s, i) => {
+        s.setAttribute('role', 'group');
+        s.setAttribute('aria-roledescription', 'slide');
+        s.setAttribute('aria-label', `${i + 1} of ${n}`);
+      });
+
+      root.querySelector('[data-prev]')!.addEventListener('click', () => this.go(this.index - 1, true));
+      root.querySelector('[data-next]')!.addEventListener('click', () => this.go(this.index + 1, true));
+      root.querySelector('[data-toggle]')?.addEventListener('click', () => this.setPaused(!this.paused));
+
+      this.track.addEventListener('keydown', (e) => {
+        const map: Record<string, number> = {
+          ArrowRight: this.index + 1,
+          ArrowLeft: this.index - 1,
+          Home: 0,
+          End: n - 1,
+        };
+        if (e.key in map) {
+          e.preventDefault();
+          this.go(map[e.key], true);
+        }
+      });
+
+      // The current slide is the first one mostly in view (covers swipes and scrolls).
+      const visible = new Set<number>();
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const en of entries) {
+            const i = this.slides.indexOf(en.target as HTMLElement);
+            if (en.isIntersecting && en.intersectionRatio >= 0.6) visible.add(i);
+            else visible.delete(i);
+          }
+          if (visible.size) {
+            this.index = Math.min(...visible);
+            this.render();
+          }
+        },
+        { root: this.track, threshold: [0.6] },
+      );
+      this.slides.forEach((s) => io.observe(s));
+
+      if (this.autoplay) {
+        const hold = (v: boolean) => () => {
+          this.held = v;
+          this.schedule();
+        };
+        root.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && hold(true)());
+        root.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && hold(false)());
+        root.addEventListener('focusin', hold(true));
+        root.addEventListener('focusout', (e) => !root.contains(e.relatedTarget as Node) && hold(false)());
+        this.track.addEventListener('touchstart', () => this.setPaused(true), { passive: true });
+        document.addEventListener('visibilitychange', () => this.schedule());
+        reduceMotion.addEventListener('change', () => reduceMotion.matches && this.setPaused(true));
+        this.schedule();
+      } else {
+        root.querySelector('[data-toggle]')?.setAttribute('hidden', '');
+      }
+      this.render();
+    }
+
+    go(i: number, user = false) {
+      const n = this.slides.length;
+      const wrap = this.autoplay || this.root.classList.contains('carousel--hero');
+      const target = wrap ? (i + n) % n : Math.max(0, Math.min(n - 1, i));
+      const slide = this.slides[target];
+      this.track.scrollTo({
+        left: slide.offsetLeft - this.track.offsetLeft - (parseFloat(getComputedStyle(this.track).scrollPaddingLeft) || 0),
+        behavior: reduceMotion.matches ? 'auto' : 'smooth',
+      });
+      this.index = target;
+      this.render();
+      if (user) {
+        (this.root.querySelector('[data-status]') as HTMLElement).textContent = `Slide ${target + 1} of ${n}`;
+        this.schedule();
+      }
+    }
+
+    setPaused(p: boolean) {
+      this.paused = p;
+      const btn = this.root.querySelector('[data-toggle]');
+      if (btn) {
+        btn.setAttribute('aria-pressed', String(p));
+        btn.setAttribute('aria-label', p ? 'Play slideshow' : 'Pause slideshow');
+        btn.querySelector('[data-icon-pause]')!.toggleAttribute('hidden', p);
+        btn.querySelector('[data-icon-play]')!.toggleAttribute('hidden', !p);
+      }
+      this.schedule();
+    }
+
+    schedule() {
+      clearTimeout(this.timer);
+      const running = this.autoplay && !this.paused && !this.held && !document.hidden;
+      this.root.toggleAttribute('data-running', running);
+      if (running) {
+        this.restartProgress();
+        this.timer = window.setTimeout(() => this.go(this.index + 1), this.interval);
+      }
+    }
+
+    restartProgress() {
+      const bar = this.root.querySelector<HTMLElement>('[data-progress]');
+      if (!bar) return;
+      bar.style.animation = 'none';
+      void bar.offsetWidth;
+      bar.style.animation = '';
+    }
+
+    last = -1;
+
+    render() {
+      const n = this.slides.length;
+      if (this.index !== this.last) {
+        this.last = this.index;
+        this.root.dispatchEvent(new CustomEvent('carousel:change', { detail: { index: this.index } }));
+      }
+      this.root.querySelector('[data-current]')!.textContent = String(this.index + 1).padStart(2, '0');
+      this.slides.forEach((s, i) => s.toggleAttribute('data-active', i === this.index));
+      const wrap = this.autoplay || this.root.classList.contains('carousel--hero');
+      if (!wrap) {
+        (this.root.querySelector('[data-prev]') as HTMLButtonElement).disabled = this.index === 0;
+        (this.root.querySelector('[data-next]') as HTMLButtonElement).disabled = this.index >= n - 1;
+      }
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((el) => new Carousel(el));
+</script>
+
+<style>
+  .carousel {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .carousel__track {
+    display: grid;
+    grid-auto-flow: column;
+    gap: var(--_gap, var(--s-4));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    border-radius: var(--radius);
+  }
+  .carousel__track::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel__track:focus-visible {
+    outline-offset: 4px;
+  }
+  .carousel__track > :global([data-slide]) {
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  /* Variants */
+  .carousel--hero .carousel__track {
+    --_gap: 0px;
+    grid-auto-columns: 100%;
+  }
+  .carousel--showcase .carousel__track {
+    grid-auto-columns: 78%;
+  }
+  .carousel--strip .carousel__track {
+    grid-auto-columns: 86%;
+  }
+  .carousel--pair .carousel__track {
+    grid-auto-columns: 80%;
+  }
+  @media (min-width: 720px) {
+    .carousel--showcase .carousel__track {
+      grid-auto-columns: calc((100% - var(--s-4)) / 2);
+    }
+    .carousel--strip .carousel__track {
+      grid-auto-columns: 58%;
+    }
+    .carousel--pair .carousel__track {
+      grid-auto-columns: calc((100% - var(--s-4)) / 2);
+    }
+  }
+  @media (min-width: 1040px) {
+    .carousel--showcase .carousel__track {
+      grid-auto-columns: calc((100% - 2 * var(--s-4)) / 3);
+    }
+    .carousel--strip .carousel__track {
+      grid-auto-columns: 42%;
+    }
+  }
+
+  /* Control bar */
+  .carousel__bar {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+  }
+  .carousel__count {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    min-width: 4.5em;
+  }
+  .carousel__count [data-current] {
+    color: var(--crimson);
+  }
+  .carousel--ink .carousel__count {
+    color: var(--on-ink-muted);
+  }
+  .carousel--ink .carousel__count [data-current] {
+    color: var(--on-ink);
+  }
+  .carousel__progress {
+    flex: 1;
+    height: 2px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .carousel__progress span {
+    display: block;
+    height: 100%;
+    background: var(--crimson);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+  .carousel[data-running] .carousel__progress span {
+    animation: carousel-progress var(--interval) linear forwards;
+  }
+  @keyframes carousel-progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .carousel__controls {
+    display: flex;
+    gap: var(--s-2);
+    margin-left: auto;
+  }
+  .carousel__btn {
+    display: inline-grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease), color 0.18s var(--ease), transform 0.15s var(--ease);
+  }
+  .carousel__btn:hover:not(:disabled) {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .carousel__btn:active:not(:disabled) {
+    transform: scale(0.92);
+  }
+  .carousel__btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+  .carousel--ink .carousel__btn {
+    background: transparent;
+    color: var(--on-ink);
+    border-color: rgb(255 255 255 / 0.25);
+  }
+  .carousel--ink .carousel__btn:hover:not(:disabled) {
+    border-color: var(--on-ink);
+    background: var(--on-ink);
+    color: var(--ink);
+  }
+  .carousel__btn[hidden],
+  .carousel__btn [hidden] {
+    display: none;
+  }
+</style>

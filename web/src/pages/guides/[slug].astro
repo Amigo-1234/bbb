@@ -1,0 +1,204 @@
+---
+/**
+ * JUPEB guide articles, ported verbatim from the legacy site
+ * (data in src/data/guides.json). Old /<slug>.html URLs redirect here.
+ */
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import guides from '../../data/guides.json';
+import { primaryContact } from '../../data/site';
+
+type Block = { type: string; html?: string; items?: string[] };
+type Guide = (typeof guides)[number];
+
+export function getStaticPaths() {
+  return guides.map((g) => ({ params: { slug: g.slug }, props: { guide: g } }));
+}
+
+const { guide } = Astro.props as { guide: Guide };
+const others = guides.filter((g) => g.slug !== guide.slug);
+---
+
+<Base title={guide.metaTitle} description={guide.description}>
+  <article class="guide">
+    <header class="guide__head wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><a href="/guides">Guides</a>
+      </nav>
+      <p class="eyebrow">JUPEB guide</p>
+      <h1 class="guide__title" set:html={guide.title} />
+      <p class="lead guide__lead" set:html={guide.lead} />
+    </header>
+
+    <div class="wrap guide__layout">
+      <div class="prose">
+        {
+          (guide.blocks as Block[]).map((b) =>
+            b.type === 'h2' ? (
+              <h2 set:html={b.html} />
+            ) : b.type === 'h3' ? (
+              <h3 set:html={b.html} />
+            ) : b.type === 'ul' ? (
+              <ul>{b.items!.map((i) => <li set:html={i} />)}</ul>
+            ) : b.type === 'ol' ? (
+              <ol>{b.items!.map((i) => <li set:html={i} />)}</ol>
+            ) : (
+              <p set:html={b.html} />
+            ),
+          )
+        }
+      </div>
+
+      <aside class="guide__aside">
+        <div class="ask">
+          <p class="ask__title">Questions about JUPEB admission?</p>
+          <p>Our admissions office will walk you through registration, fees and dates.</p>
+          <a class="btn" href={`tel:${primaryContact.phone}`} data-cta="guide-call"><Icon name="phone" size={18} />Speak to admissions</a>
+          <a class="btn btn--outline" href="/#programme">Explore programmes</a>
+        </div>
+        <nav class="more" aria-labelledby="more-title">
+          <p id="more-title" class="more__title">More guides</p>
+          <ul>
+            {others.map((g) => (
+              <li><a href={`/guides/${g.slug}`}><span set:html={g.title} /><Icon name="arrow-up-right" size={16} /></a></li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .guide {
+    padding-block: var(--s-7) var(--section);
+  }
+  .crumbs {
+    display: flex;
+    gap: var(--s-2);
+    margin-bottom: var(--s-5);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .crumbs a {
+    color: inherit;
+  }
+  .guide__head {
+    display: grid;
+    gap: var(--s-4);
+    padding-bottom: var(--s-7);
+  }
+  .guide__title {
+    font-size: var(--step-4);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+  }
+  .guide__lead {
+    max-width: 52ch;
+  }
+  .guide__layout {
+    display: grid;
+    gap: var(--s-8);
+    /* hairline aligned to the content column, not the padded box */
+    background: linear-gradient(var(--ink), var(--ink)) top / 100% 1px no-repeat;
+    background-origin: content-box;
+    background-clip: content-box;
+  }
+  .guide__layout > * {
+    padding-top: var(--s-6);
+  }
+  .prose {
+    max-width: 68ch;
+  }
+  .prose :global(h2) {
+    margin: var(--s-7) 0 var(--s-3);
+    font-size: var(--step-2);
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose :global(h3) {
+    margin: var(--s-5) 0 var(--s-2);
+    font-size: var(--step-1);
+  }
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol) {
+    margin: 0 0 var(--s-4);
+    color: var(--ink-2);
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.2em;
+  }
+  .prose :global(li) {
+    margin-bottom: var(--s-2);
+  }
+  .prose :global(li::marker) {
+    color: var(--crimson);
+  }
+  .prose :global(a) {
+    color: var(--crimson);
+    font-weight: 600;
+  }
+  .guide__aside {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+  .ask {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--crimson);
+    border-radius: var(--radius);
+  }
+  .ask__title {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+  }
+  .ask .btn {
+    white-space: normal;
+  }
+  .more__title {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--s-2);
+  }
+  .more ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+  .more a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    min-height: 44px;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--serif);
+    text-decoration: none;
+  }
+  .more a:hover {
+    color: var(--crimson);
+  }
+  @media (min-width: 960px) {
+    .guide__layout {
+      grid-template-columns: 8fr 4fr;
+    }
+    .guide__aside {
+      position: sticky;
+      top: calc(var(--header-h) + var(--s-5));
+    }
+  }
+</style>

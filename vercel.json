@@ -1,0 +1,109 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "cd web && npm ci",
+  "buildCommand": "cd web && npm run build",
+  "outputDirectory": "web/dist",
+  "framework": null,
+  "redirects": [
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/jupeb-guide.html",
+      "destination": "/guides/jupeb-guide",
+      "permanent": true
+    },
+    {
+      "source": "/jupeb-unilag-admission.html",
+      "destination": "/guides/jupeb-unilag-admission",
+      "permanent": true
+    },
+    {
+      "source": "/jupeb-vs-ijmb.html",
+      "destination": "/guides/jupeb-vs-ijmb",
+      "permanent": true
+    },
+    {
+      "source": "/awaiting-result-jupeb-2026.html",
+      "destination": "/guides/awaiting-result-jupeb-2026",
+      "permanent": true
+    },
+    {
+      "source": "/jupeb-past-questions.html",
+      "destination": "/guides/jupeb-past-questions",
+      "permanent": true
+    },
+    {
+      "source": "/jupeb-info.html",
+      "destination": "/#programme",
+      "permanent": true
+    },
+    {
+      "source": "/classes.html",
+      "destination": "/#programme",
+      "permanent": true
+    },
+    {
+      "source": "/special-class.html",
+      "destination": "/#programme",
+      "permanent": true
+    },
+    {
+      "source": "/about.html",
+      "destination": "/#people",
+      "permanent": true
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/#apply",
+      "permanent": true
+    },
+    {
+      "source": "/signup.html",
+      "destination": "/#apply",
+      "permanent": true
+    },
+    {
+      "source": "/signin.html",
+      "destination": "/#apply",
+      "permanent": true
+    },
+    {
+      "source": "/result.html",
+      "destination": "/success-stories",
+      "permanent": true
+    },
+    {
+      "source": "/admin-results.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/profile.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/edit-profile.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/private.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/keep.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/text.html",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
