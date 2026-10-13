@@ -1,0 +1,118 @@
+---
+import Base from '../layouts/Base.astro';
+import Badge from '../components/Badge.astro';
+import Icon from '../components/Icon.astro';
+import MediaGallery from '../components/MediaGallery.astro';
+import { gallery } from '../data/gallery';
+import { primaryContact } from '../data/site';
+
+const photos = gallery.filter((g) => g.kind === 'photo').length;
+const videos = gallery.filter((g) => g.kind === 'video').length;
+---
+
+<Base
+  title="Life at BIA — Photo & Video Gallery | BIA JUPEB, Boma's Intellectual Academy"
+  description="Photographs and videos from Boma's Intellectual Academy: JUPEB classrooms, tutorials, lessons on camera and life at BIA in Akoka, Lagos."
+>
+  <section class="gh" aria-labelledby="gh-title">
+    <Badge variant="mark" size={560} class="gh__mark" />
+    <div class="wrap gh__inner">
+      <p class="gh__eyebrow">Gallery · Boma’s Intellectual Academy</p>
+      <h1 id="gh-title" class="gh__title">Life at <em>BIA.</em></h1>
+      <p class="gh__lead">Classrooms, tutorials and lessons — photographed and filmed at Boma’s Intellectual Academy.</p>
+      <p class="gh__count num">{photos} photographs · {videos} videos</p>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Gallery">
+    <div class="wrap">
+      <MediaGallery />
+    </div>
+  </section>
+
+  <section class="gcta" aria-labelledby="gcta-title" data-cta-zone>
+    <div class="wrap gcta__inner">
+      <h2 id="gcta-title" class="gcta__title">See it for yourself.</h2>
+      <div class="gcta__ctas">
+        <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="gallery-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+        <a class="btn btn--on-red" href="/#location" data-cta="gallery-visit"><Icon name="pin" size={18} />Visit the centre</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .gh {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--s-8) var(--s-7);
+    background: var(--bia-red);
+    color: var(--on-red);
+  }
+  .gh :global(.gh__mark) {
+    position: absolute;
+    right: -140px;
+    top: -80px;
+    width: 560px;
+    height: auto;
+    color: #fff;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .gh__inner {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .gh__eyebrow {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-red-muted);
+  }
+  .gh__title {
+    font-size: var(--step-5);
+    font-weight: 380;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .gh__lead {
+    max-width: 44ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--on-red-muted);
+  }
+  .gh__count {
+    font-weight: 800;
+    color: #fff;
+  }
+  .section {
+    padding-block: var(--s-7) var(--section);
+  }
+  .gcta {
+    padding-block: var(--s-8);
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+  .gcta__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+  .gcta__title {
+    font-size: var(--step-3);
+    color: #fff;
+  }
+  .gcta__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .gcta__ctas .btn {
+    white-space: normal;
+  }
+</style>

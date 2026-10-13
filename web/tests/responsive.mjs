@@ -259,7 +259,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const dist = new URL('../dist/', import.meta.url).pathname;
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
-  for (const path of ['', 'success-stories', 'fees', 'timetable', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+  for (const path of ['', 'success-stories', 'fees', 'timetable', 'gallery', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
     const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
     const robots = await page.locator('meta[name="robots"]').count();
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -741,6 +741,109 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const vitals = await cwv.evaluate(() => ({ lcp: Math.round(window.__lcp), cls: +window.__cls.toFixed(3) }));
   check(vitals.lcp > 0 && vitals.lcp < 4000 && vitals.cls < 0.1, `Core Web Vitals (throttled 4G, 4x CPU): LCP ${vitals.lcp} ms, CLS ${vitals.cls}`);
   await cwv.close();
+}
+
+// 12. Phase 7: /gallery
+{
+  const GAL = new URL('gallery', BASE).href;
+  const g = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const req = [];
+  g.on('request', (r) => req.push(r.url()));
+  const errs = [];
+  g.on('pageerror', (e) => errs.push(e.message));
+  await g.goto(GAL, { waitUntil: 'networkidle' });
+  const info = await g.evaluate(() => {
+    const items = [...document.querySelectorAll('.mg__item')];
+    const srcs = items.map((li) => li.querySelector('img').getAttribute('src').split('/').pop().split('.')[0]);
+    return {
+      total: items.length,
+      visible: items.filter((li) => !li.hidden).length,
+      videos: items.filter((li) => li.querySelector('[data-kind="video"]')).length,
+      dupes: srcs.filter((x, i) => srcs.indexOf(x) !== i),
+      hiddenSrcs: items.filter((li) => li.hidden).map((li) => li.querySelector('img').getAttribute('src')),
+    };
+  });
+  check(info.total === 28 && info.videos === 4 && info.dupes.length === 0, `gallery: ${info.total - info.videos} photos and ${info.videos} videos, none repeated`);
+  check(info.visible === 12 && !info.hiddenSrcs.some((s) => req.some((u) => u.endsWith(s))), 'gallery: first batch of 12; later batches are not downloaded');
+  check(!req.some((u) => /\.mp4/.test(u)), 'gallery: no video downloaded before it is played');
+
+  const chip = (id) => g.locator(`[data-filter="${id}"]`);
+  await chip('videos').click();
+  const vids = await g.evaluate(() => [...document.querySelectorAll('.mg__item:not([hidden])')].map((li) => li.dataset.cat));
+  check(vids.length === 4 && vids.every((c) => c === 'videos') && (await chip('videos').getAttribute('aria-pressed')) === 'true', 'gallery: Videos filter shows only the 4 videos (aria-pressed)');
+  await chip('student-life').click();
+  check((await g.locator('.mg__item:not([hidden])').count()) === 0 && (await g.locator('[data-mg-empty]').isVisible()), 'gallery: empty category shows a "coming soon" note');
+  await chip('all').click();
+  await g.locator('[data-mg-more]').click();
+  check((await g.locator('.mg__item:not([hidden])').count()) === 24 && (await g.evaluate(() => document.activeElement?.closest('.mg__item')?.dataset.i)) === '12', 'gallery: "Show more" loads the next batch and moves focus to it');
+  check((await g.locator('[data-mg-status]').textContent()).includes('of 28'), 'gallery: filter status is announced (aria-live)');
+
+  // Lightbox: keyboard, swipe, Esc, focus return
+  const first = g.locator('.mg__item:not([hidden]) a[data-kind="photo"]').first();
+  await first.click();
+  const lb = g.locator('[data-mg-lb]');
+  const w = await lb.locator('img').evaluate((i) => new Promise((r) => (i.complete && i.naturalWidth ? r(i.naturalWidth) : i.addEventListener('load', () => r(i.naturalWidth), { once: true }))));
+  check((await lb.isVisible()) && w >= 800, `gallery lightbox: opens full screen with a ${w}px image`);
+  await g.keyboard.press('ArrowRight');
+  check((await lb.locator('[data-mg-count]').textContent()) === '2 / 28', 'gallery lightbox: arrow keys navigate');
+  const box = await lb.locator('[data-mg-stage]').boundingBox();
+  await g.evaluate(({ x, y }) => {
+    const s = document.querySelector('[data-mg-stage]');
+    s.dispatchEvent(new PointerEvent('pointerdown', { clientX: x + 250, clientY: y, bubbles: true }));
+    s.dispatchEvent(new PointerEvent('pointerup', { clientX: x + 60, clientY: y, bubbles: true }));
+  }, { x: box.x, y: box.y + box.height / 2 });
+  check((await lb.locator('[data-mg-count]').textContent()) === '3 / 28', 'gallery lightbox: swipe left moves to the next item');
+  await g.keyboard.press('Escape');
+  check(!(await lb.isVisible()) && (await g.evaluate(() => !!document.activeElement?.closest('.mg__item'))), 'gallery lightbox: Escape closes and returns focus to the grid');
+
+  // Video plays in the lightbox only when chosen
+  await chip('videos').click();
+  const before = req.filter((u) => /\.mp4/.test(u)).length;
+  await g.locator('.mg__item:not([hidden]) a').first().click();
+  await g.waitForTimeout(500);
+  const v = await g.evaluate(() => { const el = document.querySelector('[data-mg-stage] video'); return el && { controls: el.controls, inline: el.playsInline }; });
+  check(before === 0 && v?.controls && v?.inline && req.filter((u) => /\.mp4/.test(u)).length >= 1, 'gallery: a video is fetched only when played, with native controls');
+  await g.keyboard.press('Escape');
+  await g.waitForTimeout(300); // the dialog's close event is dispatched asynchronously
+  check((await g.locator('[data-mg-stage] video').count()) === 0, 'gallery: closing the viewer stops and removes the video');
+  check(errs.length === 0, `gallery: no script errors ${errs.join(' | ')}`);
+  await g.close();
+
+  // No JavaScript: everything visible, filters hidden, links go to the files
+  const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  const nj = await ctx.newPage();
+  await nj.goto(GAL, { waitUntil: 'domcontentloaded' });
+  check((await nj.locator('.mg__item:not([hidden])').count()) === 28 && !(await nj.locator('[data-mg-filters]').isVisible()), 'gallery no JavaScript: all 28 items visible, filter bar hidden');
+  await ctx.close();
+
+  // 320px fit, accessibility, Core Web Vitals
+  const s3 = await browser.newPage({ viewport: { width: 320, height: 640 }, reducedMotion: 'reduce' });
+  await s3.goto(GAL, { waitUntil: 'networkidle' });
+  check(await s3.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), 'gallery 320px: no sideways scrolling');
+  await s3.addScriptTag({ content: axeSource });
+  const v2 = await s3.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => `${x.id} (${x.nodes.length})`));
+  check(v2.length === 0, `gallery: no serious/critical accessibility violations ${v2.join(', ')}`);
+  await s3.close();
+  const cw = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const cdp = await cw.context().newCDPSession(cw);
+  await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 150, downloadThroughput: (1.6 * 1024 * 1024) / 8, uploadThroughput: (750 * 1024) / 8 });
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+  await cw.addInitScript(() => {
+    window.__lcp = 0; window.__cls = 0;
+    new PerformanceObserver((l) => l.getEntries().forEach((e) => (window.__lcp = e.startTime))).observe({ type: 'largest-contentful-paint', buffered: true });
+    new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true });
+  });
+  await cw.goto(GAL, { waitUntil: 'load' });
+  await cw.waitForTimeout(3500);
+  const vit = await cw.evaluate(() => ({ lcp: Math.round(window.__lcp), cls: +window.__cls.toFixed(3), img: performance.getEntriesByType('resource').filter((e) => e.initiatorType === 'img').reduce((t, e) => t + e.transferSize, 0) }));
+  check(vit.lcp < 4000 && vit.cls < 0.1, `gallery Core Web Vitals (throttled 4G, 4x CPU): LCP ${vit.lcp} ms, CLS ${vit.cls}, images on load ${Math.round(vit.img / 1024)} KB`);
+  await cw.close();
+
+  // Homepage links to the gallery
+  const h = await browser.newPage();
+  await h.goto(BASE, { waitUntil: 'domcontentloaded' });
+  check((await h.locator('a.explore[href="/gallery"]').count()) === 1 && (await h.locator('header a[href="/gallery"]').count()) >= 1, 'homepage: "Explore Life at BIA" link and navigation lead to /gallery');
+  await h.close();
 }
 
 await browser.close();

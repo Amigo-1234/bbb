@@ -40,6 +40,8 @@ import Ribbon from '../components/Ribbon.astro';
 import LifeGallery from '../components/LifeGallery.astro';
 import LessonVideos from '../components/LessonVideos.astro';
 import { bandPhoto, heroPhotos, lessonVideos, lifePhotos, modePhotos, tutorPhoto } from '../data/media';
+import { gallery } from '../data/gallery';
+const galleryCount = { photos: gallery.filter((g) => g.kind === 'photo').length, videos: gallery.filter((g) => g.kind === 'video').length };
 
 const today = new Date().toISOString().slice(0, 10);
 const nextIndex = calendar.findIndex((c) => !c.unconfirmed && (c.end ?? c.start) >= today);
@@ -449,6 +451,14 @@ const week = firstSemester.days.map((d) => ({
         <p>A look inside Boma’s Intellectual Academy — tap any photograph to see it full size.</p>
       </SectionHead>
       <LifeGallery photos={lifePhotos} label="Photographs from BIA classes" />
+      <a class="explore" href="/gallery" data-cta="home-explore-gallery">
+        <span class="explore__text">
+          <span class="explore__kicker">Gallery</span>
+          <span class="explore__title">Explore Life at BIA</span>
+          <span class="explore__meta num">{galleryCount.photos} photographs · {galleryCount.videos} videos</span>
+        </span>
+        <span class="explore__arrow" aria-hidden="true"><Icon name="arrow-right" size={26} /></span>
+      </a>
       {lessonVideos.length > 0 && (
         <div class="lessons">
           <h3 class="lessons__title">Watch a lesson</h3>
@@ -1582,6 +1592,57 @@ const week = firstSemester.days.map((d) => ({
     width: 100%;
     aspect-ratio: 4 / 3;
     object-fit: cover;
+  }
+  .explore {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-5);
+    padding: var(--s-5) var(--s-6);
+    background: var(--bia-red);
+    color: #fff;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background-color 0.2s var(--ease);
+  }
+  .explore:hover,
+  .explore:focus-visible {
+    background: var(--bia-red-deep);
+  }
+  .explore__text {
+    display: grid;
+    gap: 2px;
+  }
+  .explore__kicker {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-red-muted);
+  }
+  .explore__title {
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    line-height: 1.05;
+  }
+  .explore__meta {
+    font-size: var(--step--1);
+    color: var(--on-red-muted);
+  }
+  .explore__arrow {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--bia-red);
+    transition: transform 0.25s var(--ease);
+  }
+  .explore:hover .explore__arrow {
+    transform: translateX(4px);
   }
   .lessons {
     margin-top: var(--s-8);
