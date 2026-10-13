@@ -666,6 +666,9 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const approved = ['p031', 'p041', 'p047', 'p053', 'p054', 'p059', 'p060', 'p064', 'p080', 'p086', 'p096', 'p106', 'p112', 'p123', 'p124', 'v010-poster', 'v011-poster', 'v012-poster'];
   const p6 = readdirSync(new URL('../src/assets/photos/phase6/', import.meta.url)).map((f) => f.replace(/\.jpg$/, '')).sort();
   check(JSON.stringify(p6) === JSON.stringify(approved), `only the ${approved.length} approved Phase 6 images are in the site assets`);
+  const batch1 = ['p001', 'p007', 'p013', 'p015', 'p020', 'p023', 'p024', 'p027', 'p035', 'p046', 'p056', 'p075', 'p077', 'p082', 'p088', 'p103', 'p111'];
+  const g1 = readdirSync(new URL('../src/assets/photos/gallery/', import.meta.url)).map((f) => f.replace(/\.jpg$/, '')).sort();
+  check(JSON.stringify(g1) === JSON.stringify(batch1) && g1.every((f) => !rf(new URL(`../src/assets/photos/gallery/${f}.jpg`, import.meta.url)).includes(Buffer.from('Exif\0\0'))), `gallery batch 1: only the ${batch1.length} approved, de-duplicated photos are published, without EXIF`);
   const exifFree = p6.every((f) => !rf(new URL(`../src/assets/photos/phase6/${f}.jpg`, import.meta.url)).includes(Buffer.from('Exif\0\0')));
   check(exifFree, 'published photographs carry no EXIF metadata (no GPS or device data)');
 
@@ -763,7 +766,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
       hiddenSrcs: items.filter((li) => li.hidden).map((li) => li.querySelector('img').getAttribute('src')),
     };
   });
-  check(info.total === 28 && info.videos === 4 && info.dupes.length === 0, `gallery: ${info.total - info.videos} photos and ${info.videos} videos, none repeated`);
+  check(info.total === 45 && info.videos === 4 && info.dupes.length === 0, `gallery: ${info.total - info.videos} photos and ${info.videos} videos, none repeated`);
   check(info.visible === 12 && !info.hiddenSrcs.some((s) => req.some((u) => u.endsWith(s))), 'gallery: first batch of 12; later batches are not downloaded');
   check(!req.some((u) => /\.mp4/.test(u)), 'gallery: no video downloaded before it is played');
 
@@ -772,11 +775,14 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const vids = await g.evaluate(() => [...document.querySelectorAll('.mg__item:not([hidden])')].map((li) => li.dataset.cat));
   check(vids.length === 4 && vids.every((c) => c === 'videos') && (await chip('videos').getAttribute('aria-pressed')) === 'true', 'gallery: Videos filter shows only the 4 videos (aria-pressed)');
   await chip('student-life').click();
-  check((await g.locator('.mg__item:not([hidden])').count()) === 0 && (await g.locator('[data-mg-empty]').isVisible()), 'gallery: empty category shows a "coming soon" note');
+  const sl = await g.evaluate(() => [...document.querySelectorAll('.mg__item:not([hidden])')].map((li) => li.dataset.cat));
+  check(sl.length === 6 && sl.every((c) => c === 'student-life') && !(await g.locator('[data-mg-more]').isVisible()), 'gallery: Student Life filter shows its 6 photographs, no "Show more" when nothing is left');
+  await chip('celebrations').click();
+  check((await g.locator('.mg__item:not([hidden])').count()) === 0 && (await g.locator('[data-mg-empty]').isVisible()), 'gallery: empty category (Academic Celebrations) shows a "coming soon" note');
   await chip('all').click();
   await g.locator('[data-mg-more]').click();
   check((await g.locator('.mg__item:not([hidden])').count()) === 24 && (await g.evaluate(() => document.activeElement?.closest('.mg__item')?.dataset.i)) === '12', 'gallery: "Show more" loads the next batch and moves focus to it');
-  check((await g.locator('[data-mg-status]').textContent()).includes('of 28'), 'gallery: filter status is announced (aria-live)');
+  check((await g.locator('[data-mg-status]').textContent()).includes('of 45'), 'gallery: filter status is announced (aria-live)');
 
   // Lightbox: keyboard, swipe, Esc, focus return
   const first = g.locator('.mg__item:not([hidden]) a[data-kind="photo"]').first();
@@ -785,14 +791,14 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const w = await lb.locator('img').evaluate((i) => new Promise((r) => (i.complete && i.naturalWidth ? r(i.naturalWidth) : i.addEventListener('load', () => r(i.naturalWidth), { once: true }))));
   check((await lb.isVisible()) && w >= 800, `gallery lightbox: opens full screen with a ${w}px image`);
   await g.keyboard.press('ArrowRight');
-  check((await lb.locator('[data-mg-count]').textContent()) === '2 / 28', 'gallery lightbox: arrow keys navigate');
+  check((await lb.locator('[data-mg-count]').textContent()) === '2 / 45', 'gallery lightbox: arrow keys navigate');
   const box = await lb.locator('[data-mg-stage]').boundingBox();
   await g.evaluate(({ x, y }) => {
     const s = document.querySelector('[data-mg-stage]');
     s.dispatchEvent(new PointerEvent('pointerdown', { clientX: x + 250, clientY: y, bubbles: true }));
     s.dispatchEvent(new PointerEvent('pointerup', { clientX: x + 60, clientY: y, bubbles: true }));
   }, { x: box.x, y: box.y + box.height / 2 });
-  check((await lb.locator('[data-mg-count]').textContent()) === '3 / 28', 'gallery lightbox: swipe left moves to the next item');
+  check((await lb.locator('[data-mg-count]').textContent()) === '3 / 45', 'gallery lightbox: swipe left moves to the next item');
   await g.keyboard.press('Escape');
   check(!(await lb.isVisible()) && (await g.evaluate(() => !!document.activeElement?.closest('.mg__item'))), 'gallery lightbox: Escape closes and returns focus to the grid');
 
@@ -813,7 +819,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
   const nj = await ctx.newPage();
   await nj.goto(GAL, { waitUntil: 'domcontentloaded' });
-  check((await nj.locator('.mg__item:not([hidden])').count()) === 28 && !(await nj.locator('[data-mg-filters]').isVisible()), 'gallery no JavaScript: all 28 items visible, filter bar hidden');
+  check((await nj.locator('.mg__item:not([hidden])').count()) === 45 && !(await nj.locator('[data-mg-filters]').isVisible()), 'gallery no JavaScript: all 45 items visible, filter bar hidden');
   await ctx.close();
 
   // 320px fit, accessibility, Core Web Vitals

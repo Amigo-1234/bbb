@@ -1,5 +1,11 @@
 # Gallery media request — originals still needed (Phase 7)
 
+> **Batch 1 received (Phase 7.1):** all 22 recommended photos were supplied and verified against
+> the catalogue checksums. 17 are published. P005, P006, P029, P050 and P128 were not published
+> because they are near-duplicates of photos already on the site (P006 matches P059, P050 matches
+> P124, P128 matches P080, P029 matches P015, P005 matches P075). Still outstanding: the four
+> recommended videos, the Academic Celebrations photos, and any further candidates BIA chooses.
+
 The `/gallery` page currently shows only media that is approved and available: **24 photographs and 4 videos**. They are the 15 Phase 6 photos, the 9 V1 site photos and the 4 BIA videos (3 lesson clips and the directions video).
 
 The full catalogue holds 129 photos and 12 videos. To complete the gallery, BIA needs to send the **original files** below, which are in `Boma folder.zip`, and confirm **publication permission** for everyone identifiable. Contact-sheet thumbnails are never enlarged or used as gallery photos.
