@@ -86,6 +86,17 @@ export const programmes: Programme[] = [
  * confirm: the three instalments add up to ₦687,000, which matches neither
  * programme total exactly (Science ₦686,700, Non-Science ₦671,000).
  */
+/**
+ * Display gates — flip to true once Boma verifies the disputed figures
+ * (see docs/official-content-2026.md). While false, the site shows the
+ * instalment stages and dates without amounts, hides the Non-Science total
+ * and the documents that print the disputed figures.
+ */
+export const verified = {
+  nonScienceTotal: false,
+  instalmentAmounts: false,
+};
+
 export const instalments = [
   {
     label: 'First instalment',

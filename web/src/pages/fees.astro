@@ -10,6 +10,7 @@ import OfficialDocs from '../components/OfficialDocs.astro';
 import { docs } from '../data/documents';
 import {
   entranceExam,
+  verified,
   lectureBanksNotice,
   naira,
   programmes,
@@ -24,7 +25,11 @@ const fmt = (s: string) =>
   new Date(s + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', timeZone: 'Africa/Lagos' });
 const glance = [
   { label: 'Registration', value: naira(registration.amount), note: 'Application form · both streams' },
-  ...programmes.map((p) => ({ label: `${p.name} programme`, value: naira(p.total), note: 'Programme fee' })),
+  ...programmes.map((p) =>
+    p.confirm && !verified.nonScienceTotal
+      ? { label: `${p.name} programme`, value: 'Ask us', note: 'Total being confirmed' }
+      : { label: `${p.name} programme`, value: naira(p.total), note: 'Programme fee' },
+  ),
   {
     label: 'Physical tutorials only',
     value: naira(tutorialPackage.oneTime.amount),
@@ -35,7 +40,7 @@ const glance = [
 
 <Base
   title={`JUPEB Fees ${site.session} — Science, Non-Science & Physical Tutorials | BIA JUPEB`}
-  description="Official BIA JUPEB 2026/27 fees: ₦45,000 registration, Science ₦686,700 and Non-Science ₦671,000 programme fees, the three-instalment payment plan, and the ₦150,000 physical tutorial package."
+  description="Official BIA JUPEB 2026/27 fees: ₦45,000 registration, programme fees by stream, the instalment payment structure, and the ₦150,000 physical tutorial package."
 >
   <section class="fh" aria-labelledby="fh-title">
     <div class="wrap fh__inner">
@@ -131,13 +136,14 @@ const glance = [
         </p>
       </SectionHead>
       <OfficialDocs
-        docs={[docs.scienceRequirements, docs.scienceFees, docs.nonScienceRequirements, docs.nonScienceFees, docs.paymentPlan, docs.entranceExam]}
+        docs={[
+          docs.scienceRequirements,
+          docs.scienceFees,
+          docs.nonScienceRequirements,
+          docs.entranceExam,
+        ]}
         label="BIA payment advice 2026/27"
       />
-      <p class="docnote">
-        Awaiting BIA’s confirmation: the Non-Science items add up to ₦670,700 against a printed total of ₦671,000, and
-        the instalment plan totals ₦687,000. Figures are shown exactly as printed.
-      </p>
     </div>
   </section>
 
@@ -315,14 +321,6 @@ const glance = [
     text-transform: uppercase;
     color: var(--muted);
   }
-  .docnote {
-    margin-top: var(--s-6);
-    padding: var(--s-4) var(--s-5);
-    border-left: 3px solid var(--bia-red);
-    background: var(--surface);
-    font-size: var(--step--1);
-    color: var(--ink-2);
-  }
   .pay__inner {
     display: grid;
     gap: var(--s-5);
@@ -363,14 +361,6 @@ const glance = [
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
-  }
-  .docnote {
-    margin-top: var(--s-6);
-    padding: var(--s-4) var(--s-5);
-    border-left: 3px solid var(--bia-red);
-    background: var(--surface);
-    font-size: var(--step--1);
-    color: var(--ink-2);
   }
   .pay__inner {
       grid-template-columns: 1fr auto;

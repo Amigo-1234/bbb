@@ -4,7 +4,7 @@
  * exactly as printed on the official 2026/27 payment advices.
  */
 import StreamArt from './StreamArt.astro';
-import { naira, programmes, registration } from '../data/fees';
+import { naira, programmes, registration, verified } from '../data/fees';
 
 interface Props {
   /** Heading level for the stream names. */
@@ -36,7 +36,11 @@ const H = `h${level}` as 'h3' | 'h4';
           ))}
           <div class="stream__total">
             <dt>Programme fee</dt>
-            <dd data-total>{naira(p.total)}</dd>
+            {p.confirm && !verified.nonScienceTotal ? (
+              <dd class="stream__pending" data-total-pending>Confirm with admissions</dd>
+            ) : (
+              <dd data-total>{naira(p.total)}</dd>
+            )}
           </div>
         </dl>
       </article>
@@ -152,6 +156,12 @@ const H = `h${level}` as 'h3' | 'h4';
   }
   .stream__fees dd {
     white-space: nowrap;
+  }
+  .stream__fees .stream__pending {
+    font-family: var(--sans);
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--ink-2);
   }
   .streams__reg {
     display: flex;

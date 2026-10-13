@@ -415,7 +415,11 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
 
   // Outdated figures are gone; bank details never published
   check(!/₦40,000|₦437,000|₦421,000|₦250,000/.test(text), 'no outdated fees (₦40,000 registration, old school/tutorial split) remain');
-  check(!/1027749868|1022749868|\bUBA\b/.test(text), 'no bank account details are published');
+  // Account numbers are compared by SHA-256 so the test itself never publishes them.
+  const { createHash } = await import('node:crypto');
+  const BANK = new Set(['52cb9d856a26daf2e42602b592d40f18daefd3379ba4816e971f93a5ef75b6b9', '61c30873ffc5d143bf5d8bda2f98d307af9b260d9dde60f1910e7910c503168d']);
+  const tenDigit = text.match(/\d{10}/g) ?? [];
+  check(!tenDigit.some((n) => BANK.has(createHash('sha256').update(n).digest('hex'))) && !/\bUBA\b|account number/i.test(text), 'no bank account details are published');
   check(!/pay online|pay now|checkout|card payment/i.test(text) && !/<form[^>]+action=/i.test(text), 'no online payment claims or payment forms');
 
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
@@ -428,8 +432,13 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const non = await page.locator('[data-stream="non-science"]').first().innerText();
     check(
       sci.includes('₦235,000') && sci.includes('₦686,700') && !sci.includes('₦219,000') && !sci.includes('₦671,000') &&
-        non.includes('₦219,000') && non.includes('₦671,000') && !non.includes('₦235,000') && !non.includes('₦686,700'),
+        non.includes('₦219,000') && !non.includes('₦235,000') && !non.includes('₦686,700'),
       `${where}: Science and Non-Science fees are separate and correct`,
+    );
+    // The disputed Non-Science total stays hidden until Boma confirms it (fees.ts verified flags).
+    check(
+      /Confirm with admissions/.test(non) && (await page.locator('[data-stream="non-science"] [data-total-pending]').count()) >= 1 && !/₦671,000|₦687,000/.test(await page.locator('main').innerText()),
+      `${where}: unverified Non-Science total is shown as "Confirm with admissions"`,
     );
     const tut = page.locator('[data-fees="tutorials"]').first();
     check(
@@ -445,7 +454,10 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
       `${where}: tutorials (B) are presented separately from the admission programme (A)`,
     );
     const plan = await page.locator('[data-fees="instalments"]').innerText();
-    check(plan.includes('₦200,000') && plan.includes('₦287,000') && plan.includes('4 May 2027'), `${where}: three-instalment plan with the 4 May 2027 deadline`);
+    check(
+      /First instalment/.test(plan) && /admissions office confirms/i.test(plan) && !/₦200,000|₦287,000/.test(plan),
+      `${where}: instalment plan shows the stages without unverified amounts`,
+    );
   }
   // Fees reachable from the header on every page
   check((await page.locator('header a[href="/fees"], #mobile-menu a[href="/fees"]').count()) >= 1 && (await page.locator('a[href="/timetable"]').count()) >= 1, 'fees and timetable are linked from the navigation');
@@ -627,7 +639,12 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const f = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   await f.goto(new URL('fees', BASE).href, { waitUntil: 'networkidle' });
   const thumbs = f.locator('#documents [data-doc-open]');
-  check((await thumbs.count()) >= 6, `/fees: ${await thumbs.count()} official payment-advice pages in the document gallery`);
+  check((await thumbs.count()) >= 4, `/fees: ${await thumbs.count()} official payment-advice pages in the document gallery`);
+  // Documents printing unverified totals are withheld until Boma confirms them.
+  check(
+    !(await import('node:fs')).readdirSync(new URL('../dist/_astro/', import.meta.url)).some((x) => /non-science-p2|payment-plan/.test(x)) && (await f.locator('#documents img[alt*="671,000"], #documents img[alt*="instalment" i]').count()) === 0,
+    '/fees: documents with unverified totals (Non-Science page 2, payment plan) are not shipped',
+  );
   await thumbs.first().click();
   const dlg = f.locator('#documents dialog');
   check(await dlg.isVisible(), '/fees: document opens in a dialog');

@@ -5,13 +5,15 @@
  * (images containing bank details). Any image that showed bank account details
  * has been redacted — only the account box is covered; no amount is altered.
  * See content/official/README.md.
+ *
+ * Pending verification (not shipped): the Non-Science fee page and the payment-plan
+ * flyer print disputed totals; they are kept in content/official/pending/ until Boma
+ * confirms the figures (see verified in fees.ts).
  */
 import type { ImageMetadata } from 'astro';
 import sciP1 from '../assets/official/advice-science-p1.jpg';
 import sciP2 from '../assets/official/advice-science-p2.jpg';
 import nonP1 from '../assets/official/advice-non-science-p1.jpg';
-import nonP2 from '../assets/official/advice-non-science-p2.jpg';
-import plan from '../assets/official/payment-plan-2026.jpg';
 import exam from '../assets/official/entrance-exam-2026.jpg';
 import pkg from '../assets/official/tutorial-package-2026.jpg';
 import ttFirst from '../assets/official/timetable-first-semester-2026.jpg';
@@ -49,20 +51,6 @@ export const docs = {
     source: 'BIA Payment Advice 2026/27 (Non-Science), page 1',
     image: nonP1,
     alt: 'BIA JUPEB requirements and ₦45,000 registration fee, Non-Science payment advice 2026/27',
-  }),
-  nonScienceFees: d({
-    id: 'non-science-fees',
-    title: 'Payment advice · Non-Science · programme fees',
-    source: 'BIA Payment Advice 2026/27 (Non-Science), page 2',
-    image: nonP2,
-    alt: 'Non-Science programme fee table, grand total ₦671,000',
-  }),
-  paymentPlan: d({
-    id: 'payment-plan',
-    title: 'Flexible payment structure 2026/27',
-    source: 'BIA Payment Advice 2026/27, page 3',
-    image: plan,
-    alt: 'Flexible payment structure: ₦200,000, ₦200,000 and ₦287,000 instalments',
   }),
   entranceExam: d({
     id: 'entrance-exam',

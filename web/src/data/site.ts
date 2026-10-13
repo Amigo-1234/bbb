@@ -36,7 +36,7 @@ export const site = {
 /** Official contacts confirmed by Boma (October 2026); both appear beside the
  * WhatsApp icon on BIA's 2026/27 flyers. */
 export const contacts: Contact[] = [
-  { role: 'Admissions · Chief Executive’s line', name: 'Hon. Boma', phone: '+2347012388184', display: '0701 238 8184' },
+  { role: 'Admissions · Boma’s line', name: 'Boma', phone: '+2347012388184', display: '0701 238 8184' },
   { role: 'Admissions', phone: '+2348164329204', display: '0816 432 9204' },
 ];
 
@@ -60,13 +60,12 @@ export const address = {
 // Official 2026/27 fees and tutorial package now live in fees.ts.
 export { registration, programmes, instalments, instalmentNote, tutorialPackage } from './fees';
 
+/** Only dates printed in BIA's 2026/27 documents. Earlier V1 dates (registration window,
+ * online resumption, entrance assessment) and the unconfirmed 2 November physical
+ * resumption were removed pending Boma's confirmation. */
 export const calendar: CalendarItem[] = [
-  { label: 'Registration', start: '2026-04-27', end: '2026-06-12' },
-  { label: 'Online resumption', start: '2026-05-04' },
-  { label: 'Entrance assessment', start: '2026-08-29' },
   { label: 'Free marathon class & online tutorials', start: '2026-10-05', end: '2026-10-31' },
-  { label: 'Physical resumption', start: '2026-11-02' },
-  { label: 'Final instalment due (before Second Semester resumption)', start: '2027-05-04' },
+  { label: 'Fee balance due — before Second Semester resumption', start: '2027-05-04' },
 ];
 
 // Student outcomes now come from content/achievements/records.json.
@@ -110,7 +109,7 @@ export const faqs = [
   },
   {
     q: 'Can I pay in instalments?',
-    a: 'Yes. The 2026/27 plan has three instalments: ₦200,000 upon registration (before the BIA Entrance Examination), ₦200,000 upon resumption (by January), and the final ₦287,000 on or before 4 May 2027, before Second Semester resumption. All payments are non-refundable.',
+    a: 'Yes. The 2026/27 programme fee can be paid in three instalments: upon registration (before the BIA Entrance Examination), upon resumption (by January), and the balance on or before 4 May 2027, before Second Semester resumption. The admissions office confirms each amount. All payments are non-refundable.',
   },
   {
     q: 'Can I join only the physical tutorials?',

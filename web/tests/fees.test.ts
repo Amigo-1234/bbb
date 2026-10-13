@@ -64,9 +64,14 @@ test('physical tutorial package: ₦150,000 once or ₦25,000 monthly, ₦5,000 
 
 test('no bank account details anywhere in the data', async () => {
   const { readFileSync } = await import('node:fs');
+  const { createHash } = await import('node:crypto');
+  const BANK = new Set(['52cb9d856a26daf2e42602b592d40f18daefd3379ba4816e971f93a5ef75b6b9', '61c30873ffc5d143bf5d8bda2f98d307af9b260d9dde60f1910e7910c503168d']);
   for (const f of ['../src/data/fees.ts', '../src/data/timetable.ts', '../src/data/site.ts']) {
     const src = readFileSync(new URL(f, import.meta.url), 'utf8');
-    assert.doesNotMatch(src, /10[27]{2}749868|\bUBA\b|account number/i, f);
+    // Compared by SHA-256 so this public test never contains the account numbers.
+    const hits = (src.match(/\d{10}/g) ?? []).filter((n) => BANK.has(createHash('sha256').update(n).digest('hex')));
+    assert.deepEqual(hits, [], f);
+    assert.doesNotMatch(src, /\bUBA\b|account number/i, f);
   }
 });
 
