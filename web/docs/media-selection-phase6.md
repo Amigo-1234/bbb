@@ -52,3 +52,29 @@ set-ups.
 - **Screenshots**: P039, P129 (phone screenshots of website/app pages).
 - **Near-duplicates of selected images**: P108 (=P106), P066 (=P009), P016/P018/P028/P061/P090 (= P080/P128 set-up), P020/P072/P104/P109 (= P060/P099), P045 (≈P041), P050 (≈P124), P032/P074 (≈P059).
 - **Videos**: V006 and V008 (near-duplicates — same size and length — with an emotional, identifiable close-up); V003 (coach trip, identifiable, app overlay); V001 and V002 (shaky handheld); V005 (100 s, overlaps V004/V010); V007 (8 s, same as the photos); V004 (covered by V010).
+
+## Implemented (private review)
+
+BIA supplied 20 photos and 3 videos (P085 and V009 withheld by BIA). They live in the
+**gitignored** `web/private-media/` folder. The public build never imports them.
+
+    scripts/prepare-review-media.sh <photos.zip> <videos.zip>   # verifies checksums, encodes videos
+    BIA_PRIVATE_REVIEW=1 npx astro build --outDir private-media/dist-review   # local only
+
+The review build refuses to run on Vercel or CI and shows a yellow "Private review build" banner.
+
+| Slot | Review build | Public build (approved V1 photos) |
+|---|---|---|
+| Hero carousel | P086 (lead), P123, P031, P041 | classroom, class-010, class-016 |
+| Full-width band | P124 | class-012 |
+| Ways to study | P054 physical · P080 online · P106 tutorials only | (no photos) |
+| Life at BIA | P059, P047, P053, P096, P112, P064 | class-013, class-011, class-015, class-014 |
+| Founder section | P060 "Our tutors" | (hidden) |
+| Watch a lesson | V012 (7.0 MB), V011 (1.9 MB), V010 (0.9 MB) | (hidden) |
+
+Not placed (near-duplicates of placed photos): P012 (=P041), P033 (≈P031), P087 (=P054),
+P094 (≈P047), P099 (=P060).
+
+**To publish:** once BIA confirms consent, move the approved photos from `private-media/photos/`
+into `src/assets/photos/phase6/`, switch the matching entries in `src/data/media.ts` from
+`r(...)` to `a(...)`, and copy approved videos to `public/media/`.

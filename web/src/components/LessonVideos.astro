@@ -1,0 +1,128 @@
+---
+/**
+ * Lesson video previews. Only an optimised poster loads with the page; the
+ * video element is created when the visitor presses play (no autoplay, no
+ * preload). Without JavaScript each card links to the video file.
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Video {
+  id: string;
+  title: string;
+  note: string;
+  src: string;
+  poster: ImageMetadata;
+  width: number;
+  height: number;
+  duration: number;
+  bytes: number;
+}
+interface Props {
+  videos: Video[];
+}
+const { videos } = Astro.props;
+const dur = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const mb = (b: number) => `${(b / 1e6).toFixed(1)} MB`;
+---
+
+<ul class="lv" aria-label="Lesson videos">
+  {
+    videos.map((v) => (
+      <li class="lv__item">
+        <div class="lv__frame" data-lv data-src={v.src} data-w={v.width} data-h={v.height} style={`aspect-ratio:${v.width}/${v.height}`}>
+          <Picture src={v.poster} formats={['avif', 'webp']} widths={[240, 432]} sizes="(min-width: 960px) 22vw, 70vw" alt="" loading="lazy" />
+          <a class="lv__play" href={v.src} data-lv-play aria-label={`Play video: ${v.title} (${dur(v.duration)})`}>
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M8 5.5v13l10-6.5-10-6.5Z" fill="currentColor" /></svg>
+          </a>
+        </div>
+        <p class="lv__title">{v.title}</p>
+        <p class="lv__meta"><span class="num">{dur(v.duration)}</span> · {mb(v.bytes)} · {v.note}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<script>
+  for (const frame of document.querySelectorAll<HTMLElement>('[data-lv]')) {
+    const play = frame.querySelector<HTMLAnchorElement>('[data-lv-play]')!;
+    play.addEventListener('click', (e) => {
+      e.preventDefault();
+      const v = document.createElement('video');
+      v.src = frame.dataset.src!;
+      v.controls = true;
+      v.playsInline = true;
+      v.width = Number(frame.dataset.w);
+      v.height = Number(frame.dataset.h);
+      v.setAttribute('aria-label', play.getAttribute('aria-label')!.replace('Play video: ', ''));
+      frame.replaceChildren(v);
+      v.play().catch(() => {});
+      v.focus();
+    });
+  }
+</script>
+
+<style>
+  .lv {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(70%, 15rem);
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0 0 var(--s-2);
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+  .lv__item {
+    scroll-snap-align: start;
+  }
+  .lv__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: #000;
+  }
+  .lv__frame :global(img),
+  .lv__frame :global(picture),
+  .lv__frame :global(video) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lv__play {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    color: #fff;
+  }
+  .lv__play svg {
+    box-sizing: content-box;
+    padding: 18px;
+    border-radius: 50%;
+    background: var(--bia-red);
+    box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+    transition: transform 0.25s var(--ease);
+  }
+  .lv__play:hover svg,
+  .lv__play:focus-visible svg {
+    transform: scale(1.1);
+  }
+  .lv__title {
+    margin-top: var(--s-3);
+    font-weight: 700;
+  }
+  .lv__meta {
+    font-size: var(--step--1);
+    color: var(--on-ink-muted);
+  }
+  @media (min-width: 960px) {
+    .lv {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(3, 1fr);
+      overflow: visible;
+    }
+  }
+</style>

@@ -128,9 +128,12 @@ a {
 .js-motion .notice,
 .js-motion .header,
 .js-motion .hero__copy > *,
-.js-motion .hero__media,
 .js-motion .facts {
   opacity: 0;
+}
+/* The hero photograph stays painted (it is the LCP element) — only clipped. */
+.js-motion .hero__media .carousel__track {
+  clip-path: inset(14% 10% 14% 10% round 4px);
 }
 
 .wrap {

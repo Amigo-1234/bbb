@@ -45,7 +45,7 @@ await page.goto(BASE, { waitUntil: 'networkidle' });
 await page.waitForTimeout(2600); // let the hero entrance finish
 const carousels = page.locator('[data-carousel]');
 const count = await carousels.count();
-check(count === 3, `found ${count} carousels`);
+check(count === 2, `found ${count} carousels (hero, results)`);
 for (let i = 0; i < count; i++) {
   const c = carousels.nth(i);
   const label = await c.getAttribute('aria-label');
@@ -576,7 +576,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const v = await p.evaluate(() => {
     const el = document.querySelector('#location video');
     return el && {
-      controls: el.controls, playsinline: el.playsInline, preload: el.getAttribute('preload'), poster: el.getAttribute('poster'),
+      controls: el.controls, playsinline: el.playsInline, preload: el.getAttribute('preload'), poster: el.getAttribute('poster') ?? el.dataset.poster,
       src: el.querySelector('source')?.getAttribute('src'), track: el.querySelector('track[kind="captions"]')?.getAttribute('src'),
       transcript: document.querySelectorAll('.loc__transcript li').length,
     };
@@ -641,6 +641,89 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const hashes = await Promise.all(files.filter((x) => /\.(jpe?g|png|webp|avif)$/.test(x)).map(md5));
   check(!hashes.some((h) => forbidden.includes(h)), 'unredacted originals (with bank details) are not in the build');
   check(!files.some((x) => /\.(pdf|mov)$/i.test(x)), 'archived originals (PDF/MOV) are not published');
+}
+
+// 11. Phase 6: photography, ribbon, Life at BIA gallery, private media, Core Web Vitals
+{
+  const { readdirSync, statSync, existsSync, readFileSync: rf } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { createHash } = await import('node:crypto');
+  const { execSync } = await import('node:child_process');
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const priv = new URL('../private-media/', import.meta.url).pathname;
+  const walk = (d, out = []) => (existsSync(d) ? readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f), out) : out.push(join(d, f)))) : null, out);
+  const sha = (f) => createHash('sha256').update(rf(f)).digest('hex');
+
+  // Private review media never reaches the public build or git
+  const privHashes = new Set(walk(priv).filter((f) => !/dist-review|\.ts$/.test(f)).map(sha));
+  const distFiles = walk(dist);
+  const leaked = distFiles.filter((f) => privHashes.has(sha(f)));
+  const distText = distFiles.filter((f) => f.endsWith('.html')).map((f) => rf(f, 'utf8')).join('');
+  check(leaked.length === 0 && !existsSync(join(dist, 'review-media')) && !distText.includes('Private review build'), `public build contains no private review media (${privHashes.size} private files checked)`);
+  const tracked = execSync('git ls-files', { cwd: new URL('..', import.meta.url).pathname, encoding: 'utf8' });
+  check(!/^private-media\//m.test(tracked) && rf(new URL('../.gitignore', import.meta.url), 'utf8').includes('private-media/'), 'private-media/ is gitignored and nothing in it is tracked');
+
+  const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const requested = [];
+  m.on('request', (r) => requested.push(r.url()));
+  await m.goto(BASE, { waitUntil: 'networkidle' });
+
+  // Ribbon
+  const rb = await m.evaluate(() => {
+    const r = document.querySelector('.ribbon');
+    return { items: r.querySelectorAll('ul:not([aria-hidden]) li').length, label: r.querySelector('ul').getAttribute('aria-label'), anim: getComputedStyle(r.querySelector('.ribbon__track')).animationName };
+  });
+  check(rb.items >= 6 && rb.label && rb.anim === 'none', `ribbon: ${rb.items} facts, labelled list, static under reduced motion`);
+  const anim = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await anim.goto(BASE, { waitUntil: 'domcontentloaded' });
+  check((await anim.evaluate(() => getComputedStyle(document.querySelector('.ribbon__track')).animationName)) !== 'none', 'ribbon: rolls when motion is allowed (CSS only)');
+  await anim.close();
+
+  // Gallery: lazy tiles, lightbox loads the large image only when opened
+  const tiles = m.locator('[data-life-open]');
+  const n = await tiles.count();
+  const lazy = await m.evaluate(() => [...document.querySelectorAll('.life__grid img')].every((i) => i.loading === 'lazy' && i.width && i.height));
+  const firstLarge = await tiles.first().getAttribute('href');
+  check(n >= 4 && lazy && !requested.some((u) => u.endsWith(firstLarge)), `gallery: ${n} lazy tiles; full-size images not downloaded until opened`);
+  await tiles.first().scrollIntoViewIfNeeded();
+  await tiles.first().click();
+  const dlg = m.locator('.life__dialog');
+  await m.waitForTimeout(400);
+  const w1 = await dlg.locator('img').evaluate((i) => new Promise((r) => (i.complete && i.naturalWidth ? r(i.naturalWidth) : i.addEventListener('load', () => r(i.naturalWidth), { once: true }))));
+  check((await dlg.isVisible()) && w1 >= 800, `gallery: lightbox opens with a ${w1}px image`);
+  await m.keyboard.press('ArrowRight');
+  check((await dlg.locator('[data-life-count]').textContent()) === `2 / ${n}`, 'gallery: arrow keys move between photographs');
+  await m.keyboard.press('Escape');
+  check(!(await dlg.isVisible()) && (await m.evaluate(() => document.activeElement?.hasAttribute('data-life-open'))), 'gallery: Escape closes and returns focus');
+  const vreq = requested.filter((u) => /\.(mp4|mov)(\?|$)/.test(u));
+  check(vreq.length === 0, `no video is downloaded before a visitor presses play ${vreq.join(', ')}`);
+  await m.close();
+
+  // 320px: gallery, band and ribbon fit
+  const s3 = await browser.newPage({ viewport: { width: 320, height: 640 }, reducedMotion: 'reduce' });
+  await s3.goto(BASE, { waitUntil: 'networkidle' });
+  const fit = await s3.evaluate(() => {
+    const vw = document.documentElement.clientWidth;
+    return [...document.querySelectorAll('.life__item, .band, .mode__photo, .lessons')].filter((e) => e.getBoundingClientRect().right > vw + 1).length === 0 && document.documentElement.scrollWidth <= vw;
+  });
+  check(fit, '320px: photography sections fit without sideways scrolling');
+  await s3.close();
+
+  // Core Web Vitals (lab): throttled 4G + 4x CPU on a mid-range phone viewport
+  const cwv = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  const cdp = await cwv.context().newCDPSession(cwv);
+  await cdp.send('Network.emulateNetworkConditions', { offline: false, latency: 150, downloadThroughput: (1.6 * 1024 * 1024) / 8, uploadThroughput: (750 * 1024) / 8 });
+  await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+  await cwv.addInitScript(() => {
+    window.__lcp = 0; window.__cls = 0;
+    new PerformanceObserver((l) => l.getEntries().forEach((e) => (window.__lcp = e.startTime))).observe({ type: 'largest-contentful-paint', buffered: true });
+    new PerformanceObserver((l) => l.getEntries().forEach((e) => { if (!e.hadRecentInput) window.__cls += e.value; })).observe({ type: 'layout-shift', buffered: true });
+  });
+  await cwv.goto(BASE, { waitUntil: 'load' });
+  await cwv.waitForTimeout(3500);
+  const vitals = await cwv.evaluate(() => ({ lcp: Math.round(window.__lcp), cls: +window.__cls.toFixed(3) }));
+  check(vitals.lcp > 0 && vitals.lcp < 4000 && vitals.cls < 0.1, `Core Web Vitals (throttled 4G, 4x CPU): LCP ${vitals.lcp} ms, CLS ${vitals.cls}`);
+  await cwv.close();
 }
 
 await browser.close();

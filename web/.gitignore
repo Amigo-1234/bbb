@@ -3,3 +3,6 @@ dist/
 .astro/
 .vercel/
 .env*
+
+# Phase 6 private review media (identifiable students/tutors) — never commit
+private-media/

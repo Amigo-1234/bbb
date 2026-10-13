@@ -1,0 +1,87 @@
+---
+/**
+ * Rolling BIA ribbon: verified facts separated by the BIA symbol.
+ * CSS-only marquee (no JS); pauses on hover/focus; static and wrapped when the
+ * visitor prefers reduced motion. The duplicate copy is hidden from assistive tech.
+ */
+import Badge from './Badge.astro';
+import { address, site } from '../data/site';
+
+const items = [
+  site.parent,
+  `JUPEB ${site.session}`,
+  'Science & Non-Science',
+  'Physical & online classes',
+  'Weekly tests',
+  'Monthly mock examinations',
+  'Direct Entry into 200 Level',
+  `${address.street}, Akoka`,
+];
+---
+
+<div class="ribbon" data-clip>
+  <div class="ribbon__track">
+    <ul class="ribbon__list" aria-label="BIA JUPEB at a glance">
+      {items.map((t) => <li><Badge variant="tile" size={22} /><span>{t}</span></li>)}
+    </ul>
+    <ul class="ribbon__list" aria-hidden="true">
+      {items.map((t) => <li><Badge variant="tile" size={22} /><span>{t}</span></li>)}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .ribbon {
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--on-ink);
+    border-block: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .ribbon__track {
+    display: flex;
+    width: max-content;
+    animation: ribbon 48s linear infinite;
+  }
+  .ribbon:hover .ribbon__track,
+  .ribbon:focus-within .ribbon__track {
+    animation-play-state: paused;
+  }
+  .ribbon__list {
+    display: flex;
+    flex: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ribbon__list li {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-4) var(--s-5);
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    white-space: nowrap;
+  }
+  @keyframes ribbon {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ribbon__track {
+      width: auto;
+      animation: none;
+    }
+    .ribbon__list {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .ribbon__list[aria-hidden='true'] {
+      display: none;
+    }
+    .ribbon__list li {
+      padding: var(--s-2) var(--s-4);
+      font-size: var(--step-0);
+    }
+  }
+</style>

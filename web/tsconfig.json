@@ -6,6 +6,7 @@
   ],
   "exclude": [
     "dist",
-    "tests"
+    "tests",
+    "private-media"
   ]
 }

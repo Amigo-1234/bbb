@@ -1,6 +1,5 @@
 ---
 import { Picture } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Carousel from '../components/Carousel.astro';
@@ -34,34 +33,13 @@ import {
   site,
   whatsapp,
 } from '../data/site';
-import classroom from '../assets/photos/classroom.png';
-import class010 from '../assets/photos/class-010.png';
-import class011 from '../assets/photos/class-011.png';
-import class012 from '../assets/photos/class-012.png';
-import class013 from '../assets/photos/class-013.png';
-import class014 from '../assets/photos/class-014.png';
-import class015 from '../assets/photos/class-015.png';
-import class016 from '../assets/photos/class-016.png';
 import founder from '../assets/photos/founder.png';
 import founderTeaching from '../assets/photos/founder-teaching.jpg';
 import centre from '../assets/photos/centre-entrance.jpg';
-
-type Photo = { src: ImageMetadata; alt: string; caption: string; position?: string };
-
-// Authentic photographs from the legacy site (assets/images/slider, boma5, teachers).
-const heroPhotos: Photo[] = [
-  { src: classroom, alt: 'A full classroom of BIA JUPEB students working at their desks', caption: 'A full class in session' },
-  { src: class010, alt: 'Students seated in rows in a lecture hall, writing', caption: 'Lecture hall session' },
-  { src: class016, alt: 'A tutor standing beside students as they work', caption: 'Tutor-led classwork', position: 'center 35%' },
-  { src: class012, alt: 'A tutor moving between desks in a busy classroom', caption: 'Guidance at every desk' },
-];
-
-const gallery: Photo[] = [
-  { src: class013, alt: 'Students concentrating on written work', caption: 'Focused classwork' },
-  { src: class011, alt: 'Students seated at long desks during class', caption: 'Students in class' },
-  { src: class015, alt: 'A student at a lectern in front of a whiteboard', caption: 'At the front of the class' },
-  { src: class014, alt: 'Students writing while a tutor looks on', caption: 'Classwork with tutor support' },
-];
+import Ribbon from '../components/Ribbon.astro';
+import LifeGallery from '../components/LifeGallery.astro';
+import LessonVideos from '../components/LessonVideos.astro';
+import { bandPhoto, heroPhotos, isReview, lessonVideos, lifePhotos, modePhotos, tutorPhoto } from '../data/media';
 
 const today = new Date().toISOString().slice(0, 10);
 const nextIndex = calendar.findIndex((c) => !c.unconfirmed && (c.end ?? c.start) >= today);
@@ -91,6 +69,8 @@ const week = firstSemester.days.map((d) => ({
   title="BIA JUPEB — JUPEB Admission Centre in Lagos | Direct Entry into 200 Level"
   description="Prepare for JUPEB with BIA JUPEB: Boma’s Intellectual Academy’s 8–9 month Science and Non-Science programme in Akoka, Lagos and online, with weekly tests, tutorials and Direct Entry admission guidance."
 >
+  {isReview && <p class="review-flag" role="note">Private review build — includes Phase 6 media awaiting publication consent. Not for publishing.</p>}
+
   <!-- HERO -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap hero__grid">
@@ -164,6 +144,8 @@ const week = firstSemester.days.map((d) => ({
       </dl>
     </div>
   </section>
+
+  <Ribbon />
 
   <!-- 01 ABOUT BIA -->
   <section class="about" id="about" aria-labelledby="about-title">
@@ -302,6 +284,18 @@ const week = firstSemester.days.map((d) => ({
     </div>
   </section>
 
+  <figure class="band" data-clip>
+    <Picture
+      src={bandPhoto.src}
+      formats={formats}
+      widths={[640, 1080, 1600, 2200]}
+      sizes="100vw"
+      alt={bandPhoto.alt}
+      style={bandPhoto.position ? `object-position:${bandPhoto.position}` : undefined}
+    />
+    <figcaption class="wrap"><span>{bandPhoto.caption}</span></figcaption>
+  </figure>
+
   <!-- 04 PROGRAMME & FEES -->
   <section class="section section--tint" id="programme" aria-labelledby="fees">
     <div class="wrap">
@@ -367,18 +361,33 @@ const week = firstSemester.days.map((d) => ({
 
       <div class="modes">
         <article class="mode">
+          {modePhotos.physical && (
+            <figure class="mode__photo">
+              <Picture src={modePhotos.physical.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.physical.alt} style={modePhotos.physical.position ? `object-position:${modePhotos.physical.position}` : undefined} />
+            </figure>
+          )}
           <span class="mode__icon"><Icon name="building" size={26} /></span>
           <p class="mode__kicker">Physical classes</p>
           <h3>Lectures, tests and private classes in Lagos</h3>
           <p>Weekday lectures, Saturday tests and evening Special Private Classes. Self-study days run inside the MTN Library, UNILAG.</p>
         </article>
         <article class="mode">
+          {modePhotos.online && (
+            <figure class="mode__photo">
+              <Picture src={modePhotos.online.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.online.alt} style={modePhotos.online.position ? `object-position:${modePhotos.online.position}` : undefined} />
+            </figure>
+          )}
           <span class="mode__icon"><Icon name="monitor" size={26} /></span>
           <p class="mode__kicker">Online · Lecture Banks</p>
           <h3>Recorded and live lessons</h3>
           <p>For students who cannot attend physical classes. Free online tutorials began on Monday 5 October 2026.</p>
         </article>
         <article class="mode mode--ext">
+          {modePhotos.tutorials && (
+            <figure class="mode__photo">
+              <Picture src={modePhotos.tutorials.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.tutorials.alt} style={modePhotos.tutorials.position ? `object-position:${modePhotos.tutorials.position}` : undefined} />
+            </figure>
+          )}
           <span class="mode__icon"><Icon name="arrow-up-right" size={26} /></span>
           <p class="mode__kicker">Tutorials only</p>
           <h3>For students from other institutions</h3>
@@ -434,29 +443,19 @@ const week = firstSemester.days.map((d) => ({
     </div>
   </section>
 
-  <!-- 07 GALLERY -->
-  <section class="section section--tint gallery" aria-labelledby="inside">
+  <!-- 07 LIFE AT BIA -->
+  <section class="section section--tint gallery" id="life" aria-labelledby="inside">
     <div class="wrap">
-      <SectionHead index="07" eyebrow="Inside BIA JUPEB" title="Real classes. Real tutors. Real work." id="inside">
-        <p>Photographs from our classes and tutorials.</p>
+      <SectionHead index="07" eyebrow="Life at BIA" title="Real classes. Real tutors. Real work." id="inside">
+        <p>A look inside Boma’s Intellectual Academy — tap any photograph to see it full size.</p>
       </SectionHead>
-      <Carousel label="Photographs from BIA JUPEB classes" variant="strip">
-        {gallery.map((p) => (
-          <div data-slide class="shot">
-            <figure>
-              <Picture
-                src={p.src}
-                formats={formats}
-                widths={[480, 800, 1080]}
-                sizes="(min-width: 1040px) 42vw, (min-width: 720px) 58vw, 86vw"
-                alt={p.alt}
-                style={p.position ? `object-position:${p.position}` : undefined}
-              />
-              <figcaption>{p.caption}</figcaption>
-            </figure>
-          </div>
-        ))}
-      </Carousel>
+      <LifeGallery photos={lifePhotos} label="Photographs from BIA classes" />
+      {lessonVideos.length > 0 && (
+        <div class="lessons">
+          <h3 class="lessons__title">Watch a lesson</h3>
+          <LessonVideos videos={lessonVideos} />
+        </div>
+      )}
     </div>
   </section>
 
@@ -505,6 +504,13 @@ const week = firstSemester.days.map((d) => ({
               {primaryContact.display} — is the admissions number on every official BIA document.
             </figcaption>
           </figure>
+
+          {tutorPhoto && (
+            <figure class="moment moment--tutor">
+              <Picture src={tutorPhoto.src} formats={formats} widths={[320, 560]} sizes="(min-width: 960px) 18vw, 40vw" alt={tutorPhoto.alt} style={tutorPhoto.position ? `object-position:${tutorPhoto.position}` : undefined} />
+              <figcaption><strong>Our tutors.</strong> {tutorPhoto.caption}.</figcaption>
+            </figure>
+          )}
 
           <div class="team">
             <h3 class="team__title">Speak to admissions</h3>
@@ -570,7 +576,7 @@ const week = firstSemester.days.map((d) => ({
               controls
               playsinline
               preload="none"
-              poster={posterImg.src}
+              data-poster={posterImg.src}
               width="464"
               height="832"
               aria-describedby="video-desc"
@@ -679,6 +685,16 @@ const week = firstSemester.days.map((d) => ({
 <script>
   import { initHomeMotion } from '../scripts/motion/home';
   initHomeMotion();
+
+  // Below-the-fold video posters: set only when the video approaches the viewport.
+  const lazyPosters = document.querySelectorAll<HTMLVideoElement>('video[data-poster]');
+  const setPoster = (v: HTMLVideoElement) => (v.poster = v.dataset.poster!);
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { setPoster(e.target as HTMLVideoElement); io.unobserve(e.target); }
+    }, { rootMargin: '600px 0px' });
+    lazyPosters.forEach((v) => io.observe(v));
+  } else lazyPosters.forEach(setPoster);
 </script>
 
 <style>
@@ -814,8 +830,8 @@ const week = firstSemester.days.map((d) => ({
       border-radius: 0;
     }
     .hero__slide :global(img) {
-      aspect-ratio: 5 / 4;
-      max-height: 52vh;
+      aspect-ratio: 1 / 1;
+      max-height: 60vh;
     }
     .hero__slide figcaption {
       left: var(--gutter);
@@ -1529,6 +1545,70 @@ const week = firstSemester.days.map((d) => ({
       grid-template-columns: repeat(3, 1fr);
       gap: var(--s-6);
     }
+  }
+
+  /* ---------- Phase 6 photography ---------- */
+  .review-flag {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    padding: var(--s-2) var(--gutter);
+    background: #ffd84d;
+    color: #000;
+    font-size: var(--step--1);
+    font-weight: 800;
+    text-align: center;
+  }
+  .band {
+    position: relative;
+    margin: 0;
+  }
+  .band :global(img) {
+    display: block;
+    width: 100%;
+    height: clamp(240px, 52vw, 620px);
+    object-fit: cover;
+  }
+  .band figcaption {
+    position: absolute;
+    inset: auto 0 var(--s-5) 0;
+  }
+  .band figcaption span {
+    display: inline-block;
+    max-width: 28ch;
+    padding: var(--s-3) var(--s-4);
+    background: var(--bia-red);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.25;
+    border-radius: var(--radius);
+  }
+  .mode__photo {
+    margin: 0 0 var(--s-2);
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .mode__photo :global(img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .lessons {
+    margin-top: var(--s-8);
+    padding: var(--s-6) var(--s-5);
+    background: var(--ink);
+    color: var(--on-ink);
+    border-radius: var(--radius);
+  }
+  .lessons__title {
+    margin-bottom: var(--s-4);
+    font-size: var(--step-2);
+    color: #fff;
+  }
+  .moment--tutor {
+    margin-top: calc(-1 * var(--s-4));
   }
 
   /* ---------- Week preview ---------- */
