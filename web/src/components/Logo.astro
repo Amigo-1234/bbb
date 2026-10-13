@@ -1,14 +1,14 @@
 ---
 /**
- * The authentic BIA mark, extracted from the original brand artwork in the
- * legacy site (assets/images/boma3.png). Rendered as a CSS mask so it can take
- * the brand crimson or white without redrawing the logo.
+ * The official BIA lockup (symbol + wordmark), traced from the high-resolution
+ * logo embedded in BIA's 2026/27 payment advice PDFs. Rendered as a CSS mask so
+ * it can take BIA red or white without redrawing the logo.
  */
-import mark from '../assets/brand/bia-mark.png';
+import mark from '../assets/brand/bia-lockup.svg';
 
 interface Props {
   height?: number;
-  tone?: 'crimson' | 'light';
+  tone?: 'crimson' | 'red' | 'light';
   class?: string;
 }
 const { height = 34, tone = 'crimson', class: className } = Astro.props;
@@ -32,6 +32,9 @@ const width = Math.round((height * mark.width) / mark.height);
   }
   .logo--crimson {
     color: var(--crimson);
+  }
+  .logo--red {
+    color: var(--bia-red);
   }
   .logo--light {
     color: var(--on-ink);

@@ -9,7 +9,7 @@ const nav = [
   { label: 'Timetable', href: '/timetable' },
   { label: 'Success stories', href: '/success-stories' },
   { label: 'FAQ', href: '/#faq' },
-  { label: 'Visit', href: '/#apply' },
+  { label: 'Location', href: '/#location' },
 ];
 
 // Notice bar shows the next confirmed milestone, worked out at build time.
@@ -44,11 +44,12 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
 <header class="header" data-header>
   <div class="wrap header__inner">
     <a href="/" class="brand">
-      <Logo height={30} />
+      <Logo height={30} tone="red" />
       <span class="brand__text">
         <span class="brand__name">JUPEB</span>
-        <span class="brand__sub">Admission Centre</span>
+        <span class="brand__sub">Boma’s Intellectual Academy</span>
       </span>
+      <span class="sr-only">— BIA JUPEB home</span>
     </a>
 
     <nav class="nav" aria-label="Primary">
@@ -147,8 +148,8 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
 
 <style>
   .notice {
-    background: var(--ink);
-    color: var(--on-ink);
+    background: var(--bia-red);
+    color: var(--on-red);
     font-size: var(--step--1);
   }
   .notice__inner {
@@ -160,20 +161,20 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
     padding-block: var(--s-2);
   }
   .notice__session {
-    color: var(--on-ink-muted);
+    color: var(--on-red-muted);
   }
   .notice__sep {
     margin-inline: 0.5em;
-    color: var(--on-ink-muted);
+    color: var(--on-red-muted);
   }
   .notice strong {
     font-weight: 600;
   }
   .notice__link {
     flex: none;
-    color: var(--on-ink);
+    color: var(--on-red);
     text-decoration: underline;
-    text-decoration-color: rgb(255 255 255 / 0.35);
+    text-decoration-color: rgb(255 255 255 / 0.5);
   }
   @media (max-width: 559px) {
     .notice__link {
@@ -226,12 +227,12 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
     font-size: 0.95rem;
     font-weight: 800;
     letter-spacing: 0.16em;
-    color: var(--crimson);
+    color: var(--bia-red);
   }
   .brand__sub {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--muted);
   }

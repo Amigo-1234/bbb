@@ -6,6 +6,8 @@ import FeePaths from '../components/FeePaths.astro';
 import ProgrammeFees from '../components/ProgrammeFees.astro';
 import InstalmentPlan from '../components/InstalmentPlan.astro';
 import TutorialPackage from '../components/TutorialPackage.astro';
+import OfficialDocs from '../components/OfficialDocs.astro';
+import { docs } from '../data/documents';
 import {
   entranceExam,
   lectureBanksNotice,
@@ -112,6 +114,30 @@ const glance = [
   <section class="section" id="tutorials" aria-label="Physical tutorials only">
     <div class="wrap">
       <TutorialPackage variant="full" level={2} ctaZone="fees" />
+      <div class="pkgdoc">
+        <p class="pkgdoc__label">The official package artwork</p>
+        <OfficialDocs docs={[docs.tutorialPackage]} label="Official tutorial package artwork" size="sm" />
+      </div>
+    </div>
+  </section>
+
+  <!-- OFFICIAL DOCUMENTS -->
+  <section class="section section--tint" id="documents" aria-labelledby="documents-title">
+    <div class="wrap">
+      <SectionHead index="C" eyebrow="Official documents" title="The payment advice, page by page." id="documents-title">
+        <p>
+          The original documents behind every figure on this page. Open any page to read it full size. Bank account
+          details are never published on this website — ask the admissions office.
+        </p>
+      </SectionHead>
+      <OfficialDocs
+        docs={[docs.scienceRequirements, docs.scienceFees, docs.nonScienceRequirements, docs.nonScienceFees, docs.paymentPlan, docs.entranceExam]}
+        label="BIA payment advice 2026/27"
+      />
+      <p class="docnote">
+        Awaiting BIA’s confirmation: the Non-Science items add up to ₦670,700 against a printed total of ₦671,000, and
+        the instalment plan totals ₦687,000. Figures are shown exactly as printed.
+      </p>
     </div>
   </section>
 
@@ -276,6 +302,27 @@ const glance = [
     color: var(--crimson) !important;
   }
 
+  .pkgdoc {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 220px;
+    margin-top: var(--s-6);
+  }
+  .pkgdoc__label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .docnote {
+    margin-top: var(--s-6);
+    padding: var(--s-4) var(--s-5);
+    border-left: 3px solid var(--bia-red);
+    background: var(--surface);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
   .pay__inner {
     display: grid;
     gap: var(--s-5);
@@ -304,7 +351,28 @@ const glance = [
       grid-template-columns: 1fr 1fr;
       gap: var(--s-8);
     }
-    .pay__inner {
+    .pkgdoc {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 220px;
+    margin-top: var(--s-6);
+  }
+  .pkgdoc__label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .docnote {
+    margin-top: var(--s-6);
+    padding: var(--s-4) var(--s-5);
+    border-left: 3px solid var(--bia-red);
+    background: var(--surface);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .pay__inner {
       grid-template-columns: 1fr auto;
       gap: var(--s-8);
     }

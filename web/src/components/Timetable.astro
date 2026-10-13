@@ -4,19 +4,17 @@
  * Each day is a row; sessions keep the printed times, titles and subject
  * codes. A small script marks today's row (Africa/Lagos time).
  */
-import type { ImageMetadata } from 'astro';
-import { getImage } from 'astro:assets';
 import Icon from './Icon.astro';
+import OfficialDocs from './OfficialDocs.astro';
+import type { OfficialDoc } from '../data/documents';
 import { subjectKey, type Timetable } from '../data/timetable';
 
 interface Props {
   timetable: Timetable;
-  /** The official image (bank details cropped out), offered as a full-size view. */
-  original?: ImageMetadata;
-  originalAlt?: string;
+  /** The official timetable artwork (bank details redacted), offered as an expandable preview. */
+  doc?: OfficialDoc;
 }
-const { timetable: tt, original, originalAlt } = Astro.props;
-const full = original ? await getImage({ src: original, format: 'webp', width: Math.min(original.width, 1600) }) : null;
+const { timetable: tt, doc } = Astro.props;
 const kindLabel: Record<string, string> = {
   'self-study': 'Self study',
   lectures: 'Self study & lectures',
@@ -98,13 +96,11 @@ const kindLabel: Record<string, string> = {
   </div>
 
   {
-    full && (
-      <p class="tt__original">
-        <a class="link-arrow" href={full.src} target="_blank" rel="noopener" data-cta={`timetable-original-${tt.id}`}>
-          View the official timetable image<Icon name="arrow-up-right" size={16} />
-        </a>
-        <span class="sr-only">{originalAlt}</span>
-      </p>
+    doc && (
+      <div class="tt__original">
+        <p class="tt__key-title">Official timetable artwork</p>
+        <OfficialDocs docs={[doc]} label={`Official artwork — ${tt.title}`} size="sm" />
+      </div>
     )
   }
 </div>

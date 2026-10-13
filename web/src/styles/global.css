@@ -10,6 +10,11 @@
   --crimson: #a3162b;
   --crimson-ink: #7a0f20;
   --crimson-wash: #f6e7e9;
+  /* BIA red, sampled from the official logo (white text on it: 5.4:1). */
+  --bia-red: #d80000;
+  --bia-red-deep: #9e0000;
+  --on-red: #ffffff;
+  --on-red-muted: #fff4f4;
   --brass: #8a6a35; /* AA on paper for text; used only for honours marks */
   --brass-light: #d6b679; /* honours marks on ink */
   --line: #e3ded3;
@@ -220,6 +225,26 @@ a {
 .btn--on-ink:hover {
   --_bg: transparent;
   --_bd: var(--on-ink);
+}
+/* On BIA-red backgrounds */
+.btn--white {
+  --_bg: #fff;
+  --_fg: var(--bia-red-deep);
+  --_bd: #fff;
+}
+.btn--white:hover {
+  --_bg: var(--paper);
+  --_bd: var(--paper);
+}
+.btn--on-red {
+  --_bg: transparent;
+  --_fg: #fff;
+  --_bd: rgb(255 255 255 / 0.6);
+}
+.btn--on-red:hover {
+  --_bg: rgb(255 255 255 / 0.12);
+  --_bd: #fff;
+  box-shadow: none;
 }
 
 .link-arrow {

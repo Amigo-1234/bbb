@@ -53,8 +53,17 @@ registration form (paid separately).
 6. **"Exam fee"** in the ₦30,000 tutorial line: is this a BIA internal exam? It cannot be the ₦95,000 JUPEB exam fee.
 7. **"Performance tackling".** Probably "tracking"? It is shown as printed.
 8. **Bank account numbers differ** between the package image and the timetable image (not published; flagged for BIA's own materials).
-9. **Address.** The timetables give **12 Ameen Street, Abule Oja, Akoka**, while the website footer still shows 56 Igi Olugbin St., Bariga. A second WhatsApp number, 0816 432 9204, appears on the flyers. The contact details were not changed pending confirmation.
+9. ~~Address~~ **Resolved in Phase 5:** Boma confirmed 12 Ameen Street, Abule-Oja, Akoka, with contacts 07012388184 and 08164329204.
 10. **Physical resumption date (2 November 2026)** is not stated in the new documents. The free marathon runs 5–31 Oct "before the main physical resumption", which is consistent.
 11. **"F/MTH"** is shown as printed, not expanded.
 12. **Timetable audience.** The first-semester timetable is headed "BIA private JUPEB students and some selected UNILAG School of Foundation students". Should external tutorial-only students follow the same timetable?
 13. **Entrance Examination date** is not given in the documents. The calendar keeps the earlier 29 Aug 2026 entry.
+
+## Phase 5 — still needed from Boma
+
+14. **Founder profile.** Confirm the preferred public name and title ("Dr. MedicBoma" on V1) and which V1 biography lines are current. They are omitted until confirmed: final-year Biomedical Engineering student at UNILAG; member of the Nigerian Army; Biomedical Engineer at 68 Nigerian Army Reference Hospital, Yaba; JUPEB Coordinator for a private university. A short statement in his own words would also help.
+15. **Other V1 numbers removed.** 0703 983 4168 (Miss Esther), 0802 104 7735 (Miss Gloria), 0916 750 5810 (Reception) and 0913 245 8227. Should any return?
+16. **Email.** V1 says bomasintellectualacademy@gmail.com; the PA's card says bomaintellectualacademy@gmail.com. Not published until confirmed.
+17. **Social handles.** TikTok @bomaacademylimited (from the video) is linked; the flyers also show "bomaintellectualacademy" and "BIA JUPEB" handles.
+18. **Directions.** The video starts "from the University of Lagos", not specifically the Main Gate. The street on the route caption is partly hidden by the TikTok logo (read as "Abdul Street"). The gate sign says "Abule-Oja, Yaba" while BIA writes "Abule-Oja, Akoka".
+19. **Teaching venues.** The timetable lists MTN Library and Faculty of Management Science (UNILAG). Confirm which classes are held at 12 Ameen Street.

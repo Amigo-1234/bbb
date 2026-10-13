@@ -23,31 +23,38 @@ export type CalendarItem = {
 export const site = {
   name: 'BIA JUPEB',
   parent: "Boma's Intellectual Academy",
+  /** BIA's own descriptor, printed on every official 2026/27 document. */
+  descriptor: 'Educational Consultancy, A-Level Programmes & Admission Services',
   session: '2026/2027',
   programmeLength: '8–9 months',
   url: 'https://biajupeb.com.ng',
-  facebook:
-    'https://www.facebook.com/profile.php?id=100064129927723',
+  facebook: 'https://www.facebook.com/profile.php?id=100064129927723',
+  /** Handle shown on BIA's directions video. */
+  tiktok: 'https://www.tiktok.com/@bomaacademylimited',
 };
 
-/** confirm: the legacy site lists 7+ different numbers; these are the ones
- * published with a named role on the current homepage. */
+/** Official contacts confirmed by Boma (October 2026); both appear beside the
+ * WhatsApp icon on BIA's 2026/27 flyers. */
 export const contacts: Contact[] = [
-  { role: 'Chief Executive', name: 'Hon. Boma', phone: '+2347012388184', display: '0701 238 8184' },
-  { role: 'Personal Assistant', name: 'Miss Esther', phone: '+2347039834168', display: '0703 983 4168' },
-  { role: 'JUPEB Secretary', name: 'Miss Gloria', phone: '+2348021047735', display: '0802 104 7735' },
-  { role: 'Reception', phone: '+2349167505810', display: '0916 750 5810' },
+  { role: 'Admissions · Chief Executive’s line', name: 'Hon. Boma', phone: '+2347012388184', display: '0701 238 8184' },
+  { role: 'Admissions', phone: '+2348164329204', display: '0816 432 9204' },
 ];
 
-/** The number used in every legacy footer. */
 export const primaryContact = contacts[0];
+export const whatsapp = 'https://wa.me/2347012388184';
 
-/** confirm: transcribed as published ("Lady Lag."). */
+/** Official centre address confirmed by Boma (October 2026). The landmark is
+ * the school named in BIA's directions video and shown on the gate sign. */
 export const address = {
-  lines: ['56 Igi Olugbin St.', 'Shomolu Pedro Road, Lady Lag.', 'Bariga, Lagos'],
-  landmark: 'Directly opposite AP petrol station',
-  mapsUrl:
-    'https://www.google.com/maps/search/?api=1&query=56+Igi+Olugbin+Street+Bariga+Lagos',
+  name: 'BIA JUPEB Academy / Tutorial Centre',
+  street: '12 Ameen Street',
+  locality: 'Abule-Oja, Akoka',
+  region: 'Lagos',
+  country: 'Nigeria',
+  lines: ['12 Ameen Street', 'Abule-Oja, Akoka', 'Lagos, Nigeria'],
+  short: '12 Ameen Street, Abule-Oja, Akoka, Lagos',
+  landmark: 'Seventh Day Adventist Primary and Secondary School, Abule-Oja',
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=12+Ameen+Street%2C+Abule-Oja%2C+Akoka%2C+Lagos%2C+Nigeria',
 };
 
 // Official 2026/27 fees and tutorial package now live in fees.ts.

@@ -1,0 +1,198 @@
+---
+/**
+ * Official BIA documents as an expandable gallery. Each thumbnail is a real
+ * link to the full-size image (works without JavaScript); with JS it opens in
+ * an accessible <dialog>. Always shown alongside the HTML version of the same
+ * information — the image is the reference copy, not the only copy.
+ */
+import { Picture, getImage } from 'astro:assets';
+import type { OfficialDoc } from '../data/documents';
+
+interface Props {
+  docs: OfficialDoc[];
+  label: string;
+  /** Thumbnail column width hint. */
+  size?: 'sm' | 'md';
+  tone?: 'paper' | 'ink';
+}
+const { docs, label, size = 'md', tone = 'paper' } = Astro.props;
+const full = await Promise.all(docs.map((d) => getImage({ src: d.image, format: 'webp', width: Math.min(d.image.width, 1400) })));
+---
+
+<div class:list={['docs', `docs--${size}`, `docs--${tone}`]} data-docs>
+  <ul class="docs__list" aria-label={label}>
+    {
+      docs.map((d, i) => (
+        <li class="docs__item">
+          <a href={full[i].src} class="docs__link" data-doc-open data-title={d.title} data-alt={d.alt} data-w={full[i].attributes.width} data-h={full[i].attributes.height} target="_blank" rel="noopener" data-cta={`doc-${d.id}`}>
+            <span class="docs__thumb">
+              <Picture src={d.image} formats={['avif', 'webp']} widths={[240, 420]} sizes={size === 'sm' ? '160px' : '(min-width: 960px) 220px, 42vw'} alt={d.alt} />
+            </span>
+            <span class="docs__title">{d.title}</span>
+            <span class="docs__src">{d.source}{d.redacted && ' · bank details removed'}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+  <dialog class="docs__dialog" aria-label="Official document">
+    <div class="docs__bar">
+      <p class="docs__dtitle" data-doc-title></p>
+      <a class="docs__full" data-doc-full href="#" target="_blank" rel="noopener">Open full size</a>
+      <button type="button" class="docs__close" data-doc-close aria-label="Close document">×</button>
+    </div>
+    <div class="docs__scroll">
+      <img data-doc-img alt="" width="1400" height="1750" decoding="async" />
+    </div>
+  </dialog>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-docs]')) {
+    const dialog = root.querySelector('dialog');
+    if (!dialog || typeof dialog.showModal !== 'function') continue;
+    const img = dialog.querySelector<HTMLImageElement>('[data-doc-img]')!;
+    const title = dialog.querySelector<HTMLElement>('[data-doc-title]')!;
+    const fullLink = dialog.querySelector<HTMLAnchorElement>('[data-doc-full]')!;
+    let opener: HTMLElement | null = null;
+    root.querySelectorAll<HTMLAnchorElement>('[data-doc-open]').forEach((a) =>
+      a.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey) return;
+        e.preventDefault();
+        opener = a;
+        img.width = Number(a.dataset.w) || img.width;
+        img.height = Number(a.dataset.h) || img.height;
+        img.src = a.href;
+        img.alt = a.dataset.alt ?? '';
+        title.textContent = a.dataset.title ?? '';
+        fullLink.href = a.href;
+        dialog.showModal();
+      }),
+    );
+    dialog.querySelector('[data-doc-close]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => e.target === dialog && dialog.close());
+    dialog.addEventListener('close', () => opener?.focus());
+  }
+</script>
+
+<style>
+  .docs__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .docs--md .docs__list {
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11.5rem), 1fr));
+  }
+  .docs__link {
+    display: grid;
+    gap: var(--s-1);
+    text-decoration: none;
+    color: inherit;
+  }
+  .docs__thumb {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    margin-bottom: var(--s-2);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 24px -18px rgb(21 23 30 / 0.5);
+  }
+  .docs__thumb::after {
+    content: 'View';
+    position: absolute;
+    right: var(--s-2);
+    bottom: var(--s-2);
+    padding: 0.2em 0.6em;
+    border-radius: 999px;
+    background: var(--bia-red);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .docs__thumb :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    transition: transform 0.5s var(--ease);
+  }
+  .docs__link:hover .docs__thumb :global(img) {
+    transform: scale(1.04);
+  }
+  .docs__title {
+    font-weight: 700;
+    font-size: var(--step--1);
+    line-height: 1.3;
+  }
+  .docs__src {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .docs--ink .docs__src {
+    color: var(--on-ink-muted);
+  }
+  .docs--ink .docs__thumb {
+    border-color: rgb(255 255 255 / 0.15);
+  }
+  .docs__dialog {
+    width: min(100vw - 1rem, 880px);
+    max-height: calc(100dvh - 1rem);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .docs__dialog::backdrop {
+    background: rgb(21 23 30 / 0.75);
+  }
+  .docs__bar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding: var(--s-2) var(--s-2) var(--s-2) var(--s-4);
+    background: var(--bia-red);
+    color: #fff;
+  }
+  .docs__dtitle {
+    flex: 1;
+    font-weight: 700;
+    font-size: var(--step--1);
+  }
+  .docs__full {
+    color: #fff;
+    font-size: var(--step--1);
+    white-space: nowrap;
+  }
+  .docs__close {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.15);
+    color: #fff;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .docs__scroll {
+    max-height: calc(100dvh - 5rem);
+    overflow: auto;
+  }
+  .docs__scroll img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>

@@ -1,10 +1,21 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { address, contacts, guides, primaryContact, site } from '../data/site';
+import Badge from './Badge.astro';
+import { address, contacts, guides, primaryContact, site, whatsapp } from '../data/site';
 ---
 
 <footer class="footer" data-cta-zone>
+  <div class="footer__band">
+    <div class="wrap footer__band-inner">
+      <Badge variant="seal" size={92} tone="light" />
+      <p class="footer__band-text">
+        <span class="footer__band-name">{site.parent}</span>
+        <span>{site.descriptor}</span>
+      </p>
+    </div>
+  </div>
+  <Badge variant="mark" size={520} class="footer__watermark" />
   <div class="wrap footer__grid">
     <div class="footer__brand">
       <div class="footer__mark">
@@ -22,10 +33,11 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
     <div>
       <h2 class="footer__h">Visit</h2>
       <address>
+        <strong>{address.name}</strong>
         {address.lines.map((l) => <span>{l}</span>)}
-        <span class="footer__muted">{address.landmark}</span>
+        <span class="footer__muted">Landmark: {address.landmark}</span>
       </address>
-      <a class="footer__link with-icon" href={address.mapsUrl} rel="noopener" target="_blank"><Icon name="pin" size={16} />Get directions</a>
+      <a class="footer__link with-icon" href="/#location"><Icon name="pin" size={16} />Directions &amp; video</a>
     </div>
 
     <div>
@@ -34,9 +46,10 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
         {contacts.map((c) => (
           <li>
             <a href={`tel:${c.phone}`} class="num">{c.display}</a>
-            <span class="footer__muted">{c.name ? `${c.name}, ${c.role}` : c.role}</span>
+            <span class="footer__muted">{c.name ? `${c.name} · ${c.role}` : c.role}</span>
           </li>
         ))}
+        <li><a href={whatsapp} rel="noopener" target="_blank">WhatsApp {primaryContact.display}</a></li>
       </ul>
     </div>
 
@@ -53,7 +66,10 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
 
   <div class="wrap footer__base">
     <p>© {new Date().getFullYear()} BIA JUPEB · {site.parent}</p>
-    <p><a class="with-icon" href={site.facebook} rel="noopener" target="_blank"><Icon name="facebook" size={16} />Facebook</a></p>
+    <p class="footer__social">
+      <a class="with-icon" href={site.facebook} rel="noopener" target="_blank"><Icon name="facebook" size={16} />Facebook</a>
+      <a href={site.tiktok} rel="noopener" target="_blank">TikTok @bomaacademylimited</a>
+    </p>
   </div>
 </footer>
 
@@ -78,10 +94,57 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
 
 <style>
   .footer {
+    position: relative;
+    overflow: hidden;
     background: var(--ink);
     color: var(--on-ink);
-    padding-block: var(--s-8) var(--s-6);
+    padding-bottom: var(--s-6);
     font-size: 0.95rem;
+  }
+  .footer__band {
+    background: var(--bia-red-deep);
+    color: var(--on-red);
+    margin-bottom: var(--s-8);
+  }
+  .footer__band-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+    padding-block: var(--s-5);
+  }
+  .footer__band-text {
+    display: grid;
+    gap: 2px;
+    font-size: var(--step--1);
+    color: var(--on-red-muted);
+  }
+  .footer__band-name {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.1;
+    color: #fff;
+  }
+  .footer :global(.footer__watermark) {
+    position: absolute;
+    right: -120px;
+    bottom: -60px;
+    width: 520px;
+    height: auto;
+    color: #fff;
+    opacity: 0.035;
+    pointer-events: none;
+  }
+  .footer__grid,
+  .footer__base {
+    position: relative;
+  }
+  .footer__social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+  }
+  .footer__social a {
+    color: var(--on-ink);
   }
   .footer a {
     text-decoration-color: rgb(255 255 255 / 0.3);
@@ -126,6 +189,9 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
     text-transform: uppercase;
     color: var(--on-ink-muted);
     margin-bottom: var(--s-3);
+  }
+  address strong {
+    font-weight: 700;
   }
   address {
     display: grid;

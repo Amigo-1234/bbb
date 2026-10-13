@@ -5,21 +5,18 @@ import Timetable from '../components/Timetable.astro';
 import { firstSemester, preResumption } from '../data/timetable';
 import { naira, tutorialPackage } from '../data/fees';
 import { primaryContact, site } from '../data/site';
-import firstImg from '../assets/official/timetable-first-semester-2026.jpg';
-import preImg from '../assets/official/timetable-pre-resumption-2026.jpg';
+import { docs } from '../data/documents';
 
 const panels = [
   {
     tt: firstSemester,
-    img: firstImg,
-    alt: 'Official BIA JUPEB first semester physical class timetable',
+    doc: docs.timetableFirst,
     tab: 'First semester',
     sub: 'Physical classes',
   },
   {
     tt: preResumption,
-    img: preImg,
-    alt: 'Official BIA JUPEB free online tutorial and paid physical tutorial timetable',
+    doc: docs.timetablePre,
     tab: 'Before resumption',
     sub: 'Free online from 5 Oct',
   },
@@ -69,7 +66,7 @@ const panels = [
       {panels.map((p) => (
         <section class="panel" id={`panel-${p.tt.id}`} aria-label={p.tab} data-panel>
           <h2 class="panel__title">{p.tab}<span> · {p.sub}</span></h2>
-          <Timetable timetable={p.tt} original={p.img} originalAlt={p.alt} />
+          <Timetable timetable={p.tt} doc={p.doc} />
         </section>
       ))}
     </div>

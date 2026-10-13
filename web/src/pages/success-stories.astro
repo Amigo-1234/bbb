@@ -7,7 +7,7 @@ import Logo from '../components/Logo.astro';
 import Carousel from '../components/Carousel.astro';
 import AchievementCard from '../components/AchievementCard.astro';
 import { Picture } from 'astro:assets';
-import { admissionsByInstitution, address, outcomeCategories, outcomes, primaryContact } from '../data/site';
+import { admissionsByInstitution, outcomeCategories, outcomes, primaryContact } from '../data/site';
 import { publishedAchievements } from '../data/achievements';
 import classroom from '../assets/photos/classroom.png';
 import class011 from '../assets/photos/class-011.png';
@@ -222,7 +222,7 @@ const tel = `tel:${primaryContact.phone}`;
       <div class="cta__actions">
         <a class="btn" href={tel} data-cta="stories-cta-enquire"><Icon name="phone" size={18} />Enquire about JUPEB admission</a>
         <a class="btn btn--on-ink" href="/#programme" data-cta="stories-cta-programmes">Explore programmes<Icon name="arrow-right" size={18} /></a>
-        <a class="cta__visit with-icon" href={address.mapsUrl} rel="noopener" target="_blank"><Icon name="pin" size={16} />Visit the Bariga centre</a>
+        <a class="cta__visit with-icon" href="/#location"><Icon name="pin" size={16} />Visit the centre in Akoka</a>
       </div>
     </div>
   </section>

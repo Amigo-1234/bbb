@@ -301,11 +301,10 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(sensitive.length === 0, `build output contains no legacy or sensitive files ${sensitive.slice(0, 5).join(', ')}`);
   const builtText = files.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(join(dist, f), 'utf8')).join('\n');
   check(!/AIzaSy|firebaseapp|apiKey/.test(builtText), 'build output contains no Firebase keys or config');
-  // Contacts on V2 all appear on the published V1 homepage
-  const v1 = readFileSync(new URL('../../BOMA JUPEB PROJECT/index.html', import.meta.url), 'utf8').replace(/[^\d]/g, '');
+  // Only the official contacts confirmed by Boma (October 2026) are published
+  const official = ['7012388184', '8164329204'];
   const phones = [...new Set([...builtText.matchAll(/tel:\+234(\d{10})/g)].map((m) => m[1]))];
-  const missing = phones.filter((p) => !v1.includes('0' + p) && !v1.includes('234' + p));
-  check(phones.length >= 4 && missing.length === 0, `all ${phones.length} V2 phone numbers are published on V1 ${missing.join(', ')}`);
+  check(phones.length === 2 && phones.every((p) => official.includes(p)), `only the two official phone numbers are published (${phones.join(', ')})`);
   await page.close();
 }
 
@@ -415,7 +414,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const text = files.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(f, 'utf8')).join('\n');
 
   // Outdated figures are gone; bank details never published
-  check(!/₦40,000|₦437,000|₦421,000|₦250,000|₦687,000/.test(text), 'no outdated fees (₦40,000 registration, old school/tutorial split) remain');
+  check(!/₦40,000|₦437,000|₦421,000|₦250,000/.test(text), 'no outdated fees (₦40,000 registration, old school/tutorial split) remain');
   check(!/1027749868|1022749868|\bUBA\b/.test(text), 'no bank account details are published');
   check(!/pay online|pay now|checkout|card payment/i.test(text) && !/<form[^>]+action=/i.test(text), 'no online payment claims or payment forms');
 
@@ -492,7 +491,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
         overflow: document.documentElement.scrollWidth > vw,
         narrow: cards.filter((c) => c.getBoundingClientRect().width < 120).length,
         tiny: tiny.length,
-        img: document.querySelectorAll('.tt img').length,
+        img: document.querySelectorAll('.tt__days img').length,
       };
     });
     check(!read.overflow && read.narrow === 0 && read.tiny === 0 && read.img === 0, `timetable ${label}: readable without zooming (text ≥ 12px, cards ≥ 120px, no image-only timetable)`);
@@ -509,7 +508,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
           (await p.locator('[role="tab"]').nth(1).getAttribute('aria-selected')) === 'true',
         'timetable tabs: ArrowRight shows the pre-resumption timetable',
       );
-      const original = await p.locator('#panel-pre-resumption .tt__original a').getAttribute('href');
+      const original = await p.locator('#panel-pre-resumption .tt__original [data-doc-open]').getAttribute('href');
       const res = await p.request.get(new URL(original, TT).href);
       check(res.ok() && (res.headers()['content-type'] ?? '').startsWith('image/'), 'timetable: official image is available as an optional full view');
     }
@@ -532,6 +531,116 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     check(v.length === 0, `${new URL(url).pathname}: no serious/critical accessibility violations ${v.join(', ')}`);
     await p.close();
   }
+}
+
+// 10. Phase 5: brand identity, founder, location, directions video, official documents
+{
+  const { readdirSync, statSync, createReadStream } = await import('node:fs');
+  const { join } = await import('node:path');
+  const { createHash } = await import('node:crypto');
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const files = [];
+  const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : files.push(join(d, f))));
+  walk(dist);
+  const textFiles = files.filter((f) => /\.(html|js|css|json|xml|txt|vtt)$/.test(f));
+  const builtText = textFiles.map((f) => readFileSync(f, 'utf8')).join('\n');
+
+  // Location consistency
+  check(!/Bariga|Igi Olugbin|Lady Lag|AP petrol/i.test(builtText), 'no outdated Bariga address remains anywhere in the build');
+  const pages = ['', 'fees', 'timetable', 'success-stories', 'guides', 'guides/jupeb-guide'];
+  const p = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  for (const path of pages) {
+    await p.goto(new URL(path, BASE).href, { waitUntil: 'domcontentloaded' });
+    const ld = await p.evaluate(() => JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent ?? 'null'));
+    const footer = await p.locator('footer address').innerText();
+    check(
+      ld?.address?.streetAddress === '12 Ameen Street' && /Abule-Oja, Akoka/.test(ld.address.addressLocality) &&
+        JSON.stringify(ld.telephone) === JSON.stringify(['+2347012388184', '+2348164329204']) &&
+        footer.includes('12 Ameen Street') && footer.includes('Abule-Oja, Akoka'),
+      `/${path}: structured data and footer carry the official Akoka address and contacts`,
+    );
+  }
+  await p.goto(BASE, { waitUntil: 'domcontentloaded' });
+  const maps = await p.locator('#location a[href*="google.com/maps"]').getAttribute('href');
+  check(decodeURIComponent((maps ?? '').replace(/\+/g, ' ')).includes('12 Ameen Street, Abule-Oja, Akoka'), 'map link points to 12 Ameen Street, Abule-Oja, Akoka');
+  check((await p.locator('a[href="https://wa.me/2347012388184"]').count()) >= 1, 'WhatsApp link uses the official number');
+
+  // Homepage sections an applicant needs, in one page
+  const ids = await p.evaluate(() => ['about', 'success', 'programme', 'tutorials', 'study-modes', 'calendar', 'founder', 'location', 'faq', 'apply'].filter((id) => !document.getElementById(id) && !document.querySelector(`[aria-labelledby="${id}"]`)));
+  check(ids.length === 0, `homepage covers about, results, fees, tutorials, ways to study, timetable, founder, location, FAQ and enquiry ${ids.join(', ')}`);
+  for (const href of ['/fees', '/timetable', '/#location', '/success-stories']) {
+    check((await p.locator(`header a[href="${href}"], #mobile-menu a[href="${href}"]`).count()) >= 1, `navigation links to ${href}`);
+  }
+
+  // Directions video
+  const v = await p.evaluate(() => {
+    const el = document.querySelector('#location video');
+    return el && {
+      controls: el.controls, playsinline: el.playsInline, preload: el.getAttribute('preload'), poster: el.getAttribute('poster'),
+      src: el.querySelector('source')?.getAttribute('src'), track: el.querySelector('track[kind="captions"]')?.getAttribute('src'),
+      transcript: document.querySelectorAll('.loc__transcript li').length,
+    };
+  });
+  check(v && v.controls && v.playsinline && v.preload === 'none' && v.poster && v.transcript >= 15, 'directions video: native controls, plays inline, lazy (preload none), poster and transcript');
+  const vid = await p.request.get(new URL(v.src, BASE).href);
+  const vtt = await (await p.request.get(new URL(v.track, BASE).href)).text();
+  const poster = await p.request.get(new URL(v.poster, BASE).href);
+  check(vid.ok() && (await vid.body()).length > 5e6 && poster.ok(), 'directions video file and poster are served');
+  check(vtt.startsWith('WEBVTT') && (vtt.match(/-->/g) ?? []).length >= 15 && vtt.includes('Seventh Day Adventist'), 'directions video has a WebVTT caption track');
+  check(!/Igbobi|Main Gate|turn left/i.test(await p.locator('.routes').innerText()), 'written directions only use steps stated in the video');
+
+  // Brand: official badge in header, hero, footer; BIA red sections
+  const brand = await p.evaluate(() => ({
+    headerLogo: !!document.querySelector('header .logo'),
+    heroSeal: document.querySelector('.hero__seal [role="img"]')?.getAttribute('aria-label') ?? '',
+    footerSeal: !!document.querySelector('footer .badge-seal'),
+    aboutBg: getComputedStyle(document.querySelector('.about')).backgroundColor,
+    noticeBg: getComputedStyle(document.querySelector('.notice')).backgroundColor,
+  }));
+  check(brand.headerLogo && /Boma’s Intellectual Academy/.test(brand.heroSeal) && brand.footerSeal, 'official BIA badge appears in header, hero and footer');
+  check(brand.aboutBg === 'rgb(216, 0, 0)' && brand.noticeBg === 'rgb(216, 0, 0)', 'BIA red (#D80000, sampled from the official logo) used for brand sections');
+  const icon = await p.request.get(new URL('favicon.svg', BASE).href);
+  check(icon.ok() && (await icon.text()).includes('#d80000'), 'favicon uses the official badge');
+
+  // Mobile hero: the seal never covers the headline
+  for (const width of [320, 390]) {
+    const m = await browser.newPage({ viewport: { width, height: 760 }, reducedMotion: 'reduce' });
+    await m.goto(BASE, { waitUntil: 'domcontentloaded' });
+    const hit = await m.evaluate(() => {
+      const a = document.querySelector('.hero__seal').getBoundingClientRect();
+      const blocks = [...document.querySelectorAll('.hero__copy > *')].map((e) => e.getBoundingClientRect());
+      return blocks.some((b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top);
+    });
+    check(!hit, `${width}px: hero seal does not overlap the hero text`);
+    await m.close();
+  }
+
+  // Photography: no photograph repeated on the homepage
+  const photos = await p.evaluate(() =>
+    [...document.querySelectorAll('main picture img')].map((i) => (i.getAttribute('src') ?? '').split('/').pop().split('.')[0]),
+  );
+  const dupes = photos.filter((x, i) => photos.indexOf(x) !== i);
+  check(photos.length >= 10 && dupes.length === 0, `homepage uses ${photos.length} photographs/documents with none repeated ${dupes.join(', ')}`);
+  await p.close();
+
+  // Official documents: gallery opens accessibly; redacted derivatives only
+  const f = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  await f.goto(new URL('fees', BASE).href, { waitUntil: 'networkidle' });
+  const thumbs = f.locator('#documents [data-doc-open]');
+  check((await thumbs.count()) >= 6, `/fees: ${await thumbs.count()} official payment-advice pages in the document gallery`);
+  await thumbs.first().click();
+  const dlg = f.locator('#documents dialog');
+  check(await dlg.isVisible(), '/fees: document opens in a dialog');
+  const loaded = await f.locator('#documents dialog img').evaluate((img) => new Promise((r) => (img.complete && img.naturalWidth ? r(img.naturalWidth) : img.addEventListener('load', () => r(img.naturalWidth), { once: true }))));
+  check(loaded >= 1000, `/fees: full-size document loads (${loaded}px wide)`);
+  await f.keyboard.press('Escape');
+  check(!(await dlg.isVisible()) && (await f.evaluate(() => document.activeElement?.hasAttribute('data-doc-open'))), '/fees: Escape closes the document and returns focus');
+  await f.close();
+  const md5 = (file) => new Promise((r) => { const h = createHash('md5'); createReadStream(file).on('data', (d) => h.update(d)).on('end', () => r(h.digest('hex'))); });
+  const forbidden = ['f684959125b3ca1ca4458e6bf8e95fd3', '17df33fd1d5fe9b23a991c1379992057']; // unredacted package + timetable originals
+  const hashes = await Promise.all(files.filter((x) => /\.(jpe?g|png|webp|avif)$/.test(x)).map(md5));
+  check(!hashes.some((h) => forbidden.includes(h)), 'unredacted originals (with bank details) are not in the build');
+  check(!files.some((x) => /\.(pdf|mov)$/i.test(x)), 'archived originals (PDF/MOV) are not published');
 }
 
 await browser.close();
