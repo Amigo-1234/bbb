@@ -38,6 +38,12 @@ function hero() {
       { clipPath: 'inset(0% 0% 0% 0% round 4px)', duration: 1.3, ease: 'expo.out', clearProps: 'clipPath' },
       0.35,
     )
+    .fromTo(
+      '.hero__inset',
+      { y: 40, autoAlpha: 0, rotate: -3 },
+      { y: 0, autoAlpha: 1, rotate: 0, duration: 1.1, ease: 'expo.out', clearProps: 'transform' },
+      0.9,
+    )
     .fromTo(bar, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, '-=0.9')
     .set('.facts', show, '-=0.6')
     .fromTo(facts, { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.07, duration: 0.6 }, '<');

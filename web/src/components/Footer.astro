@@ -4,7 +4,7 @@ import Icon from './Icon.astro';
 import { address, contacts, guides, primaryContact, site } from '../data/site';
 ---
 
-<footer class="footer">
+<footer class="footer" data-cta-zone>
   <div class="wrap footer__grid">
     <div class="footer__brand">
       <div class="footer__mark">
@@ -56,10 +56,24 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
   </div>
 </footer>
 
-<nav class="actionbar" aria-label="Quick actions">
+<nav class="actionbar" aria-label="Quick actions" data-actionbar>
   <a class="btn btn--outline actionbar__call" href={`tel:${primaryContact.phone}`} data-cta="actionbar-call"><Icon name="phone" size={18} />Call admissions</a>
   <a class="btn" href="/#apply" data-cta="actionbar-apply">Enquire<Icon name="arrow-right" size={18} /></a>
 </nav>
+
+<script>
+  // Show the quick-action bar only when no other admissions call-to-action is on screen.
+  const bar = document.querySelector<HTMLElement>('[data-actionbar]');
+  const zones = document.querySelectorAll('[data-cta-zone]');
+  if (bar && zones.length && 'IntersectionObserver' in window) {
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target));
+      bar.toggleAttribute('data-hidden', visible.size > 0);
+    });
+    zones.forEach((z) => io.observe(z));
+  }
+</script>
 
 <style>
   .footer {
@@ -172,6 +186,14 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
   }
   .actionbar__call {
     background: var(--surface);
+  }
+  .actionbar {
+    transition: transform 0.35s var(--ease), visibility 0.35s;
+  }
+  /* Hidden while on-page admissions buttons are visible, so it never covers them */
+  .actionbar[data-hidden] {
+    transform: translateY(110%);
+    visibility: hidden;
   }
   @media (max-width: 359px) {
     .actionbar .btn :global(svg) {

@@ -309,6 +309,99 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await page.close();
 }
 
+// 8. Phase 4: achievements privacy, image performance, hero layout, action bar
+{
+  const { readdirSync, statSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const recordsFile = JSON.parse(readFileSync(new URL('../content/achievements/records.json', import.meta.url), 'utf8'));
+  const recs = recordsFile.records;
+  const pendingNames = recs
+    .filter((r) => r.consent.status !== 'granted')
+    .flatMap((r) => [r.name, ...(r.names ?? [])])
+    .filter(Boolean)
+    .flatMap((n) => [n, ...n.split(/\s+/).filter((w) => w.length > 5 && /^[A-Z]/.test(w) && !/^(Medicine|Surgery|Science|Business|University)$/i.test(w))]);
+  const all = [];
+  const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : all.push(join(d, f))));
+  walk(dist);
+  const text = all.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(f, 'utf8')).join('\n').toLowerCase();
+  const leaked = [...new Set(pendingNames.filter((n) => text.includes(n.toLowerCase())))];
+  check(recs.length === 43 && leaked.length === 0, `privacy: no unconsented student name (${pendingNames.length} name tokens) appears anywhere in the build ${leaked.slice(0, 5).join(', ')}`);
+  check(!all.some((f) => /testii|originals|achievements/i.test(f)), 'privacy: no archived achievement image is emitted into the build');
+  const publishedDir = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
+  const publishedFiles = readdirSync(publishedDir).filter((f) => !f.startsWith('.'));
+  const granted = recs.filter((r) => r.consent.status === 'granted' && r.publishedImage).map((r) => r.publishedImage);
+  check(publishedFiles.length === granted.length && publishedFiles.every((f) => granted.includes(f)), `consent: published images (${publishedFiles.length}) match consent-granted records (${granted.length})`);
+  check(recs.every((r) => !('points' in r) && !('recordedPoints' in r)), 'records carry no unverified V1 point totals');
+
+  // Image performance on first load (mobile)
+  for (const path of ['', 'success-stories']) {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
+    let imgBytes = 0;
+    let largest = 0;
+    page.on('response', async (r) => {
+      if (r.request().resourceType() === 'image') {
+        const len = Number(r.headers()['content-length'] ?? (await r.body().catch(() => Buffer.alloc(0))).length);
+        imgBytes += len;
+        largest = Math.max(largest, len);
+      }
+    });
+    await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
+    const imgs = await page.evaluate(() =>
+      [...document.images].map((i) => ({
+        dims: i.hasAttribute('width') && i.hasAttribute('height'),
+        lazy: i.loading === 'lazy',
+        top: i.getBoundingClientRect().top,
+        prio: i.getAttribute('fetchpriority'),
+        modern: (i.closest('picture')?.querySelector('source[type="image/avif"]')) !== null,
+      })),
+    );
+    check(imgs.every((i) => i.dims), `/${path}: every image has width/height (no layout shift)`);
+    check(imgs.filter((i) => i.top > 1200).every((i) => i.lazy), `/${path}: images below the first screen load lazily`);
+    check(imgs.some((i) => i.prio === 'high' && !i.lazy), `/${path}: hero image is eager with high fetch priority`);
+    check(imgs.every((i) => i.modern), `/${path}: every photograph offers AVIF/WebP`);
+    check(imgBytes < 1_400_000 && largest < 450_000, `/${path}: first-load images ${(imgBytes / 1024).toFixed(0)} KB, largest ${(largest / 1024).toFixed(0)} KB at 2x`);
+    await page.close();
+  }
+
+  // Hero layout on iPhone-sized screen: photo and headline both in the first screen
+  const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await m.goto(BASE, { waitUntil: 'networkidle' });
+  await m.waitForTimeout(2800);
+  const hero = await m.evaluate(() => {
+    const img = document.querySelector('.hero__media .carousel__track').getBoundingClientRect();
+    const h1 = document.querySelector('.hero__title').getBoundingClientRect();
+    const copy = document.querySelector('.hero__copy').getBoundingClientRect();
+    return { imgTop: img.top, imgH: img.height, imgW: img.width, copyTop: copy.top, h1Bottom: h1.bottom, vw: innerWidth };
+  });
+  check(hero.imgTop < 160 && hero.imgH > 220 && Math.round(hero.imgW) === hero.vw, `mobile hero: full-bleed photograph at the top (${Math.round(hero.imgH)}px tall)`);
+  check(hero.copyTop < hero.imgTop + hero.imgH && hero.h1Bottom < 844, 'mobile hero: copy sheet overlaps the photo edge; headline in the first screen');
+  // Action bar: hidden while hero CTAs are visible, shown mid-page, hidden at the enquiry section
+  const barHidden = () => m.locator('[data-actionbar]').evaluate((el) => el.hasAttribute('data-hidden'));
+  await m.evaluate(() => document.querySelector('.hero__ctas').scrollIntoView({ block: 'center', behavior: 'instant' }));
+  await m.waitForTimeout(600);
+  check(await barHidden(), 'action bar hides while the hero admissions buttons are on screen');
+  await m.evaluate(() => document.getElementById('programme').scrollIntoView({ behavior: 'instant' }));
+  await m.waitForTimeout(600);
+  check(!(await barHidden()), 'action bar appears once the hero buttons scroll away');
+  await m.evaluate(() => document.getElementById('apply').scrollIntoView({ behavior: 'instant' }));
+  await m.waitForTimeout(600);
+  check(await barHidden(), 'action bar hides again at the enquiry section');
+  await m.close();
+
+  // Desktop hero: photo bleeds to the right edge with the inset photograph
+  const d = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await d.goto(BASE, { waitUntil: 'networkidle' });
+  await d.waitForTimeout(2800);
+  const dh = await d.evaluate(() => {
+    const t = document.querySelector('.hero__media .carousel__track').getBoundingClientRect();
+    const inset = document.querySelector('.hero__inset');
+    return { right: t.right, vw: document.documentElement.clientWidth, inset: inset && getComputedStyle(inset).display !== 'none' && Number(getComputedStyle(inset).opacity) === 1 };
+  });
+  check(Math.abs(dh.right - dh.vw) <= 1 && dh.inset, 'desktop hero: photograph bleeds to the right edge with the inset photo');
+  await d.close();
+}
+
 await browser.close();
 console.log(failures ? `\n${failures} check(s) failed` : '\nAll checks passed');
 process.exit(failures ? 1 : 0);

@@ -20,19 +20,6 @@ export type CalendarItem = {
   unconfirmed?: boolean;
 };
 
-export type Outcome = {
-  grade: string;
-  /** Points exactly as recorded on the legacy site. Several conflict with the
-   * A=5…E=1 scale (e.g. "16 points – AAA"), so they are not rendered yet. */
-  recordedPoints?: number;
-  course: string;
-  institution?: string;
-  level?: string;
-  /** Identifiable details (name, photo) render only when this is true. */
-  consentVerified: boolean;
-  name?: string;
-};
-
 export const site = {
   name: 'BIA JUPEB',
   parent: "Boma's Intellectual Academy",
@@ -101,56 +88,9 @@ export const calendar: CalendarItem[] = [
   { label: 'Physical resumption', start: '2026-11-02' },
 ];
 
-export type OutcomeCategory = 'medicine' | 'law' | 'science' | 'business' | 'arts';
-
-export const outcomeCategories: { id: OutcomeCategory; label: string }[] = [
-  { id: 'medicine', label: 'Medicine & Health' },
-  { id: 'law', label: 'Law' },
-  { id: 'science', label: 'Sciences & Technology' },
-  { id: 'business', label: 'Business & Finance' },
-  { id: 'arts', label: 'Arts, Education & Social Sciences' },
-];
-
-/**
- * Anonymised outcomes transcribed from the testimonials published on the
- * legacy homepage (index.html, "Testimonials 2026"). Only grade, course,
- * institution and level are used; names, photos and recorded points stay in
- * the untouched legacy files until publication consent is verified.
- * `grade` is omitted where the legacy record gave none.
- */
-export const outcomes: (Outcome & { category: OutcomeCategory; featured?: boolean })[] = [
-  { grade: 'AAA', recordedPoints: 16, course: 'Law', institution: 'University of Lagos', level: '200 Level', category: 'law', featured: true, consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery (MBBS)', institution: 'University of Lagos', category: 'medicine', featured: true, consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery', institution: 'Federal University Oye-Ekiti', level: '200 Level', category: 'medicine', featured: true, consentVerified: false },
-  { grade: 'AAA', recordedPoints: 15, course: 'Dentistry (BDS)', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery (MBBS)', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery (MBBS)', category: 'medicine', consentVerified: false },
-  { grade: 'AAB', recordedPoints: 15, course: 'Philosophy', category: 'arts', consentVerified: false },
-  { grade: 'AAC', recordedPoints: 14, course: 'Political Science', category: 'arts', consentVerified: false },
-  { grade: 'AAC', recordedPoints: 14, course: 'Political Science', category: 'arts', consentVerified: false },
-  { grade: 'BBB', recordedPoints: 13, course: 'Data Science', level: '200 Level', category: 'science', consentVerified: false },
-  { grade: 'ABC', recordedPoints: 13, course: 'Accounting', institution: 'University of Lagos', level: '200 Level', category: 'business', consentVerified: false },
-  { grade: 'ABC', recordedPoints: 12, course: 'Doctor of Pharmacy', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: 'ADB', recordedPoints: 12, course: 'Business Administration', category: 'business', consentVerified: false },
-  { grade: 'CBC', recordedPoints: 11, course: 'Social Work', category: 'arts', consentVerified: false },
-  { grade: 'DBC', recordedPoints: 10, course: 'Business Administration', category: 'business', consentVerified: false },
-  { grade: 'CCD', recordedPoints: 9, course: 'Banking & Finance', institution: 'University of Lagos', level: '200 Level', category: 'business', consentVerified: false },
-  { grade: 'CCE', recordedPoints: 8, course: 'Insurance', category: 'business', consentVerified: false },
-  { grade: 'CCE', recordedPoints: 8, course: 'Educational Administration', category: 'arts', consentVerified: false },
-  { grade: '', recordedPoints: 10, course: 'Pharmacology', institution: 'Osun State University', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: '', recordedPoints: 13, course: 'Nursing', category: 'medicine', consentVerified: false },
-  { grade: '', course: 'European Studies', institution: 'University of Lagos', category: 'arts', consentVerified: false },
-  { grade: '', course: 'Health Education', institution: 'University of Lagos', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: '', course: 'Christian Religious Studies', institution: 'University of Lagos', level: '200 Level', category: 'arts', consentVerified: false },
-];
-
-/** Universities named in the recorded outcomes, with the courses recorded for each. */
-export const admissionsByInstitution = Object.entries(
-  outcomes.reduce<Record<string, string[]>>((acc, o) => {
-    if (o.institution && !(acc[o.institution] ??= []).includes(o.course)) acc[o.institution].push(o.course);
-    return acc;
-  }, {}),
-).map(([institution, courses]) => ({ institution, courses }));
+// Student outcomes now come from content/achievements/records.json.
+export { outcomeCategories, outcomes, admissionsByInstitution } from './achievements';
+export type { Outcome, OutcomeCategory } from './achievements';
 
 export const gradePoints = [
   ['A', 5],

@@ -65,6 +65,13 @@ function hero() {
     .from(split.lines, { yPercent: 110, duration: 1.05, ease: EASE_TEXT, stagger: 0.1 }, '<0.1')
     .fromTo(rest.slice(1), { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.09 }, '-=0.7')
     .set(art, { autoAlpha: 1 }, 0.3)
+    .fromTo(
+      '.sh__photo',
+      { clipPath: 'inset(12% 8% 12% 8%)' },
+      { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'expo.out', clearProps: 'clipPath' },
+      0.3,
+    )
+    .fromTo('.sh__medal', { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out' }, 0.8)
     .to(strokes, { drawSVG: '100%', duration: 1.6, ease: 'power2.inOut', stagger: { each: 0.02, from: 'end' } }, 0.3)
     .fromTo(centre, { autoAlpha: 0, scale: 0.6, transformOrigin: '50% 50%' }, { autoAlpha: 1, scale: 1, duration: 0.9, ease: 'back.out(1.8)' }, 1.2)
     .fromTo(caption, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7 }, 1.4);
@@ -89,6 +96,20 @@ function plates(desktop: boolean) {
       scrollTrigger: { trigger: '.plates', start: 'top bottom', end: 'bottom top', scrub: true },
     });
   }
+}
+
+/** Portrait cards rise in sequence; the photo band opens. */
+function portraits() {
+  const cards = $$('.portrait');
+  gsap.set(cards, { autoAlpha: 0 });
+  onEnter($('.portrait')!.closest('[data-carousel]')!, () =>
+    gsap.fromTo(cards, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out', stagger: 0.08 }),
+  'top 80%');
+  const items = $$('.band__item');
+  gsap.set(items, { autoAlpha: 0 });
+  onEnter($('.band')!, () =>
+    gsap.fromTo(items, { autoAlpha: 0, clipPath: 'inset(0% 0% 100% 0%)' }, { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.out', stagger: 0.12, clearProps: 'clipPath' }),
+  'top 85%');
 }
 
 /** Ledger rows reveal in batches as they scroll in. */
@@ -155,6 +176,7 @@ export function initSuccessPage() {
     }
     safely('headings', '.head__label, .head__title, .head__intro', headings);
     safely('plates', '.plate, .plate *', () => plates(desktop));
+    safely('portraits', '.portrait, .band__item', portraits);
     safely('ledger', '.ledger__row, [data-filters]', ledger);
     safely('universities', '.uni, .uni *', universities);
     safely('voices', '.voices__text, .voices__mark, .voices__alumni', voices);
