@@ -467,13 +467,18 @@
       "sourceSha256": "3e85163dc8e7260e4f8d8b5b2550bd7ba83730ae9150f10c69b7a2a5d5fb1428",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-14",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: EMMANUEL EKA. Photo received and matched to the V1 portrait. NOT PUBLISHED until: written consent (name + photo) is recorded; session confirmed; points rule confirmed (points left null). On consent: copy originals/v1-019-boma-2026-10.jpg to src/assets/achievements/published/ and set publishedImage.",
+      "publishedImage": "v1-019-boma-2026-10.jpg",
+      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: EMMANUEL EKA. Photo received and matched to the V1 portrait. Published 2026-10-14 with the user's explicit approval, on Boma's academy attestation. Still unconfirmed: session; points (left null).",
       "names": null
     },
     {
@@ -642,13 +647,18 @@
       "sourceSha256": "cb556b311eca0a338a9f96823853021d6706e5ea32095e3595f14554687d1f81",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-14",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: AMODU RAFIAT BUSAYOMI. Photo received and matched to the V1 portrait. NOT PUBLISHED until: written consent (name + photo) is recorded; session confirmed; points rule confirmed (points left null); spelling of the name confirmed (Rofiat/Rafiat, Oluwabusayomi/Busayomi). On consent: copy originals/v1-026-boma-2026-10.jpg to src/assets/achievements/published/ and set publishedImage.",
+      "publishedImage": "v1-026-boma-2026-10.jpg",
+      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: AMODU RAFIAT BUSAYOMI. Photo received and matched to the V1 portrait. Published 2026-10-14 with the user's explicit approval, on Boma's academy attestation. Still unconfirmed: session; points (left null); name spelling (Boma's spelling used).",
       "names": null
     },
     {
@@ -692,13 +702,18 @@
       "sourceSha256": "b73191fddcfec014e2ffa639844f83a771581595f34f51c29e840f257a309b25",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-14",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: Onasanya Darasimi. Photo received and matched to the V1 portrait. NOT PUBLISHED until: written consent (name + photo) is recorded; session confirmed; points rule confirmed (points left null). On consent: copy originals/v1-028-boma-2026-10.jpg to src/assets/achievements/published/ and set publishedImage.",
+      "publishedImage": "v1-028-boma-2026-10.jpg",
+      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: Onasanya Darasimi. Photo received and matched to the V1 portrait. Published 2026-10-14 with the user's explicit approval, on Boma's academy attestation. Still unconfirmed: session; points (left null).",
       "names": null
     },
     {

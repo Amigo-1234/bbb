@@ -241,12 +241,16 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const names = [...legacy.matchAll(/Congratulations to you!\s*(.+?)\s*BIA JUPEB Alumn/g)]
     .map((m) => m[1].trim())
     .filter((n) => n.length > 3);
+  // Students whose records are consent-granted (name allowed) may be named; every other legacy name must stay out.
+  const granted = JSON.parse(readFileSync(new URL('../content/achievements/records.json', import.meta.url), 'utf8')).records
+    .filter((r) => r.consent.status === 'granted' && (r.consent.allow ?? ['name']).includes('name'))
+    .flatMap((r) => [r.name, (r.review ?? '').match(/V1 caption name: ([^.]+)\./)?.[1]].filter(Boolean).map((n) => n.toLowerCase()));
   const page = await browser.newPage();
   let leaked = [];
   for (const url of [BASE, STORIES]) {
     await page.goto(url, { waitUntil: 'networkidle' });
     const html = (await page.content()).toLowerCase();
-    leaked.push(...names.filter((n) => html.includes(n.toLowerCase())));
+    leaked.push(...names.filter((n) => !granted.includes(n.toLowerCase()) && html.includes(n.toLowerCase())));
   }
   check(names.length > 10 && leaked.length === 0, `privacy: none of ${names.length} legacy student names published ${leaked.join(', ')}`);
   await page.close();
@@ -326,7 +330,9 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : all.push(join(d, f))));
   walk(dist);
   const text = all.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(f, 'utf8')).join('\n').toLowerCase();
-  const leaked = [...new Set(pendingNames.filter((n) => text.includes(n.toLowerCase())))];
+  // Words that are also part of a consented name (e.g. a shared first name) are not evidence of a leak.
+  const consentedWords = recs.filter((r) => r.consent.status === 'granted' && r.name).flatMap((r) => r.name.toLowerCase().split(/\s+/));
+  const leaked = [...new Set(pendingNames.filter((n) => !consentedWords.includes(n.toLowerCase()) && text.includes(n.toLowerCase())))];
   check(recs.length === 43 && leaked.length === 0, `privacy: no unconsented student name (${pendingNames.length} name tokens) appears anywhere in the build ${leaked.slice(0, 5).join(', ')}`);
   check(!all.some((f) => /testii|originals|achievements/i.test(f)), 'privacy: no archived achievement image is emitted into the build');
   const publishedDir = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
