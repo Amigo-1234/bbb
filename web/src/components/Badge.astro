@@ -1,0 +1,129 @@
+---
+/**
+ * The official BIA badge: the BIA symbol (traced from the high-resolution logo
+ * in BIA's 2026/27 payment advice PDFs) used the way BIA's own flyers use it —
+ * white on a BIA-red tile. Treatments:
+ *  - tile:  white symbol on a red rounded square (header, favicon, small marks)
+ *  - seal:  the tile inside a ring reading "Boma's Intellectual Academy · BIA JUPEB"
+ *  - mark:  the bare symbol in currentColor (watermarks, clipped by their section)
+ * Decorative by default; pass `label` when the badge carries meaning.
+ */
+import symbolRaw from '../assets/brand/bia-symbol.svg?raw';
+
+interface Props {
+  variant?: 'tile' | 'seal' | 'mark';
+  size?: number;
+  label?: string;
+  class?: string;
+  /** Seal ring colour scheme. */
+  tone?: 'red' | 'light' | 'ink';
+}
+const { variant = 'tile', size = 40, label, class: className, tone = 'red' } = Astro.props;
+const viewBox = symbolRaw.match(/viewBox="([^"]+)"/)![1];
+const path = symbolRaw.match(/<path[^>]*\/>/)![0];
+const [, , vw, vh] = viewBox.split(' ').map(Number);
+const a11y = label ? { role: 'img' as const, 'aria-label': label } : { 'aria-hidden': 'true' as const };
+const ring = "BOMA’S INTELLECTUAL ACADEMY  •  BIA JUPEB  •  ";
+const uid = `seal-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+{
+  variant === 'tile' && (
+    <span class:list={['badge-tile', className]} style={`--size:${size}px`} {...a11y}>
+      <svg viewBox={viewBox} width={Math.round(size * 0.68)} height={Math.round((size * 0.68 * vh) / vw)} set:html={path} />
+    </span>
+  )
+}
+{
+  variant === 'mark' && (
+    <svg class:list={['badge-mark', className]} viewBox={viewBox} width={size} height={Math.round((size * vh) / vw)} data-clip {...a11y} set:html={path} />
+  )
+}
+{
+  variant === 'seal' && (
+    <svg class:list={['badge-seal', `badge-seal--${tone}`, className]} viewBox="0 0 200 200" width={size} height={size} {...a11y}>
+      <defs>
+        <path id={uid} d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" />
+      </defs>
+      <circle cx="100" cy="100" r="98" class="badge-seal__bg" />
+      <circle cx="100" cy="100" r="92" class="badge-seal__rule" fill="none" stroke-width="1" />
+      <text class="badge-seal__ring">
+        <textPath href={`#${uid}`} textLength="486" lengthAdjust="spacing">{ring}</textPath>
+      </text>
+      <circle cx="100" cy="100" r="62" class="badge-seal__rule" fill="none" stroke-width="1" />
+      <rect x="54" y="54" width="92" height="92" rx="18" class="badge-seal__tile" />
+      <g class="badge-seal__symbol" transform={`translate(64 ${66 + (72 - (72 * vh) / vw) / 2}) scale(${72 / vw})`} set:html={path} />
+    </svg>
+  )
+}
+
+<style>
+  .badge-tile {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 22%;
+    background: var(--bia-red);
+    color: #fff;
+    fill: #fff;
+  }
+  .badge-tile svg {
+    display: block;
+    margin-top: 4%;
+  }
+  .badge-mark {
+    display: block;
+    fill: currentColor;
+  }
+  .badge-seal {
+    display: block;
+    flex: none;
+  }
+  .badge-seal__ring {
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+  }
+  .badge-seal__tile {
+    fill: var(--bia-red);
+  }
+  .badge-seal__symbol {
+    fill: #fff;
+  }
+  .badge-seal--red .badge-seal__bg {
+    fill: var(--paper);
+  }
+  .badge-seal--red .badge-seal__ring {
+    fill: var(--bia-red);
+  }
+  .badge-seal--red .badge-seal__rule {
+    stroke: var(--bia-red);
+  }
+  .badge-seal--light .badge-seal__bg {
+    fill: var(--bia-red);
+  }
+  .badge-seal--light .badge-seal__ring {
+    fill: #fff;
+  }
+  .badge-seal--light .badge-seal__rule {
+    stroke: rgb(255 255 255 / 0.6);
+  }
+  .badge-seal--light .badge-seal__tile {
+    fill: #fff;
+  }
+  .badge-seal--light .badge-seal__symbol {
+    fill: var(--bia-red);
+  }
+  .badge-seal--ink .badge-seal__bg {
+    fill: var(--ink);
+  }
+  .badge-seal--ink .badge-seal__ring {
+    fill: var(--on-ink);
+  }
+  .badge-seal--ink .badge-seal__rule {
+    stroke: rgb(255 255 255 / 0.3);
+  }
+</style>

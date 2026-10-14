@@ -4,9 +4,23 @@ import SectionHead from '../components/SectionHead.astro';
 import Icon from '../components/Icon.astro';
 import Laurel from '../components/Laurel.astro';
 import Logo from '../components/Logo.astro';
-import { admissionsByInstitution, address, outcomeCategories, outcomes, primaryContact } from '../data/site';
+import Carousel from '../components/Carousel.astro';
+import AchievementCard from '../components/AchievementCard.astro';
+import { Picture } from 'astro:assets';
+import { admissionsByInstitution, outcomeCategories, outcomes, primaryContact } from '../data/site';
+import { publishedAchievements } from '../data/achievements';
+import classroom from '../assets/photos/classroom.png';
+import class011 from '../assets/photos/class-011.png';
+import class013 from '../assets/photos/class-013.png';
+import class014 from '../assets/photos/class-014.png';
 
 const featured = outcomes.filter((o) => o.featured);
+const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
+// Identifiable portraits appear only for consent-approved records (none yet);
+// until then the strip shows anonymous cards for the strongest recorded grades.
+const consentedPortraits = publishedAchievements.filter((r) => r.kind === 'student-portrait' && r.image);
+const consentedGraphics = publishedAchievements.filter((r) => r.kind === 'congratulations-graphic' && r.image);
+const anonymousPortraits = outcomes.filter((o) => o.grade && !o.consentVerified).slice(0, 8);
 const categoryLabel = Object.fromEntries(outcomeCategories.map((c) => [c.id, c.label]));
 const tel = `tel:${primaryContact.phone}`;
 ---
@@ -26,15 +40,28 @@ const tel = `tel:${primaryContact.phone}`;
           JUPEB grades and university places achieved by BIA JUPEB students, as recorded by BIA JUPEB. We celebrate
           every one of them.
         </p>
-        <div class="sh__ctas">
+        <div class="sh__ctas" data-cta-zone>
           <a class="btn" href={tel} data-cta="stories-hero-enquire"><Icon name="phone" size={18} />Enquire about JUPEB admission</a>
           <a class="btn btn--outline" href="/#programme" data-cta="stories-hero-programmes">Explore programmes</a>
         </div>
         <p class="sh__privacy">Names, photographs and testimonials appear only with each student’s written consent.</p>
       </div>
-      <div class="sh__art" aria-hidden="true">
-        <Laurel class="sh__laurel" size={360} centre="AAA" />
-        <p class="sh__art-caption">Congratulations</p>
+      <div class="sh__art">
+        <figure class="sh__photo">
+          <Picture
+            src={classroom}
+            formats={formats}
+            widths={[480, 800, 1280]}
+            sizes="(min-width: 960px) 50vw, 100vw"
+            alt="A full classroom of BIA JUPEB students at work"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+        <div class="sh__medal" aria-hidden="true">
+          <Laurel class="sh__laurel" size={200} centre="AAA" />
+          <p class="sh__art-caption">Congratulations</p>
+        </div>
       </div>
     </div>
   </section>
@@ -62,10 +89,46 @@ const tel = `tel:${primaryContact.phone}`;
     </div>
   </section>
 
-  <!-- 02 ALL RESULTS -->
-  <section class="section" aria-labelledby="results">
+  <!-- 02 STUDENT PORTRAITS -->
+  <section class="section" aria-labelledby="portraits">
     <div class="wrap">
-      <SectionHead index="02" eyebrow="Every recorded result" title="The honours roll, course by course." id="results">
+      <SectionHead index="02" eyebrow="Student portraits" title="The faces behind the grades." id="portraits">
+        <p>Portraits appear here once each student has given written permission. Until then, we celebrate their results anonymously.</p>
+      </SectionHead>
+      <Carousel label="Student achievements" variant="showcase">
+        {consentedPortraits.map((r) => (
+          <div data-slide class="portrait">
+            <AchievementCard grade={r.grade ?? ''} course={r.course ?? ''} institution={r.university ?? undefined} level={r.level ?? undefined} year={r.year ?? undefined} name={r.name ?? undefined} image={r.image} />
+          </div>
+        ))}
+        {anonymousPortraits.map((o) => (
+          <div data-slide class="portrait">
+            <AchievementCard grade={o.grade} course={o.course} institution={o.institution} level={o.level} year={o.year} />
+          </div>
+        ))}
+      </Carousel>
+    </div>
+  </section>
+
+  {consentedGraphics.length > 0 && (
+    <section class="section section--tint" aria-labelledby="graphics">
+      <div class="wrap">
+        <SectionHead index="—" eyebrow="Congratulations" title="Celebrating our alumni." id="graphics" />
+        <ul class="graphics">
+          {consentedGraphics.map((r) => (
+            <li>
+              <Picture src={r.image!} formats={formats} widths={[480, 900]} sizes="(min-width: 960px) 33vw, 90vw" alt={`Congratulations graphic for ${r.name ?? 'a BIA JUPEB alumnus'}`} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- 03 ALL RESULTS -->
+  <section class="section section--tint" aria-labelledby="results">
+    <div class="wrap">
+      <SectionHead index="03" eyebrow="Every recorded result" title="The honours roll, course by course." id="results">
         <p>Filter by field of study. Grades are shown as recorded; entries without a recorded grade show the admission achieved.</p>
       </SectionHead>
 
@@ -94,10 +157,26 @@ const tel = `tel:${primaryContact.phone}`;
     </div>
   </section>
 
-  <!-- 03 ADMISSIONS BY UNIVERSITY -->
-  <section class="section section--tint" aria-labelledby="universities">
+  <!-- PHOTO BAND -->
+  <section class="band" aria-label="Classes at BIA JUPEB">
+    <ul class="band__grid">
+      {[
+        { src: class013, alt: 'Students concentrating on written work' },
+        { src: class011, alt: 'Students seated at long desks during class' },
+        { src: class014, alt: 'Students writing while a tutor looks on' },
+      ].map((p) => (
+        <li class="band__item">
+          <Picture src={p.src} formats={formats} widths={[480, 800]} sizes="(min-width: 720px) 33vw, 100vw" alt={p.alt} />
+        </li>
+      ))}
+    </ul>
+    <p class="band__caption wrap">Every result starts here — in class, week after week.</p>
+  </section>
+
+  <!-- 04 ADMISSIONS BY UNIVERSITY -->
+  <section class="section" aria-labelledby="universities">
     <div class="wrap">
-      <SectionHead index="03" eyebrow="University admissions" title="Where our students went next." id="universities">
+      <SectionHead index="04" eyebrow="University admissions" title="Where our students went next." id="universities">
         <p>Universities named in BIA JUPEB’s recorded outcomes, with the courses recorded for each.</p>
       </SectionHead>
       <div class="unis">
@@ -116,7 +195,7 @@ const tel = `tel:${primaryContact.phone}`;
   <!-- 04 TESTIMONIALS & CONSENT -->
   <section class="section" aria-labelledby="voices">
     <div class="wrap voices">
-      <SectionHead index="04" eyebrow="In their own words" title="Testimonials, published with consent." id="voices" />
+      <SectionHead index="05" eyebrow="In their own words" title="Testimonials, published with consent." id="voices" />
       <div class="voices__body">
         <svg class="voices__mark" viewBox="0 0 48 36" aria-hidden="true">
           <path d="M0 36V20C0 8 7 1 19 0v7c-6 1-10 5-10 12h10v17Zm29 0V20C29 8 36 1 48 0v7c-6 1-10 5-10 12h10v17Z" />
@@ -134,7 +213,7 @@ const tel = `tel:${primaryContact.phone}`;
   </section>
 
   <!-- CTA -->
-  <section class="cta" aria-labelledby="cta-title">
+  <section class="cta" aria-labelledby="cta-title" data-cta-zone>
     <div class="wrap cta__grid">
       <div>
         <p class="eyebrow cta__eyebrow">Admissions</p>
@@ -143,7 +222,7 @@ const tel = `tel:${primaryContact.phone}`;
       <div class="cta__actions">
         <a class="btn" href={tel} data-cta="stories-cta-enquire"><Icon name="phone" size={18} />Enquire about JUPEB admission</a>
         <a class="btn btn--on-ink" href="/#programme" data-cta="stories-cta-programmes">Explore programmes<Icon name="arrow-right" size={18} /></a>
-        <a class="cta__visit with-icon" href={address.mapsUrl} rel="noopener" target="_blank"><Icon name="pin" size={16} />Visit the Bariga centre</a>
+        <a class="cta__visit with-icon" href="/#location"><Icon name="pin" size={16} />Visit the centre in Akoka</a>
       </div>
     </div>
   </section>
@@ -205,30 +284,154 @@ const tel = `tel:${primaryContact.phone}`;
   }
   .sh__art {
     position: relative;
-    justify-self: center;
-    width: min(78vw, 400px);
+  }
+  .sh__photo {
+    margin: 0;
+    overflow: hidden;
+  }
+  .sh__photo :global(img) {
+    width: 100%;
+    aspect-ratio: 5 / 4;
+    object-fit: cover;
+  }
+  .sh__medal {
+    position: absolute;
+    display: grid;
+    justify-items: center;
+    width: 148px;
+    padding: var(--s-3) var(--s-2) var(--s-3);
+    background: var(--paper);
+    border-radius: 999px 999px var(--radius) var(--radius);
+    box-shadow: 0 16px 36px -22px rgb(21 23 30 / 0.5);
     color: var(--brass);
   }
-  .sh__art :global(.sh__laurel) {
+  .sh__medal :global(.sh__laurel) {
     width: 100%;
   }
-  .sh__art :global(.laurel__centre) {
+  .sh__medal :global(.laurel__centre) {
     fill: var(--crimson);
   }
   .sh__art-caption {
-    margin-top: calc(-1 * var(--s-5));
-    text-align: center;
+    margin-top: -0.6rem;
     font-family: var(--serif);
     font-style: italic;
-    font-size: var(--step-2);
+    font-size: 0.9rem;
+    white-space: nowrap;
     color: var(--ink-2);
   }
+  @media (max-width: 959px) {
+    .sh {
+      padding-top: 0;
+    }
+    .sh__art {
+      order: -1;
+      margin-inline: calc(-1 * var(--gutter));
+    }
+    .sh__photo :global(img) {
+      max-height: 46vh;
+    }
+    .sh__medal {
+      right: var(--gutter);
+      bottom: 3.75rem;
+      width: 124px;
+    }
+    .sh__art-caption {
+      font-size: 0.8rem;
+    }
+    .sh__copy {
+      position: relative;
+      z-index: 1;
+      margin: -2.75rem calc(-1 * var(--gutter) + var(--s-3)) 0;
+      padding: var(--s-5) calc(var(--gutter) - var(--s-3)) 0;
+      background: var(--paper);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+  }
+  @media (min-width: 960px) {
+    .sh__art {
+      margin-right: calc(-1 * max(var(--gutter), (100vw - var(--max)) / 2));
+    }
+    .sh__photo {
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+    .sh__photo :global(img) {
+      aspect-ratio: 6 / 5;
+      max-height: min(76vh, 720px);
+    }
+    .sh__medal {
+      left: calc(-1 * var(--s-6));
+      bottom: calc(-1 * var(--s-5));
+    }
+  }
+
+  /* Portraits */
+  .portrait {
+    min-width: 0;
+  }
+
+  /* Consented congratulations graphics: shown whole, never cropped */
+  .graphics {
+    display: grid;
+    gap: var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .graphics :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  @media (min-width: 720px) {
+    .graphics {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Photo band */
+  .band {
+    padding-block: 0 var(--s-6);
+    background: var(--paper);
+  }
+  .band__grid {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .band__item {
+    overflow: hidden;
+  }
+  .band__item :global(img) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+  .band__caption {
+    margin-top: var(--s-4);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: var(--step-1);
+    color: var(--ink-2);
+  }
+  @media (min-width: 720px) {
+    .band__grid {
+      grid-template-columns: 1.3fr 1fr 1fr;
+    }
+    .band__item :global(img) {
+      aspect-ratio: auto;
+      height: 340px;
+    }
+  }
+
   @media (min-width: 960px) {
     .sh {
       padding-top: var(--s-8);
     }
     .sh__grid {
-      grid-template-columns: 7fr 5fr;
+      grid-template-columns: 5fr 6fr;
+      gap: var(--s-8);
     }
   }
 

@@ -20,137 +20,57 @@ export type CalendarItem = {
   unconfirmed?: boolean;
 };
 
-export type Outcome = {
-  grade: string;
-  /** Points exactly as recorded on the legacy site. Several conflict with the
-   * A=5…E=1 scale (e.g. "16 points – AAA"), so they are not rendered yet. */
-  recordedPoints?: number;
-  course: string;
-  institution?: string;
-  level?: string;
-  /** Identifiable details (name, photo) render only when this is true. */
-  consentVerified: boolean;
-  name?: string;
-};
-
 export const site = {
   name: 'BIA JUPEB',
   parent: "Boma's Intellectual Academy",
+  /** BIA's own descriptor, printed on every official 2026/27 document. */
+  descriptor: 'Educational Consultancy, A-Level Programmes & Admission Services',
   session: '2026/2027',
   programmeLength: '8–9 months',
   url: 'https://biajupeb.com.ng',
-  facebook:
-    'https://www.facebook.com/profile.php?id=100064129927723',
+  facebook: 'https://www.facebook.com/profile.php?id=100064129927723',
+  /** Handle shown on BIA's directions video. */
+  tiktok: 'https://www.tiktok.com/@bomaacademylimited',
 };
 
-/** confirm: the legacy site lists 7+ different numbers; these are the ones
- * published with a named role on the current homepage. */
+/** Official contacts confirmed by Boma (October 2026); both appear beside the
+ * WhatsApp icon on BIA's 2026/27 flyers. */
 export const contacts: Contact[] = [
-  { role: 'Chief Executive', name: 'Hon. Boma', phone: '+2347012388184', display: '0701 238 8184' },
-  { role: 'Personal Assistant', name: 'Miss Esther', phone: '+2347039834168', display: '0703 983 4168' },
-  { role: 'JUPEB Secretary', name: 'Miss Gloria', phone: '+2348021047735', display: '0802 104 7735' },
-  { role: 'Reception', phone: '+2349167505810', display: '0916 750 5810' },
+  { role: 'Admissions · Boma’s line', name: 'Boma', phone: '+2347012388184', display: '0701 238 8184' },
+  { role: 'Admissions', phone: '+2348164329204', display: '0816 432 9204' },
 ];
 
-/** The number used in every legacy footer. */
 export const primaryContact = contacts[0];
+export const whatsapp = 'https://wa.me/2347012388184';
 
-/** confirm: transcribed as published ("Lady Lag."). */
+/** Official centre address confirmed by Boma (October 2026). The landmark is
+ * the school named in BIA's directions video and shown on the gate sign. */
 export const address = {
-  lines: ['56 Igi Olugbin St.', 'Shomolu Pedro Road, Lady Lag.', 'Bariga, Lagos'],
-  landmark: 'Directly opposite AP petrol station',
-  mapsUrl:
-    'https://www.google.com/maps/search/?api=1&query=56+Igi+Olugbin+Street+Bariga+Lagos',
+  name: 'BIA JUPEB Academy / Tutorial Centre',
+  street: '12 Ameen Street',
+  locality: 'Abule-Oja, Akoka',
+  region: 'Lagos',
+  country: 'Nigeria',
+  lines: ['12 Ameen Street', 'Abule-Oja, Akoka', 'Lagos, Nigeria'],
+  short: '12 Ameen Street, Abule-Oja, Akoka, Lagos',
+  landmark: 'Seventh Day Adventist Primary and Secondary School, Abule-Oja',
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=12+Ameen+Street%2C+Abule-Oja%2C+Akoka%2C+Lagos%2C+Nigeria',
 };
 
-export const fees = {
-  registration: 40000,
-  programmes: [
-    {
-      id: 'science',
-      name: 'Science',
-      blurb: 'Intensive tutorials, tests and academic monitoring.',
-      school: 437000,
-      tutorial: 250000,
-      total: 687000,
-    },
-    {
-      id: 'non-science',
-      name: 'Non-Science',
-      sub: 'Art & Commercial',
-      blurb: 'Full academic support for Art and Commercial students.',
-      school: 421000,
-      tutorial: 250000,
-      total: 671000,
-    },
-  ],
-  plan: [
-    { amount: 200000, label: 'Initial deposit + registration' },
-    { amount: 200000, label: 'Upon resumption' },
-    { amount: null, label: 'Balance', when: 'Paid in January' },
-  ],
-  planNote:
-    'Students who do not meet the initial payment must pay ₦400,000 before resumption.',
-};
+// Official 2026/27 fees and tutorial package now live in fees.ts.
+export { registration, programmes, instalments, instalmentNote, tutorialPackage } from './fees';
 
+/** Only dates printed in BIA's 2026/27 documents. Earlier V1 dates (registration window,
+ * online resumption, entrance assessment) and the unconfirmed 2 November physical
+ * resumption were removed pending Boma's confirmation. */
 export const calendar: CalendarItem[] = [
-  { label: 'Registration', start: '2026-04-27', end: '2026-06-12' },
-  { label: 'Online resumption', start: '2026-05-04' },
-  { label: 'Entrance assessment', start: '2026-08-29' },
-  { label: 'Special tutorials', start: '2026-08-31', unconfirmed: true },
-  { label: 'Physical resumption', start: '2026-11-02' },
+  { label: 'Free marathon class & online tutorials', start: '2026-10-05', end: '2026-10-31' },
+  { label: 'Fee balance due — before Second Semester resumption', start: '2027-05-04' },
 ];
 
-export type OutcomeCategory = 'medicine' | 'law' | 'science' | 'business' | 'arts';
-
-export const outcomeCategories: { id: OutcomeCategory; label: string }[] = [
-  { id: 'medicine', label: 'Medicine & Health' },
-  { id: 'law', label: 'Law' },
-  { id: 'science', label: 'Sciences & Technology' },
-  { id: 'business', label: 'Business & Finance' },
-  { id: 'arts', label: 'Arts, Education & Social Sciences' },
-];
-
-/**
- * Anonymised outcomes transcribed from the testimonials published on the
- * legacy homepage (index.html, "Testimonials 2026"). Only grade, course,
- * institution and level are used; names, photos and recorded points stay in
- * the untouched legacy files until publication consent is verified.
- * `grade` is omitted where the legacy record gave none.
- */
-export const outcomes: (Outcome & { category: OutcomeCategory; featured?: boolean })[] = [
-  { grade: 'AAA', recordedPoints: 16, course: 'Law', institution: 'University of Lagos', level: '200 Level', category: 'law', featured: true, consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery (MBBS)', institution: 'University of Lagos', category: 'medicine', featured: true, consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery', institution: 'Federal University Oye-Ekiti', level: '200 Level', category: 'medicine', featured: true, consentVerified: false },
-  { grade: 'AAA', recordedPoints: 15, course: 'Dentistry (BDS)', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery (MBBS)', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: 'AAA', recordedPoints: 16, course: 'Medicine & Surgery (MBBS)', category: 'medicine', consentVerified: false },
-  { grade: 'AAB', recordedPoints: 15, course: 'Philosophy', category: 'arts', consentVerified: false },
-  { grade: 'AAC', recordedPoints: 14, course: 'Political Science', category: 'arts', consentVerified: false },
-  { grade: 'AAC', recordedPoints: 14, course: 'Political Science', category: 'arts', consentVerified: false },
-  { grade: 'BBB', recordedPoints: 13, course: 'Data Science', level: '200 Level', category: 'science', consentVerified: false },
-  { grade: 'ABC', recordedPoints: 13, course: 'Accounting', institution: 'University of Lagos', level: '200 Level', category: 'business', consentVerified: false },
-  { grade: 'ABC', recordedPoints: 12, course: 'Doctor of Pharmacy', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: 'ADB', recordedPoints: 12, course: 'Business Administration', category: 'business', consentVerified: false },
-  { grade: 'CBC', recordedPoints: 11, course: 'Social Work', category: 'arts', consentVerified: false },
-  { grade: 'DBC', recordedPoints: 10, course: 'Business Administration', category: 'business', consentVerified: false },
-  { grade: 'CCD', recordedPoints: 9, course: 'Banking & Finance', institution: 'University of Lagos', level: '200 Level', category: 'business', consentVerified: false },
-  { grade: 'CCE', recordedPoints: 8, course: 'Insurance', category: 'business', consentVerified: false },
-  { grade: 'CCE', recordedPoints: 8, course: 'Educational Administration', category: 'arts', consentVerified: false },
-  { grade: '', recordedPoints: 10, course: 'Pharmacology', institution: 'Osun State University', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: '', recordedPoints: 13, course: 'Nursing', category: 'medicine', consentVerified: false },
-  { grade: '', course: 'European Studies', institution: 'University of Lagos', category: 'arts', consentVerified: false },
-  { grade: '', course: 'Health Education', institution: 'University of Lagos', level: '200 Level', category: 'medicine', consentVerified: false },
-  { grade: '', course: 'Christian Religious Studies', institution: 'University of Lagos', level: '200 Level', category: 'arts', consentVerified: false },
-];
-
-/** Universities named in the recorded outcomes, with the courses recorded for each. */
-export const admissionsByInstitution = Object.entries(
-  outcomes.reduce<Record<string, string[]>>((acc, o) => {
-    if (o.institution && !(acc[o.institution] ??= []).includes(o.course)) acc[o.institution].push(o.course);
-    return acc;
-  }, {}),
-).map(([institution, courses]) => ({ institution, courses }));
+// Student outcomes now come from content/achievements/records.json.
+export { outcomeCategories, outcomes, admissionsByInstitution } from './achievements';
+export type { Outcome, OutcomeCategory } from './achievements';
 
 export const gradePoints = [
   ['A', 5],
@@ -169,7 +89,7 @@ export const combinations = [
 export const faqs = [
   {
     q: 'Can I register with an awaiting result?',
-    a: 'Yes. Candidates awaiting WAEC, NECO or NABTEB results can register, but your O-Level requirements must be complete before final JUPEB registration closes. Bring a recent passport photograph, a valid ID if available, and your O-Level result or evidence of registration.',
+    a: "Yes — awaiting results are acceptable. To register you need the full ₦45,000 registration fee, your O'Level result (or awaiting result), your National Identification Number (NIN) and your birth certificate.",
   },
   {
     q: 'How are JUPEB points calculated?',
@@ -189,7 +109,11 @@ export const faqs = [
   },
   {
     q: 'Can I pay in instalments?',
-    a: 'Yes. You can pay in full or follow the instalment plan: ₦200,000 with registration, ₦200,000 on resumption, and the balance in January.',
+    a: 'Yes. The 2026/27 programme fee can be paid in three instalments: upon registration (before the BIA Entrance Examination), upon resumption (by January), and the balance on or before 4 May 2027, before Second Semester resumption. The admissions office confirms each amount. All payments are non-refundable.',
+  },
+  {
+    q: 'Can I join only the physical tutorials?',
+    a: "Yes. The Physical Tutorial Services Package is for students who want to join BIA's physical tutorials only — including students from other institutions. It costs ₦150,000 from now until the exam, or ₦25,000 per month, plus a ₦5,000 tutorial registration form fee. It is separate from the full JUPEB admission programme, which already includes physical tutorials.",
   },
   {
     q: 'Do you provide past questions?',

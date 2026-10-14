@@ -1,0 +1,204 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Timetable from '../components/Timetable.astro';
+import { firstSemester, preResumption } from '../data/timetable';
+import { naira, tutorialPackage } from '../data/fees';
+import { primaryContact, site } from '../data/site';
+import { docs } from '../data/documents';
+
+const panels = [
+  {
+    tt: firstSemester,
+    doc: docs.timetableFirst,
+    tab: 'First semester',
+    sub: 'Physical classes',
+  },
+  {
+    tt: preResumption,
+    doc: docs.timetablePre,
+    tab: 'Before resumption',
+    sub: 'Free online from 5 Oct',
+  },
+];
+---
+
+<Base
+  title={`JUPEB Class Timetable ${site.session} — Physical & Online Tutorials | BIA JUPEB`}
+  description="BIA JUPEB's official 2026/27 timetable: first semester physical classes at UNILAG, free online tutorials from 5 October, Saturday tests and SFS marathon classes."
+>
+  <section class="th" aria-labelledby="th-title">
+    <div class="wrap th__inner">
+      <p class="eyebrow">Class timetable · {site.session} session</p>
+      <h1 id="th-title" class="th__title">Your week at <em>BIA JUPEB.</em></h1>
+      <p class="lead">
+        The official timetable, day by day — readable on any phone. Today’s classes are highlighted.
+      </p>
+      <div class="th__ctas" data-cta-zone>
+        <a class="btn" href="/fees#tutorials" data-cta="timetable-hero-tutorials">
+          Physical tutorials from {naira(tutorialPackage.monthly.amount)}/month<Icon name="arrow-right" size={18} />
+        </a>
+        <a class="btn btn--outline" href={`tel:${primaryContact.phone}`} data-cta="timetable-hero-call">
+          <Icon name="phone" size={18} />Ask admissions
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-label="Timetables">
+    <div class="wrap">
+      <div class="tabs" role="tablist" aria-label="Choose a timetable" hidden data-tabs>
+        {panels.map((p, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${p.tt.id}`}
+            aria-controls={`panel-${p.tt.id}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+          >
+            <strong>{p.tab}</strong>
+            <small>{p.sub}</small>
+          </button>
+        ))}
+      </div>
+
+      {panels.map((p) => (
+        <section class="panel" id={`panel-${p.tt.id}`} aria-label={p.tab} data-panel>
+          <h2 class="panel__title">{p.tab}<span> · {p.sub}</span></h2>
+          <Timetable timetable={p.tt} doc={p.doc} />
+        </section>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<script>
+  // Progressive enhancement: without JS both timetables are shown in full.
+  const list = document.querySelector<HTMLElement>('[data-tabs]');
+  if (list) {
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')!)!);
+    const select = (i: number, focus = false) => {
+      tabs.forEach((t, j) => {
+        t.setAttribute('aria-selected', String(i === j));
+        t.tabIndex = i === j ? 0 : -1;
+        panels[j].hidden = i !== j;
+      });
+      if (focus) tabs[i].focus();
+    };
+    panels.forEach((p, j) => {
+      p.setAttribute('role', 'tabpanel');
+      p.removeAttribute('aria-label');
+      p.setAttribute('aria-labelledby', tabs[j].id);
+    });
+    list.hidden = false;
+    document.documentElement.classList.add('tabs-ready');
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(i));
+      t.addEventListener('keydown', (e) => {
+        const k = e.key;
+        if (k === 'ArrowRight' || k === 'ArrowLeft') {
+          e.preventDefault();
+          select((i + (k === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length, true);
+        } else if (k === 'Home' || k === 'End') {
+          e.preventDefault();
+          select(k === 'Home' ? 0 : tabs.length - 1, true);
+        }
+      });
+    });
+    const hash = location.hash.slice(1);
+    const fromHash = panels.findIndex((p) => p.id === `panel-${hash}` || !!(hash && p.querySelector(`[id="${hash}"]`)));
+    select(fromHash >= 0 ? fromHash : 0);
+  }
+</script>
+
+<style>
+  .section {
+    padding-block: var(--s-6) var(--section);
+  }
+  .th {
+    padding-block: var(--s-8) 0;
+  }
+  .th__inner {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .th__title {
+    font-size: var(--step-4);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+    max-width: 14ch;
+  }
+  .th__title em {
+    color: var(--crimson);
+  }
+  .th__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .th__ctas .btn {
+    white-space: normal;
+    text-align: left;
+  }
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-2);
+    margin-bottom: var(--s-6);
+    padding: var(--s-1);
+    background: var(--paper-2);
+    border-radius: calc(var(--radius) + 4px);
+  }
+  .tabs[hidden] {
+    display: none;
+  }
+  .tabs button {
+    display: grid;
+    gap: 2px;
+    min-height: 56px;
+    padding: var(--s-2) var(--s-3);
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink-2);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .tabs button[aria-selected='true'] {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 1px 0 var(--line-strong), 0 6px 16px -12px rgb(21 23 30 / 0.5);
+  }
+  .tabs button[aria-selected='true'] strong {
+    color: var(--crimson);
+  }
+  .tabs small {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .panel + .panel {
+    margin-top: var(--section);
+  }
+  :global(.tabs-ready) .panel + .panel {
+    margin-top: 0;
+  }
+  .panel__title {
+    margin-bottom: var(--s-4);
+    font-size: var(--step-3);
+  }
+  .panel__title span {
+    font-family: var(--sans);
+    font-size: var(--step-0);
+    color: var(--muted);
+  }
+  :global(.tabs-ready) .panel__title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>

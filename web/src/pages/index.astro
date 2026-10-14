@@ -1,12 +1,22 @@
 ---
 import { Picture } from 'astro:assets';
-import type { ImageMetadata } from 'astro';
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Carousel from '../components/Carousel.astro';
 import Icon from '../components/Icon.astro';
-import StreamArt from '../components/StreamArt.astro';
+import ProgrammeFees from '../components/ProgrammeFees.astro';
+import InstalmentPlan from '../components/InstalmentPlan.astro';
+import TutorialPackage from '../components/TutorialPackage.astro';
+import FeePaths from '../components/FeePaths.astro';
 import Laurel from '../components/Laurel.astro';
+import Badge from '../components/Badge.astro';
+import OfficialDocs from '../components/OfficialDocs.astro';
+import { getImage } from 'astro:assets';
+import { audiences, directions, directionsCaptions, founder as founderInfo, mission, offers, routeCaption } from '../data/identity';
+import { docs } from '../data/documents';
+import { tutorialPackage } from '../data/fees';
+import { firstSemester } from '../data/timetable';
+import poster from '../assets/official/directions-poster.jpg';
 import {
   admissionsByInstitution,
   address,
@@ -14,43 +24,24 @@ import {
   combinations,
   contacts,
   faqs,
-  fees,
+  registration,
   gradePoints,
   guides,
   naira,
   outcomes,
   primaryContact,
   site,
+  whatsapp,
 } from '../data/site';
-import classroom from '../assets/photos/classroom.png';
-import class010 from '../assets/photos/class-010.png';
-import class011 from '../assets/photos/class-011.png';
-import class012 from '../assets/photos/class-012.png';
-import class013 from '../assets/photos/class-013.png';
-import class014 from '../assets/photos/class-014.png';
-import class015 from '../assets/photos/class-015.png';
-import class016 from '../assets/photos/class-016.png';
 import founder from '../assets/photos/founder.png';
 import founderTeaching from '../assets/photos/founder-teaching.jpg';
 import centre from '../assets/photos/centre-entrance.jpg';
-
-type Photo = { src: ImageMetadata; alt: string; caption: string; position?: string };
-
-// Authentic photographs from the legacy site (assets/images/slider, boma5, teachers).
-const heroPhotos: Photo[] = [
-  { src: classroom, alt: 'A full classroom of BIA JUPEB students working at their desks', caption: 'A full class in session' },
-  { src: class010, alt: 'Students seated in rows in a lecture hall, writing', caption: 'Lecture hall session' },
-  { src: class016, alt: 'A tutor standing beside students as they work', caption: 'Tutor-led classwork', position: 'center 35%' },
-  { src: class012, alt: 'A tutor moving between desks in a busy classroom', caption: 'Guidance at every desk' },
-];
-
-const gallery: Photo[] = [
-  { src: class013, alt: 'Students concentrating on written work', caption: 'Focused classwork' },
-  { src: founderTeaching, alt: 'Dr. MedicBoma speaking to students with a microphone', caption: 'Dr. MedicBoma with students', position: 'center 25%' },
-  { src: class011, alt: 'Students seated at long desks during class', caption: 'Students in class' },
-  { src: class015, alt: 'A student at a lectern in front of a whiteboard', caption: 'At the front of the class' },
-  { src: class014, alt: 'Students writing while a tutor looks on', caption: 'Classwork with tutor support' },
-];
+import Ribbon from '../components/Ribbon.astro';
+import LifeGallery from '../components/LifeGallery.astro';
+import LessonVideos from '../components/LessonVideos.astro';
+import { bandPhoto, heroPhotos, lessonVideos, lifePhotos, modePhotos, tutorPhoto } from '../data/media';
+import { gallery } from '../data/gallery';
+const galleryCount = { photos: gallery.filter((g) => g.kind === 'photo').length, videos: gallery.filter((g) => g.kind === 'video').length };
 
 const today = new Date().toISOString().slice(0, 10);
 const nextIndex = calendar.findIndex((c) => !c.unconfirmed && (c.end ?? c.start) >= today);
@@ -61,27 +52,40 @@ const month = (s: string) => d(s).toLocaleDateString('en-GB', { month: 'short', 
 const full = (s: string) => d(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', ...tz });
 
 const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
+const posterImg = await getImage({ src: poster, format: 'webp', width: 464 });
+const fmtCap = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+// "This week" preview, straight from the official first-semester timetable.
+const week = firstSemester.days.map((d) => ({
+  day: d.day,
+  name: d.name,
+  items: d.sessions.map((x) => x.title ?? x.subjects?.join(' · ') ?? ''),
+  span: (() => {
+    const t = d.sessions.filter((x) => x.time);
+    return t.length ? `${t[0].time!.split('–')[0].trim()} – ${t[t.length - 1].time!.split('–')[1].trim()}` : '';
+  })(),
+}));
 ---
 
 <Base
   motion
-  title="BIA JUPEB — JUPEB Admission Centre in Lagos | Direct Entry into 200 Level"
-  description="Prepare for JUPEB with BIA JUPEB: an 8–9 month Science and Non-Science programme in Bariga, Lagos and online, with weekly tests, tutorials and Direct Entry admission guidance."
+  title="BIA JUPEB — Boma’s Intellectual Academy, Akoka, Lagos | JUPEB & Direct Entry into 200 Level"
+  description="Prepare for JUPEB with BIA JUPEB: Boma’s Intellectual Academy’s 8–9 month Science and Non-Science programme in Akoka, Lagos and online, with weekly tests, tutorials and Direct Entry admission guidance."
 >
+
   <!-- HERO -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="wrap hero__grid">
       <div class="hero__copy">
-        <p class="eyebrow with-icon"><Icon name="pin" size={16} />JUPEB admission centre · Bariga, Lagos &amp; online</p>
+        <p class="eyebrow with-icon"><Icon name="pin" size={16} />Boma’s Intellectual Academy · Akoka, Lagos &amp; online</p>
         <h1 id="hero-title" class="hero__title">
           Your direct route to <em>200&nbsp;Level.</em>
         </h1>
         <p class="lead hero__lead">
           An {site.programmeLength.replace('months', 'month')} JUPEB programme for Science and Non-Science students —
-          taught in person at our Bariga centre and online, with weekly tests, intensive tutorials and admission
+          taught in person in Lagos and online, with weekly tests, intensive tutorials and admission
           guidance.
         </p>
-        <div class="hero__ctas">
+        <div class="hero__ctas" data-cta-zone>
           <a class="btn" href="#apply" data-cta="home-hero-enquire">Enquire about JUPEB admission<Icon name="arrow-right" size={18} /></a>
           <a class="btn btn--outline" href="#programme">Explore programmes</a>
         </div>
@@ -102,8 +106,8 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
                 <Picture
                   src={p.src}
                   formats={formats}
-                  widths={[480, 800, 1080]}
-                  sizes="(min-width: 960px) 44vw, 100vw"
+                  widths={[480, 800, 1080, 1280]}
+                  sizes="(min-width: 960px) 58vw, 100vw"
                   alt={p.alt}
                   loading={i === 0 ? 'eager' : 'lazy'}
                   fetchpriority={i === 0 ? 'high' : 'auto'}
@@ -114,6 +118,9 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
             </div>
           ))}
         </Carousel>
+        <div class="hero__inset hero__seal">
+          <Badge variant="seal" size={150} label="Official badge of Boma’s Intellectual Academy (BIA)" />
+        </div>
       </div>
     </div>
 
@@ -133,19 +140,59 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
         </div>
         <div>
           <dt>Registration fee</dt>
-          <dd class="num">{naira(fees.registration)}<small>Non-refundable</small></dd>
+          <dd class="num">{naira(registration.amount)}<small>Non-refundable</small></dd>
         </div>
       </dl>
     </div>
   </section>
 
-  <!-- 01 STUDENT SUCCESS -->
+  <Ribbon />
+
+  <!-- 01 ABOUT BIA -->
+  <section class="about" id="about" aria-labelledby="about-title">
+    <Badge variant="mark" size={620} class="about__watermark" />
+    <div class="wrap about__grid">
+      <div class="about__intro">
+        <p class="about__label"><span class="num">01</span><span>About BIA</span></p>
+        <h2 id="about-title" class="about__title">This is BIA — <em>Boma’s Intellectual Academy.</em></h2>
+        <p class="about__lead">
+          BIA JUPEB is the JUPEB programme of Boma’s Intellectual Academy — {site.descriptor}. We prepare Science and
+          Non-Science students for the JUPEB examinations and Direct Entry into 200 Level, in class in Lagos and online.
+        </p>
+        <div class="about__ctas">
+          <a class="btn btn--white" href="#programme" data-cta="home-about-programme">Programme &amp; fees<Icon name="arrow-right" size={18} /></a>
+          <a class="btn btn--on-red" href="#founder" data-cta="home-about-founder">Meet the founder</a>
+        </div>
+      </div>
+      <div class="about__side">
+        <div class="about__block">
+          <h3 class="about__h">What BIA offers</h3>
+          <ul class="about__offers">
+            {offers.map((o) => <li><Icon name="check" size={18} />{o}</li>)}
+          </ul>
+        </div>
+        <div class="about__block">
+          <h3 class="about__h">Who it is for</h3>
+          <ol class="about__who">
+            {audiences.map((a, i) => (
+              <li>
+                <span class="about__n num">{String(i + 1).padStart(2, '0')}</span>
+                <span><strong>{a.title}</strong>{a.text}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 STUDENT SUCCESS -->
   <section class="section section--ink honours" id="success" aria-labelledby="outcomes">
     <svg class="honours__mark" viewBox="0 0 400 400" aria-hidden="true" data-clip>
       <text x="200" y="330" text-anchor="middle">A</text>
     </svg>
     <div class="wrap">
-      <SectionHead index="01" eyebrow="Student success" title="Results our students have carried into university." id="outcomes" tone="ink">
+      <SectionHead index="02" eyebrow="Student success" title="Results our students have carried into university." id="outcomes" tone="ink">
         <p>JUPEB grades and university places achieved by BIA JUPEB students, as recorded by BIA JUPEB.</p>
       </SectionHead>
 
@@ -185,10 +232,10 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     </div>
   </section>
 
-  <!-- 02 HOW JUPEB WORKS -->
+  <!-- 03 HOW JUPEB WORKS -->
   <section class="section" aria-labelledby="how">
     <div class="wrap">
-      <SectionHead index="02" eyebrow="How JUPEB works" title="One focused year between O-Level and 200 Level." id="how">
+      <SectionHead index="03" eyebrow="How JUPEB works" title="One focused year between O-Level and 200 Level." id="how">
         <p>
           JUPEB — the Joint Universities Preliminary Examinations Board — runs a one-year, A-Level standard programme
           recognised by Nigerian universities. Successful candidates use their results for Direct Entry admission into
@@ -238,49 +285,35 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     </div>
   </section>
 
-  <!-- 03 PROGRAMME & FEES -->
+  <figure class="band" data-clip>
+    <Picture
+      src={bandPhoto.src}
+      formats={formats}
+      widths={[640, 1080, 1600, 2200]}
+      sizes="100vw"
+      alt={bandPhoto.alt}
+      style={bandPhoto.position ? `object-position:${bandPhoto.position}` : undefined}
+    />
+    <figcaption class="wrap"><span>{bandPhoto.caption}</span></figcaption>
+  </figure>
+
+  <!-- 04 PROGRAMME & FEES -->
   <section class="section section--tint" id="programme" aria-labelledby="fees">
     <div class="wrap">
-      <SectionHead index="03" eyebrow={`Programme & fees · ${site.session}`} title="Two streams. Clear, published fees." id="fees">
+      <SectionHead index="04" eyebrow={`Programme & fees · ${site.session}`} title="Two ways to study with BIA. Clear, published fees." id="fees">
         <p>
-          A {naira(fees.registration)} registration fee (non-refundable) applies to both streams. Fees can be paid in
-          full or in instalments.
+          Join the full JUPEB admission programme, or take our physical tutorials only. Fees below are from BIA JUPEB’s
+          official 2026/27 payment advice. All payments are non-refundable.
         </p>
       </SectionHead>
 
-      <div class="streams">
-        {fees.programmes.map((p, i) => (
-          <article class="stream" aria-labelledby={`stream-${p.id}`}>
-            <div class="stream__art"><StreamArt stream={p.id as 'science' | 'non-science'} /></div>
-            <p class="stream__kicker">Stream {String(i + 1).padStart(2, '0')}</p>
-            <h3 id={`stream-${p.id}`} class="stream__name">
-              {p.name}
-              {p.sub && <span class="stream__sub">{p.sub}</span>}
-            </h3>
-            <p class="stream__blurb">{p.blurb}</p>
-            <dl class="stream__fees num">
-              <div><dt>School fees</dt><dd>{naira(p.school)}</dd></div>
-              <div><dt>Tutorial fees</dt><dd>{naira(p.tutorial)}</dd></div>
-              <div class="stream__total"><dt>Total</dt><dd>{naira(p.total)}</dd></div>
-            </dl>
-          </article>
-        ))}
-      </div>
+      <FeePaths base="" cta="home" />
+
+      <h3 class="path-title" id="programme-fees"><span class="path-badge">A</span>Full JUPEB admission programme</h3>
+      <ProgrammeFees level={4} />
 
       <div class="fees-foot">
-        <aside class="plan" aria-labelledby="plan-title">
-          <h3 id="plan-title" class="plan__title">Instalment plan</h3>
-          <ol class="plan__list">
-            {fees.plan.map((s, i) => (
-              <li>
-                <span class="plan__n num">{i + 1}</span>
-                <span class="plan__amt num">{s.amount ? naira(s.amount) : s.label}</span>
-                <span class="plan__label">{s.amount ? s.label : s.when}</span>
-              </li>
-            ))}
-          </ol>
-          <p class="plan__note">{fees.planNote}</p>
-        </aside>
+        <InstalmentPlan />
 
         <div class="combos">
           <h3 class="combos__title">Popular subject combinations</h3>
@@ -296,13 +329,96 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
           </dl>
         </div>
       </div>
+      <div class="reqdocs">
+        <div class="req">
+          <h3 class="req__title">To register you need</h3>
+          <ul class="req__list">
+            {registration.requirements.map((r) => <li><Icon name="check" size={18} />{r}</li>)}
+          </ul>
+          <p class="req__note">All payments are final and non-refundable. Registration and payment are handled by the admissions office — not online.</p>
+        </div>
+        <div class="reqdocs__docs">
+          <h3 class="req__title">Official documents</h3>
+          <OfficialDocs docs={[docs.scienceRequirements, docs.scienceFees, docs.entranceExam]} label="Official BIA fee documents" size="sm" />
+        </div>
+      </div>
+
+      <p class="fees-more">
+        <a class="link-arrow" href="/fees" data-cta="home-fees-details">Requirements, payment terms &amp; full fee details<Icon name="arrow-right" size={16} /></a>
+      </p>
+
+      <div class="tutorials" id="tutorials">
+        <TutorialPackage />
+      </div>
     </div>
   </section>
 
-  <!-- 04 CALENDAR -->
+  <!-- 05 WAYS TO STUDY & TIMETABLE -->
+  <section class="section" id="study-modes" aria-labelledby="study">
+    <div class="wrap">
+      <SectionHead index="05" eyebrow="Ways to study · Timetable" title="In class, online — or tutorials only." id="study">
+        <p>Choose how you learn. Every route follows BIA’s official {site.session} timetable.</p>
+      </SectionHead>
+
+      <div class="modes">
+        <article class="mode">
+          {modePhotos.physical && (
+            <figure class="mode__photo">
+              <Picture src={modePhotos.physical.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.physical.alt} style={modePhotos.physical.position ? `object-position:${modePhotos.physical.position}` : undefined} />
+            </figure>
+          )}
+          <span class="mode__icon"><Icon name="building" size={26} /></span>
+          <p class="mode__kicker">Physical classes</p>
+          <h3>Lectures, tests and private classes in Lagos</h3>
+          <p>Weekday lectures, Saturday tests and evening Special Private Classes. Self-study days run inside the MTN Library, UNILAG.</p>
+        </article>
+        <article class="mode">
+          {modePhotos.online && (
+            <figure class="mode__photo">
+              <Picture src={modePhotos.online.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.online.alt} style={modePhotos.online.position ? `object-position:${modePhotos.online.position}` : undefined} />
+            </figure>
+          )}
+          <span class="mode__icon"><Icon name="monitor" size={26} /></span>
+          <p class="mode__kicker">Online · Lecture Banks</p>
+          <h3>Recorded and live lessons</h3>
+          <p>For students who cannot attend physical classes. Free online tutorials began on Monday 5 October 2026.</p>
+        </article>
+        <article class="mode mode--ext">
+          {modePhotos.tutorials && (
+            <figure class="mode__photo">
+              <Picture src={modePhotos.tutorials.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.tutorials.alt} style={modePhotos.tutorials.position ? `object-position:${modePhotos.tutorials.position}` : undefined} />
+            </figure>
+          )}
+          <span class="mode__icon"><Icon name="arrow-up-right" size={26} /></span>
+          <p class="mode__kicker">Tutorials only</p>
+          <h3>For students from other institutions</h3>
+          <p>Join BIA’s physical tutorials for {naira(tutorialPackage.oneTime.amount)} until the exam, or {naira(tutorialPackage.monthly.amount)} a month.</p>
+        </article>
+      </div>
+
+      <div class="week" aria-labelledby="week-title">
+        <div class="week__head">
+          <h3 id="week-title" class="week__title">A week at BIA · first semester</h3>
+          <a class="link-arrow" href="/timetable" data-cta="home-week-timetable">Full timetable, day by day<Icon name="arrow-right" size={16} /></a>
+        </div>
+        <ol class="week__list">
+          {week.map((w) => (
+            <li data-day={w.day}>
+              <span class="week__day"><abbr title={w.name}>{w.day}</abbr></span>
+              <span class="week__span num">{w.span}</span>
+              <span class="week__items">{w.items.join(' · ')}</span>
+            </li>
+          ))}
+        </ol>
+        <p class="week__note">Every third week: night classes before the Monthly Mock Examination, held at the end of every fourth week.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 CALENDAR -->
   <section class="section section--ink" aria-labelledby="calendar">
     <div class="wrap">
-      <SectionHead index="04" eyebrow="Academic calendar" title={`The ${site.session} session.`} id="calendar" tone="ink">
+      <SectionHead index="06" eyebrow="Academic calendar" title={`The ${site.session} session.`} id="calendar" tone="ink">
         <p>Key dates as published by BIA JUPEB.</p>
       </SectionHead>
 
@@ -328,66 +444,34 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     </div>
   </section>
 
-  <!-- 05 WAYS TO STUDY -->
-  <section class="section" aria-labelledby="study">
+  <!-- 07 LIFE AT BIA -->
+  <section class="section section--tint gallery" id="life" aria-labelledby="inside">
     <div class="wrap">
-      <SectionHead index="05" eyebrow="Ways to study" title="In the classroom or from anywhere in Nigeria." id="study" />
-
-      <div class="modes">
-        <article class="mode">
-          <span class="mode__icon"><Icon name="building" size={26} /></span>
-          <p class="mode__kicker">Physical</p>
-          <h3>At our Bariga centre</h3>
-          <p>Classroom lectures in Lagos, with tutors on hand to take you through each subject step by step.</p>
-        </article>
-        <article class="mode">
-          <span class="mode__icon"><Icon name="monitor" size={26} /></span>
-          <p class="mode__kicker">Online</p>
-          <h3>Live and recorded lessons</h3>
-          <p>Study from anywhere in Nigeria with live classes and recordings you can return to when revising.</p>
-        </article>
-        <div class="mode mode--shared">
-          <p class="mode__kicker">Every student receives</p>
-          <ul>
-            {['Weekly tests and intensive tutorials', 'Continuous assessment and exam practice', 'Past questions for registered students', 'Admission guidance into university'].map((t) => (
-              <li><Icon name="check" size={18} />{t}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 06 GALLERY -->
-  <section class="section section--tint gallery" aria-labelledby="inside">
-    <div class="wrap">
-      <SectionHead index="06" eyebrow="Inside BIA JUPEB" title="Real classes. Real tutors. Real work." id="inside">
-        <p>Photographs from our classes and tutorials.</p>
+      <SectionHead index="07" eyebrow="Life at BIA" title="Real classes. Real tutors. Real work." id="inside">
+        <p>A look inside Boma’s Intellectual Academy — tap any photograph to see it full size.</p>
       </SectionHead>
-      <Carousel label="Photographs from BIA JUPEB classes" variant="strip">
-        {gallery.map((p) => (
-          <div data-slide class="shot">
-            <figure>
-              <Picture
-                src={p.src}
-                formats={formats}
-                widths={[480, 800, 1080]}
-                sizes="(min-width: 1040px) 42vw, (min-width: 720px) 58vw, 86vw"
-                alt={p.alt}
-                style={p.position ? `object-position:${p.position}` : undefined}
-              />
-              <figcaption>{p.caption}</figcaption>
-            </figure>
-          </div>
-        ))}
-      </Carousel>
+      <LifeGallery photos={lifePhotos} label="Photographs from BIA classes" />
+      <a class="explore" href="/gallery" data-cta="home-explore-gallery">
+        <span class="explore__text">
+          <span class="explore__kicker">Gallery</span>
+          <span class="explore__title">Explore Life at BIA</span>
+          <span class="explore__meta num">{galleryCount.photos} photographs · {galleryCount.videos} videos</span>
+        </span>
+        <span class="explore__arrow" aria-hidden="true"><Icon name="arrow-right" size={26} /></span>
+      </a>
+      {lessonVideos.length > 0 && (
+        <div class="lessons">
+          <h3 class="lessons__title">Watch a lesson</h3>
+          <LessonVideos videos={lessonVideos} />
+        </div>
+      )}
     </div>
   </section>
 
-  <!-- 07 LEADERSHIP -->
-  <section class="section" aria-labelledby="people">
+  <!-- 08 FOUNDER -->
+  <section class="section fsec" id="founder" aria-labelledby="people">
     <div class="wrap">
-      <SectionHead index="07" eyebrow="Leadership & admissions" title="The people who will guide you." id="people" />
+      <SectionHead index="08" eyebrow="Founder & leadership" title="Boma’s Intellectual Academy, led by its founder." id="people" />
 
       <div class="people">
         <figure class="founder" data-clip>
@@ -396,26 +480,49 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
             formats={formats}
             widths={[360, 640]}
             sizes="(min-width: 960px) 34vw, 90vw"
-            alt="Dr. MedicBoma, founder of BIA JUPEB"
+            alt={`${founderInfo.name}, founder of Boma’s Intellectual Academy`}
           />
+          <Badge variant="seal" size={112} class="founder__seal" />
           <figcaption>
-            <span class="founder__name">Dr. MedicBoma</span>
-            <span class="founder__aka">Hon. Busari Muideen Oyebamiji</span>
-            <span class="founder__role">Founder of Boma Academy Limited (BAL), Boma’s Intellectual Academy (BIA) and BIA JUPEB.</span>
+            <span class="founder__name">{founderInfo.name}</span>
+            <span class="founder__aka">{founderInfo.fullName}</span>
           </figcaption>
         </figure>
 
         <div class="people__side">
+          <p class="founder__role">{founderInfo.role}.</p>
           <blockquote class="mission">
             <svg class="mission__mark" viewBox="0 0 48 36" aria-hidden="true">
               <path d="M0 36V20C0 8 7 1 19 0v7c-6 1-10 5-10 12h10v17Zm29 0V20C29 8 36 1 48 0v7c-6 1-10 5-10 12h10v17Z" />
             </svg>
-            <p>To help every student gain admission into their dream university through structured learning, discipline, and modern teaching methods.</p>
-            <footer>Our mission</footer>
+            <p>{mission}</p>
+            <footer>BIA’s mission</footer>
           </blockquote>
 
+          <figure class="moment">
+            <Picture
+              src={founderTeaching}
+              formats={formats}
+              widths={[320, 560]}
+              sizes="(min-width: 960px) 18vw, 40vw"
+              alt="Boma speaking to students with a microphone"
+              style="object-position:center 25%"
+            />
+            <figcaption>
+              <strong>Hands-on leadership.</strong> Boma speaks to students in person, and his line —
+              {primaryContact.display} — is the admissions number on every official BIA document.
+            </figcaption>
+          </figure>
+
+          {tutorPhoto && (
+            <figure class="moment moment--tutor">
+              <Picture src={tutorPhoto.src} formats={formats} widths={[320, 560]} sizes="(min-width: 960px) 18vw, 40vw" alt={tutorPhoto.alt} style={tutorPhoto.position ? `object-position:${tutorPhoto.position}` : undefined} />
+              <figcaption><strong>Our tutors.</strong> {tutorPhoto.caption}.</figcaption>
+            </figure>
+          )}
+
           <div class="team">
-            <h3 class="team__title">Admissions team</h3>
+            <h3 class="team__title">Speak to admissions</h3>
             <ul class="team__list">
               {contacts.map((c) => (
                 <li>
@@ -423,7 +530,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
                     <span class="team__name">{c.name ?? c.role}</span>
                     {c.name && <span class="team__role">{c.role}</span>}
                   </span>
-                  <a class="team__tel num" href={`tel:${c.phone}`}><Icon name="phone" size={16} />{c.display}</a>
+                  <a class="team__tel num" href={`tel:${c.phone}`} data-cta={`home-founder-call-${c.phone.slice(-4)}`}><Icon name="phone" size={16} />{c.display}</a>
                 </li>
               ))}
             </ul>
@@ -433,10 +540,93 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     </div>
   </section>
 
-  <!-- 08 FAQ -->
+  <!-- 09 LOCATION -->
+  <section class="section loc" id="location" aria-labelledby="location-title">
+    <div class="wrap">
+      <SectionHead index="09" eyebrow="Location & directions" title="Find us at 12 Ameen Street, Akoka." id="location-title" tone="ink">
+        <p>Our tutorial centre is a short walk from the University of Lagos. Watch BIA’s own directions video, or follow the written steps.</p>
+      </SectionHead>
+
+      <div class="loc__grid">
+        <div class="loc__info">
+          <address class="loc__address">
+            <span class="loc__name">{address.name}</span>
+            {address.lines.map((l) => <span class="loc__line">{l}</span>)}
+            <span class="loc__landmark"><Icon name="pin" size={16} />Landmark: {address.landmark}</span>
+          </address>
+          <div class="loc__ctas" data-cta-zone>
+            {contacts.map((c) => (
+              <a class="btn" href={`tel:${c.phone}`} data-cta={`home-location-call-${c.phone.slice(-4)}`}><Icon name="phone" size={18} />Call {c.display}</a>
+            ))}
+            <a class="btn btn--on-ink" href={whatsapp} rel="noopener" target="_blank" data-cta="home-location-whatsapp">WhatsApp admissions</a>
+            <a class="btn btn--on-ink" href={address.mapsUrl} rel="noopener" target="_blank" data-cta="home-location-map"><Icon name="pin" size={18} />Open in Google Maps</a>
+          </div>
+
+          <div class="routes">
+            <div class="route-card">
+              <h3>From the University of Lagos</h3>
+              <ol>{directions.fromUnilag.map((t) => <li>{t}</li>)}</ol>
+            </div>
+            <div class="route-card">
+              <h3>From Yaba</h3>
+              <ol>{directions.fromYaba.map((t) => <li>{t}</li>)}</ol>
+            </div>
+            <div class="route-card route-card--then">
+              <h3>Then</h3>
+              <ol>{directions.then.map((t) => <li>{t}</li>)}</ol>
+            </div>
+          </div>
+          <p class="loc__caption"><strong>Route shown on screen:</strong> {routeCaption}</p>
+        </div>
+
+        <div class="loc__media">
+          <figure class="loc__video">
+            <video
+              controls
+              playsinline
+              preload="none"
+              data-poster={posterImg.src}
+              width="464"
+              height="832"
+              aria-describedby="video-desc"
+            >
+              <source src="/media/bia-directions.mp4" type="video/mp4" />
+              <track kind="captions" src="/media/bia-directions.en.vtt" srclang="en" label="English" />
+              <a href="/media/bia-directions.mp4">Download the directions video (MP4, 7.5 MB)</a>
+            </video>
+            <figcaption id="video-desc">
+              BIA’s directions video, from UNILAG and Yaba to the centre · 1 min 23 s · captions shown on screen.
+              Filmed by BIA (TikTok @bomaacademylimited).
+            </figcaption>
+          </figure>
+          <figure class="loc__gate">
+            <Picture
+              src={centre}
+              formats={formats}
+              widths={[480, 800]}
+              sizes="(min-width: 960px) 30vw, 100vw"
+              alt="The gate at 12 Ameen Street, Abule-Oja, beside the Seventh Day Adventist Primary School sign"
+            />
+            <figcaption>You have arrived: the gate at 12 Ameen Street, by the Seventh Day Adventist school sign.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <details class="loc__transcript">
+        <summary>Read the video transcript</summary>
+        <ol>
+          {directionsCaptions.map(([a, , t]) => (
+            <li><span class="num">{fmtCap(a)}</span> {t}</li>
+          ))}
+        </ol>
+      </details>
+    </div>
+  </section>
+
+  <!-- 10 FAQ -->
   <section class="section section--tint" aria-labelledby="faq">
     <div class="wrap faq">
-      <SectionHead index="08" eyebrow="Questions" title="What applicants ask us most." id="faq" />
+      <SectionHead index="10" eyebrow="Questions" title="What applicants ask us most." id="faq" />
       <div class="faq__list">
         {faqs.map((f) => (
           <details class="faq__item">
@@ -451,10 +641,10 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     </div>
   </section>
 
-  <!-- 09 GUIDES -->
+  <!-- 11 GUIDES -->
   <section class="section" aria-labelledby="guides">
     <div class="wrap">
-      <SectionHead index="09" eyebrow="Guides" title="Read before you register." id="guides" />
+      <SectionHead index="11" eyebrow="Guides" title="Read before you register." id="guides" />
       <ul class="guides">
         {guides.map((g, i) => (
           <li>
@@ -470,35 +660,33 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   </section>
 
   <!-- APPLY / VISIT -->
-  <section class="apply" id="apply" aria-labelledby="apply-title">
+  <section class="apply" id="apply" aria-labelledby="apply-title" data-cta-zone>
+    <Badge variant="mark" size={560} class="apply__watermark" />
     <div class="wrap apply__grid">
       <div class="apply__copy">
         <p class="eyebrow apply__eyebrow">Apply · {site.session}</p>
         <h2 id="apply-title" class="apply__title">Enquire about <em>admission.</em></h2>
         <p class="apply__lead">
-          Registration is handled by our admissions office. Call to begin your application, or visit the centre with
-          your O-Level result (or evidence of an awaiting result) and a passport photograph.
+          Registration is handled by the BIA admissions office. Call or WhatsApp to begin, or visit the centre with your
+          O'Level result (or awaiting result), NIN and birth certificate. The registration fee is {naira(registration.amount)}.
         </p>
         <div class="apply__ctas">
-          <a class="btn" href={`tel:${primaryContact.phone}`} data-cta="home-apply-call"><Icon name="phone" size={18} />Speak to admissions · {primaryContact.display}</a>
-          <a class="btn btn--on-ink" href={address.mapsUrl} rel="noopener" target="_blank" data-cta="home-apply-directions"><Icon name="pin" size={18} />Get directions</a>
+          <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="home-apply-call"><Icon name="phone" size={18} />Speak to admissions · {primaryContact.display}</a>
+          <a class="btn btn--on-red" href={whatsapp} rel="noopener" target="_blank" data-cta="home-apply-whatsapp">WhatsApp</a>
+          <a class="btn btn--on-red" href="#location" data-cta="home-apply-directions"><Icon name="pin" size={18} />Directions</a>
         </div>
       </div>
 
-      <figure class="apply__visit" data-clip>
-        <Picture
-          src={centre}
-          formats={formats}
-          widths={[480, 800, 1200]}
-          sizes="(min-width: 960px) 40vw, 100vw"
-          alt="Entrance gate of the BIA JUPEB centre in Bariga"
-        />
-        <figcaption>
-          <span class="apply__place">Bariga centre</span>
-          <address>{address.lines.join(', ')}</address>
-          <span class="apply__landmark">{address.landmark}</span>
-        </figcaption>
-      </figure>
+      <div class="apply__card">
+        <Badge variant="seal" size={120} tone="ink" />
+        <address>
+          <span class="apply__place">{address.name}</span>
+          {address.lines.map((l) => <span>{l}</span>)}
+        </address>
+        <ul class="apply__tels">
+          {contacts.map((c) => <li><a class="num" href={`tel:${c.phone}`} data-cta={`home-apply-tel-${c.phone.slice(-4)}`}>{c.display}</a></li>)}
+        </ul>
+      </div>
     </div>
   </section>
 </Base>
@@ -506,6 +694,16 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
 <script>
   import { initHomeMotion } from '../scripts/motion/home';
   initHomeMotion();
+
+  // Below-the-fold video posters: set only when the video approaches the viewport.
+  const lazyPosters = document.querySelectorAll<HTMLVideoElement>('video[data-poster]');
+  const setPoster = (v: HTMLVideoElement) => (v.poster = v.dataset.poster!);
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) if (e.isIntersecting) { setPoster(e.target as HTMLVideoElement); io.unobserve(e.target); }
+    }, { rootMargin: '600px 0px' });
+    lazyPosters.forEach((v) => io.observe(v));
+  } else lazyPosters.forEach(setPoster);
 </script>
 
 <style>
@@ -522,11 +720,10 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
 
   /* ---------- Hero ---------- */
   .hero {
-    padding-block: var(--s-6) 0;
+    padding-block: 0;
   }
   .hero__grid {
     display: grid;
-    gap: var(--s-7);
     align-items: center;
   }
   .hero__copy {
@@ -584,13 +781,17 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     color: var(--crimson);
   }
 
+  /* Photograph */
+  .hero__media {
+    position: relative;
+  }
   .hero__slide figure {
     position: relative;
     margin: 0;
+    overflow: hidden; /* keep the slow zoom inside its own slide */
   }
   .hero__slide :global(img) {
     width: 100%;
-    aspect-ratio: 4 / 3;
     object-fit: cover;
     transform: scale(1.06);
     transition: transform 8s linear;
@@ -599,6 +800,12 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     transform: scale(1);
   }
   .hero__slide figcaption {
+    position: absolute;
+    padding: var(--s-2) var(--s-3);
+    background: var(--paper);
+    border-left: 3px solid var(--crimson);
+    font-size: var(--step--1);
+    font-weight: 600;
     transition: opacity 0.5s var(--ease) 0.25s, transform 0.6s var(--ease) 0.25s;
   }
   :global(html[data-motion]) .hero__slide:not([data-active]) figcaption {
@@ -606,15 +813,108 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     transform: translateY(10px);
     transition-delay: 0s;
   }
-  .hero__slide figcaption {
+  .hero__inset {
     position: absolute;
-    left: var(--s-3);
-    bottom: var(--s-3);
-    padding: var(--s-2) var(--s-3);
-    background: var(--paper);
-    border-left: 3px solid var(--crimson);
-    font-size: var(--step--1);
-    font-weight: 600;
+    z-index: 3;
+    right: var(--gutter);
+    bottom: var(--s-6);
+    width: 86px;
+    filter: drop-shadow(0 12px 24px rgb(21 23 30 / 0.35));
+  }
+  .hero__inset :global(svg) {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Mobile: photograph first, full-bleed; the copy sits on a cream sheet over its lower edge */
+  @media (max-width: 959px) {
+    .hero__media {
+      order: -1;
+      margin-inline: calc(-1 * var(--gutter));
+    }
+    .hero__media :global(.carousel) {
+      gap: 0;
+    }
+    .hero__media :global(.carousel__track) {
+      border-radius: 0;
+    }
+    .hero__slide :global(img) {
+      aspect-ratio: 1 / 1;
+      max-height: 60vh;
+    }
+    .hero__slide figcaption {
+      left: var(--gutter);
+      top: var(--s-3);
+    }
+    /* slider controls float on the photo (top right) instead of taking a row */
+    .hero__media :global(.carousel__bar) {
+      position: absolute;
+      top: var(--s-3);
+      right: var(--gutter);
+      z-index: 2;
+    }
+    .hero__media :global(.carousel__count),
+    .hero__media :global(.carousel__progress) {
+      display: none;
+    }
+    .hero__media :global(.carousel__btn) {
+      background: rgb(248 246 241 / 0.92);
+      border-color: transparent;
+    }
+    .hero__copy {
+      z-index: 1;
+      margin: -3rem calc(-1 * var(--gutter) + var(--s-3)) 0;
+      padding: var(--s-5) calc(var(--gutter) - var(--s-3)) 0;
+      background: var(--paper);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+  }
+  @media (max-width: 959px) and (max-height: 700px) {
+    .hero__slide :global(img) {
+      max-height: 42vh;
+    }
+  }
+
+  /* Desktop: editorial split — copy left, photograph bleeding to the right edge */
+  @media (min-width: 960px) {
+    .hero {
+      padding-top: var(--s-7);
+    }
+    .hero__grid {
+      grid-template-columns: 5fr 7fr;
+      gap: var(--s-8);
+    }
+    /* Ruled exam-paper texture with a crimson margin line */
+    .hero__copy {
+      padding: var(--s-6) 0 var(--s-6) var(--s-7);
+      background:
+        linear-gradient(var(--crimson), var(--crimson)) left top / 1px 100% no-repeat,
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='36'%3E%3Cpath d='M0 35.5h8' stroke='%23e3ded3' stroke-width='1'/%3E%3C/svg%3E");
+    }
+    .hero__media {
+      margin-right: calc(-1 * max(var(--gutter), (100vw - var(--max)) / 2));
+    }
+    .hero__media :global(.carousel__track) {
+      border-radius: var(--radius) 0 0 var(--radius);
+    }
+    .hero__media :global(.carousel__bar) {
+      padding-right: max(var(--gutter), (100vw - var(--max)) / 2);
+      padding-left: 26%;
+    }
+    .hero__slide :global(img) {
+      aspect-ratio: 6 / 5;
+      max-height: min(78vh, 760px);
+    }
+    .hero__slide figcaption {
+      right: max(var(--gutter), (100vw - var(--max)) / 2);
+      bottom: var(--s-4);
+    }
+    .hero__inset {
+      right: auto;
+      left: calc(-1 * var(--s-8));
+      bottom: var(--s-6);
+      width: 150px;
+    }
   }
 
   .facts {
@@ -652,23 +952,6 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   }
 
   @media (min-width: 960px) {
-    .hero {
-      padding-top: var(--s-8);
-    }
-    .hero__grid {
-      grid-template-columns: 6fr 5fr;
-      gap: var(--s-8);
-    }
-    /* Ruled exam-paper texture with a crimson margin line */
-    .hero__copy {
-      padding: var(--s-6) 0 var(--s-6) var(--s-7);
-      background:
-        linear-gradient(var(--crimson), var(--crimson)) left top / 1px 100% no-repeat,
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='36'%3E%3Cpath d='M0 35.5h8' stroke='%23e3ded3' stroke-width='1'/%3E%3C/svg%3E");
-    }
-    .hero__slide :global(img) {
-      aspect-ratio: 4 / 5;
-    }
     .facts {
       grid-template-columns: repeat(4, 1fr);
     }
@@ -1070,148 +1353,38 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     }
   }
 
-  /* ---------- Streams & fees ---------- */
-  .streams {
-    display: grid;
-    border-top: 1px solid var(--ink);
-  }
-  .stream {
-    display: grid;
-    gap: var(--s-3);
-    padding: var(--s-6) 0;
-    border-bottom: 1px solid var(--line-strong);
-  }
-  .stream__art {
-    width: 150px;
-    margin-bottom: var(--s-2);
-    transition: transform 0.5s var(--ease);
-  }
-  .stream:hover .stream__art {
-    transform: translateY(-4px);
-  }
-  .stream__total dd {
-    transition: transform 0.4s var(--ease);
-    transform-origin: right;
-  }
-  .stream:hover .stream__total dd {
-    transform: scale(1.04);
-  }
-  .stream__kicker {
-    font-size: var(--step--1);
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--crimson);
-  }
-  .stream__name {
-    font-size: var(--step-3);
-  }
-  .stream__sub {
-    display: block;
-    margin-top: var(--s-1);
-    font-family: var(--sans);
-    font-size: var(--step--1);
-    font-weight: 600;
-    letter-spacing: 0;
-    color: var(--muted);
-  }
-  .stream__blurb {
-    color: var(--ink-2);
-    max-width: 36ch;
-  }
-  .stream__fees {
-    margin: var(--s-3) 0 0;
-  }
-  .stream__fees > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    padding: var(--s-3) 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .stream__fees dt {
-    color: var(--ink-2);
-  }
-  .stream__fees dd {
-    margin: 0;
-    font-weight: 600;
-  }
-  .stream__fees .stream__total {
-    border-bottom: 0;
-    padding-top: var(--s-4);
-  }
-  .stream__total dt {
-    font-weight: 800;
-    color: var(--ink);
-  }
-  .stream__total dd {
+  /* ---------- Fees ---------- */
+  .path-badge {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: var(--crimson);
+    color: #fff;
     font-family: var(--serif);
-    font-size: var(--step-3);
-    font-weight: 400;
-    color: var(--crimson);
+    font-size: 1.1rem;
   }
-  @media (min-width: 840px) {
-    .streams {
-      grid-template-columns: 1fr 1fr;
-    }
-    .stream {
-      padding: var(--s-7) var(--s-7) var(--s-6) 0;
-      border-bottom: 0;
-    }
-    .stream + .stream {
-      padding-left: var(--s-7);
-      padding-right: 0;
-      border-left: 1px solid var(--line-strong);
-    }
+  .path-title {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+    font-size: var(--step-2);
+    scroll-margin-top: calc(var(--header-h) + var(--s-5));
   }
-
+  .fees-more {
+    margin-top: var(--s-6);
+  }
+  .tutorials {
+    margin-top: var(--s-8);
+    scroll-margin-top: calc(var(--header-h) + var(--s-5));
+  }
   .fees-foot {
     display: grid;
     gap: var(--s-7);
     margin-top: var(--s-7);
-  }
-  .plan {
-    align-self: start;
-    padding: var(--s-6) var(--s-5);
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-top: 3px solid var(--crimson);
-    border-radius: var(--radius);
-  }
-  .plan__title {
-    font-size: var(--step-2);
-    margin-bottom: var(--s-4);
-  }
-  .plan__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .plan__list li {
-    display: grid;
-    grid-template-columns: 2rem 1fr;
-    padding: var(--s-3) 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .plan__n {
-    grid-row: span 2;
-    font-size: var(--step--1);
-    font-weight: 800;
-    color: var(--crimson);
-    padding-top: 0.3em;
-  }
-  .plan__amt {
-    font-family: var(--serif);
-    font-size: var(--step-1);
-  }
-  .plan__label {
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-  .plan__note {
-    margin-top: var(--s-4);
-    font-size: var(--step--1);
-    color: var(--ink-2);
   }
   .combos__title {
     font-size: var(--step-2);
@@ -1369,51 +1542,191 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     text-transform: uppercase;
     color: var(--crimson);
   }
-  .mode--shared {
-    border-top-color: var(--line-strong);
-    border-top-width: 1px;
+  .mode--ext {
+    border-top-color: var(--bia-red);
   }
-  .mode--shared .mode__kicker {
-    color: var(--muted);
-  }
-  .mode--shared ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .mode--shared li {
-    display: flex;
-    align-items: center;
-    gap: var(--s-3);
-    padding: var(--s-3) 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .mode--shared li :global(svg) {
-    color: var(--crimson);
+  .mode--ext .mode__icon {
+    background: var(--bia-red);
+    color: #fff;
   }
   @media (min-width: 840px) {
     .modes {
-      grid-template-columns: 1fr 1fr;
-      gap: var(--s-7);
-    }
-    .mode--shared {
-      grid-column: 1 / -1;
-    }
-    .mode--shared ul {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      column-gap: var(--s-7);
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-6);
     }
   }
-  @media (min-width: 1100px) {
-    .modes {
-      grid-template-columns: 1fr 1fr 1.2fr;
+
+  /* ---------- Phase 6 photography ---------- */
+  .band {
+    position: relative;
+    margin: 0;
+  }
+  .band :global(img) {
+    display: block;
+    width: 100%;
+    height: clamp(240px, 52vw, 620px);
+    object-fit: cover;
+  }
+  .band figcaption {
+    position: absolute;
+    inset: auto 0 var(--s-5) 0;
+  }
+  .band figcaption span {
+    display: inline-block;
+    max-width: 28ch;
+    padding: var(--s-3) var(--s-4);
+    background: var(--bia-red);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.25;
+    border-radius: var(--radius);
+  }
+  .mode__photo {
+    margin: 0 0 var(--s-2);
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .mode__photo :global(img) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .explore {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-4);
+    margin-top: var(--s-5);
+    padding: var(--s-5) var(--s-6);
+    background: var(--bia-red);
+    color: #fff;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background-color 0.2s var(--ease);
+  }
+  .explore:hover,
+  .explore:focus-visible {
+    background: var(--bia-red-deep);
+  }
+  .explore__text {
+    display: grid;
+    gap: 2px;
+  }
+  .explore__kicker {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--on-red-muted);
+  }
+  .explore__title {
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    line-height: 1.05;
+  }
+  .explore__meta {
+    font-size: var(--step--1);
+    color: var(--on-red-muted);
+  }
+  .explore__arrow {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #fff;
+    color: var(--bia-red);
+    transition: transform 0.25s var(--ease);
+  }
+  .explore:hover .explore__arrow {
+    transform: translateX(4px);
+  }
+  .lessons {
+    margin-top: var(--s-8);
+    padding: var(--s-6) var(--s-5);
+    background: var(--ink);
+    color: var(--on-ink);
+    border-radius: var(--radius);
+  }
+  .lessons__title {
+    margin-bottom: var(--s-4);
+    font-size: var(--step-2);
+    color: #fff;
+  }
+  .moment--tutor {
+    margin-top: calc(-1 * var(--s-4));
+  }
+
+  /* ---------- Week preview ---------- */
+  .week {
+    margin-top: var(--s-8);
+    padding: var(--s-5);
+    background: var(--ink);
+    color: var(--on-ink);
+    border-radius: var(--radius);
+  }
+  .week__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .week__head .link-arrow {
+    color: #ffb3b3;
+  }
+  .week__title {
+    font-size: var(--step-2);
+    color: #fff;
+  }
+  .week__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+  }
+  .week__list li {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 2px var(--s-4);
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .week__day abbr {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    text-decoration: none;
+    color: #fff;
+  }
+  .week__span {
+    font-size: var(--step--1);
+    font-weight: 800;
+    color: #ffb3b3;
+  }
+  .week__items {
+    grid-column: 2;
+    color: var(--on-ink);
+    font-size: var(--step--1);
+  }
+  .week__note {
+    margin-top: var(--s-4);
+    font-size: var(--step--1);
+    color: var(--on-ink-muted);
+  }
+  @media (min-width: 840px) {
+    .week {
+      padding: var(--s-6) var(--s-7);
     }
-    .mode--shared {
+    .week__list li {
+      grid-template-columns: 4rem 11rem 1fr;
+      align-items: baseline;
+    }
+    .week__items {
       grid-column: auto;
-    }
-    .mode--shared ul {
-      grid-template-columns: 1fr;
     }
   }
 
@@ -1440,10 +1753,46 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     gap: var(--s-8);
   }
   .founder {
+    position: relative;
     margin: 0;
+  }
+  .founder :global(.founder__seal) {
+    position: absolute;
+    right: calc(-1 * var(--s-3));
+    top: calc(-1 * var(--s-5));
+    width: 112px;
+    height: auto;
+    filter: drop-shadow(0 10px 20px rgb(21 23 30 / 0.3));
+  }
+  .fsec .people {
+    position: relative;
+    isolation: isolate;
+  }
+  .moment {
+    display: grid;
+    grid-template-columns: 7rem 1fr;
+    gap: var(--s-4);
+    align-items: center;
+    margin: 0;
+    padding: var(--s-3);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .moment :global(img) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+  .moment figcaption {
+    font-size: var(--step--1);
+    color: var(--ink-2);
   }
   .founder :global(picture) {
     display: block;
+    margin: 0 var(--s-4) var(--s-4) 0;
+    box-shadow: var(--s-4) var(--s-4) 0 var(--bia-red);
     overflow: hidden;
     border-radius: var(--radius);
   }
@@ -1471,6 +1820,10 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   }
   .founder__role {
     max-width: 40ch;
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.2;
+    color: var(--ink);
   }
   .people__side {
     display: grid;
@@ -1480,9 +1833,13 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
   .mission {
     margin: 0;
   }
+  .mission {
+    padding-left: var(--s-5);
+    border-left: 4px solid var(--bia-red);
+  }
   .mission__mark {
     width: 40px;
-    fill: var(--crimson);
+    fill: var(--bia-red);
     margin-bottom: var(--s-4);
   }
   .mission p {
@@ -1666,11 +2023,24 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
 
   /* ---------- Apply ---------- */
   .apply {
-    background: var(--ink);
-    color: var(--on-ink);
+    position: relative;
+    overflow: hidden;
+    background: var(--bia-red);
+    color: var(--on-red);
     padding-block: var(--section);
   }
+  .apply :global(.apply__watermark) {
+    position: absolute;
+    left: -140px;
+    bottom: -120px;
+    width: 560px;
+    height: auto;
+    color: #fff;
+    opacity: 0.08;
+    pointer-events: none;
+  }
   .apply__grid {
+    position: relative;
     display: grid;
     gap: var(--s-8);
     align-items: center;
@@ -1680,7 +2050,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     gap: var(--s-5);
   }
   .apply__eyebrow {
-    color: #e8a3ad;
+    color: var(--on-red-muted);
   }
   .apply__title {
     font-size: var(--step-5);
@@ -1689,11 +2059,11 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     letter-spacing: -0.03em;
   }
   .apply__title em {
-    color: #f0b7bf;
+    color: #fff;
   }
   .apply__lead {
     max-width: 46ch;
-    color: var(--on-ink-muted);
+    color: var(--on-red-muted);
     font-size: var(--step-1);
     line-height: 1.5;
   }
@@ -1705,38 +2075,369 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
     flex-wrap: wrap;
     gap: var(--s-3);
   }
-  .apply__visit {
-    margin: 0;
-  }
-  .apply__visit :global(picture) {
-    display: block;
-    overflow: hidden;
+  .apply__card {
+    display: grid;
+    justify-items: start;
+    gap: var(--s-4);
+    padding: var(--s-6);
+    background: var(--ink);
+    color: var(--on-ink);
     border-radius: var(--radius);
   }
-  .apply__visit :global(img) {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-  }
-  .apply__visit figcaption {
+  .apply__card address {
     display: grid;
-    gap: 2px;
-    margin-top: var(--s-4);
-    font-size: var(--step--1);
+    font-style: normal;
     color: var(--on-ink-muted);
   }
   .apply__place {
     font-family: var(--serif);
     font-size: var(--step-1);
-    color: var(--on-ink);
+    color: #fff;
   }
-  .apply__visit address {
-    font-style: normal;
+  .apply__tels {
+    display: grid;
+    gap: var(--s-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .apply__tels a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    color: #fff;
+    text-decoration: none;
   }
   @media (min-width: 960px) {
     .apply__grid {
+      grid-template-columns: 7fr 4fr;
+      gap: var(--s-9);
+    }
+  }
+
+  /* ---------- About BIA (red) ---------- */
+  .about {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--section);
+    background: var(--bia-red);
+    color: var(--on-red);
+  }
+  .about :global(.about__watermark) {
+    position: absolute;
+    right: -160px;
+    top: -60px;
+    width: 620px;
+    height: auto;
+    color: #fff;
+    opacity: 0.07;
+    pointer-events: none;
+  }
+  .about__grid {
+    position: relative;
+    display: grid;
+    gap: var(--s-8);
+  }
+  .about__intro {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+  .about__label {
+    display: flex;
+    gap: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid rgb(255 255 255 / 0.45);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--on-red-muted);
+  }
+  .about__title {
+    font-size: var(--step-4);
+    font-weight: 380;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: #fff;
+  }
+  .about__title em {
+    display: block;
+  }
+  .about__lead {
+    max-width: 48ch;
+    font-size: var(--step-1);
+    line-height: 1.5;
+    color: var(--on-red-muted);
+  }
+  .about__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .about__side {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+  .about__block {
+    padding: var(--s-5);
+    background: rgb(0 0 0 / 0.16);
+    border-radius: var(--radius);
+  }
+  .about__h {
+    margin-bottom: var(--s-3);
+    font-size: var(--step-1);
+    color: #fff;
+  }
+  .about__offers {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .about__offers li {
+    display: flex;
+    gap: var(--s-2);
+  }
+  .about__offers :global(svg) {
+    flex: none;
+    margin-top: 0.2em;
+  }
+  .about__who {
+    display: grid;
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .about__who li {
+    display: grid;
+    grid-template-columns: 2.2rem 1fr;
+  }
+  .about__who strong {
+    display: block;
+    color: #fff;
+  }
+  .about__who li > span:last-child {
+    color: var(--on-red-muted);
+  }
+  .about__n {
+    font-weight: 800;
+    color: #fff;
+  }
+  @media (min-width: 960px) {
+    .about__grid {
       grid-template-columns: 6fr 5fr;
       gap: var(--s-9);
+    }
+  }
+
+  /* ---------- Requirements & documents ---------- */
+  .reqdocs {
+    display: grid;
+    gap: var(--s-7);
+    margin-top: var(--s-7);
+    padding-top: var(--s-7);
+    border-top: 1px solid var(--line-strong);
+  }
+  .req__title {
+    margin-bottom: var(--s-4);
+    font-size: var(--step-2);
+  }
+  .req__list {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .req__list li {
+    display: flex;
+    gap: var(--s-2);
+    padding: var(--s-2) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .req__list :global(svg) {
+    flex: none;
+    margin-top: 0.2em;
+    color: var(--bia-red);
+  }
+  .req__note {
+    margin-top: var(--s-4);
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  @media (min-width: 960px) {
+    .reqdocs {
+      grid-template-columns: 4fr 7fr;
+      gap: var(--s-8);
+    }
+  }
+
+  /* ---------- Location ---------- */
+  .loc {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+  .loc__grid {
+    display: grid;
+    gap: var(--s-7);
+  }
+  .loc__info {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+  .loc__address {
+    display: grid;
+    gap: 2px;
+    font-style: normal;
+  }
+  .loc__name {
+    margin-bottom: var(--s-2);
+    font-size: var(--step--1);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ffb3b3;
+  }
+  .loc__line {
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    line-height: 1.1;
+    color: #fff;
+  }
+  .loc__landmark {
+    display: flex;
+    gap: var(--s-2);
+    margin-top: var(--s-3);
+    color: var(--on-ink-muted);
+  }
+  .loc__landmark :global(svg) {
+    flex: none;
+    margin-top: 0.25em;
+    color: #ff8080;
+  }
+  .loc__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .loc__ctas .btn {
+    white-space: normal;
+  }
+  .routes {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .route-card {
+    padding: var(--s-4) var(--s-5);
+    border: 1px solid rgb(255 255 255 / 0.16);
+    border-left: 3px solid var(--bia-red);
+    border-radius: var(--radius);
+  }
+  .route-card--then {
+    border-left-color: #fff;
+  }
+  .route-card h3 {
+    margin-bottom: var(--s-2);
+    font-size: var(--step-1);
+    color: #fff;
+  }
+  .route-card ol {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--on-ink);
+  }
+  .loc__caption {
+    font-size: var(--step--1);
+    color: var(--on-ink-muted);
+  }
+  .loc__caption strong {
+    color: var(--on-ink);
+  }
+  .loc__media {
+    display: grid;
+    gap: var(--s-5);
+    align-content: start;
+  }
+  .loc__video {
+    margin: 0;
+  }
+  .loc__video video {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    aspect-ratio: 464 / 832;
+    margin-inline: auto;
+    background: #000;
+    border-radius: var(--radius);
+    box-shadow: 0 0 0 6px var(--bia-red);
+  }
+  .loc__video figcaption,
+  .loc__gate figcaption {
+    margin-top: var(--s-3);
+    font-size: var(--step--1);
+    color: var(--on-ink-muted);
+    text-align: center;
+  }
+  .loc__gate {
+    margin: 0;
+  }
+  .loc__gate :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  .loc__gate figcaption {
+    text-align: left;
+  }
+  .loc__transcript {
+    margin-top: var(--s-7);
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+    padding-top: var(--s-4);
+  }
+  .loc__transcript summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .loc__transcript ol {
+    display: grid;
+    gap: var(--s-1);
+    margin: var(--s-3) 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--on-ink-muted);
+    font-size: var(--step--1);
+  }
+  .loc__transcript .num {
+    display: inline-block;
+    width: 3rem;
+    color: #ffb3b3;
+  }
+  @media (min-width: 720px) {
+    .routes {
+      grid-template-columns: 1fr 1fr;
+    }
+    .route-card--then {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1040px) {
+    .loc__grid {
+      grid-template-columns: 7fr 4fr;
+      gap: var(--s-8);
     }
   }
 </style>

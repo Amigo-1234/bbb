@@ -1,10 +1,21 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { address, contacts, guides, primaryContact, site } from '../data/site';
+import Badge from './Badge.astro';
+import { address, contacts, guides, primaryContact, site, whatsapp } from '../data/site';
 ---
 
-<footer class="footer">
+<footer class="footer" data-cta-zone>
+  <div class="footer__band">
+    <div class="wrap footer__band-inner">
+      <Badge variant="seal" size={92} tone="light" />
+      <p class="footer__band-text">
+        <span class="footer__band-name">{site.parent}</span>
+        <span>{site.descriptor}</span>
+      </p>
+    </div>
+  </div>
+  <Badge variant="mark" size={520} class="footer__watermark" />
   <div class="wrap footer__grid">
     <div class="footer__brand">
       <div class="footer__mark">
@@ -15,17 +26,18 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
         </span>
       </div>
       <p class="footer__line">
-        A JUPEB admission centre preparing Science and Non-Science students for Direct Entry into 200 Level.
+        A JUPEB academy and tutorial centre preparing Science and Non-Science students for Direct Entry into 200 Level.
       </p>
     </div>
 
     <div>
       <h2 class="footer__h">Visit</h2>
       <address>
+        <strong>{address.name}</strong>
         {address.lines.map((l) => <span>{l}</span>)}
-        <span class="footer__muted">{address.landmark}</span>
+        <span class="footer__muted">Landmark: {address.landmark}</span>
       </address>
-      <a class="footer__link with-icon" href={address.mapsUrl} rel="noopener" target="_blank"><Icon name="pin" size={16} />Get directions</a>
+      <a class="footer__link with-icon" href="/#location"><Icon name="pin" size={16} />Directions &amp; video</a>
     </div>
 
     <div>
@@ -34,9 +46,10 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
         {contacts.map((c) => (
           <li>
             <a href={`tel:${c.phone}`} class="num">{c.display}</a>
-            <span class="footer__muted">{c.name ? `${c.name}, ${c.role}` : c.role}</span>
+            <span class="footer__muted">{c.name ? `${c.name} · ${c.role}` : c.role}</span>
           </li>
         ))}
+        <li><a href={whatsapp} rel="noopener" target="_blank">WhatsApp {primaryContact.display}</a></li>
       </ul>
     </div>
 
@@ -44,7 +57,9 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
       <h2 class="footer__h">Explore</h2>
       <ul class="footer__list">
         <li><a href="/success-stories">Success stories</a></li>
-        <li><a href="/#programme">Programme &amp; fees</a></li>
+        <li><a href="/gallery">Gallery</a></li>
+        <li><a href="/fees">Fees &amp; payment</a></li>
+        <li><a href="/timetable">Class timetable</a></li>
         {guides.map((g) => <li><a href={g.href}>{g.title}</a></li>)}
       </ul>
     </div>
@@ -52,21 +67,85 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
 
   <div class="wrap footer__base">
     <p>© {new Date().getFullYear()} BIA JUPEB · {site.parent}</p>
-    <p><a class="with-icon" href={site.facebook} rel="noopener" target="_blank"><Icon name="facebook" size={16} />Facebook</a></p>
+    <p class="footer__social">
+      <a class="with-icon" href={site.facebook} rel="noopener" target="_blank"><Icon name="facebook" size={16} />Facebook</a>
+      <a href={site.tiktok} rel="noopener" target="_blank">TikTok @bomaacademylimited</a>
+    </p>
   </div>
 </footer>
 
-<nav class="actionbar" aria-label="Quick actions">
+<nav class="actionbar" aria-label="Quick actions" data-actionbar>
   <a class="btn btn--outline actionbar__call" href={`tel:${primaryContact.phone}`} data-cta="actionbar-call"><Icon name="phone" size={18} />Call admissions</a>
   <a class="btn" href="/#apply" data-cta="actionbar-apply">Enquire<Icon name="arrow-right" size={18} /></a>
 </nav>
 
+<script>
+  // Show the quick-action bar only when no other admissions call-to-action is on screen.
+  const bar = document.querySelector<HTMLElement>('[data-actionbar]');
+  const zones = document.querySelectorAll('[data-cta-zone]');
+  if (bar && zones.length && 'IntersectionObserver' in window) {
+    const visible = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) (e.isIntersecting ? visible.add(e.target) : visible.delete(e.target));
+      bar.toggleAttribute('data-hidden', visible.size > 0);
+    });
+    zones.forEach((z) => io.observe(z));
+  }
+</script>
+
 <style>
   .footer {
+    position: relative;
+    overflow: hidden;
     background: var(--ink);
     color: var(--on-ink);
-    padding-block: var(--s-8) var(--s-6);
+    padding-bottom: var(--s-6);
     font-size: 0.95rem;
+  }
+  .footer__band {
+    background: var(--bia-red-deep);
+    color: var(--on-red);
+    margin-bottom: var(--s-8);
+  }
+  .footer__band-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--s-5);
+    padding-block: var(--s-5);
+  }
+  .footer__band-text {
+    display: grid;
+    gap: 2px;
+    font-size: var(--step--1);
+    color: var(--on-red-muted);
+  }
+  .footer__band-name {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    line-height: 1.1;
+    color: #fff;
+  }
+  .footer :global(.footer__watermark) {
+    position: absolute;
+    right: -120px;
+    bottom: -60px;
+    width: 520px;
+    height: auto;
+    color: #fff;
+    opacity: 0.035;
+    pointer-events: none;
+  }
+  .footer__grid,
+  .footer__base {
+    position: relative;
+  }
+  .footer__social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2) var(--s-5);
+  }
+  .footer__social a {
+    color: var(--on-ink);
   }
   .footer a {
     text-decoration-color: rgb(255 255 255 / 0.3);
@@ -111,6 +190,9 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
     text-transform: uppercase;
     color: var(--on-ink-muted);
     margin-bottom: var(--s-3);
+  }
+  address strong {
+    font-weight: 700;
   }
   address {
     display: grid;
@@ -172,6 +254,14 @@ import { address, contacts, guides, primaryContact, site } from '../data/site';
   }
   .actionbar__call {
     background: var(--surface);
+  }
+  .actionbar {
+    transition: transform 0.35s var(--ease), visibility 0.35s;
+  }
+  /* Hidden while on-page admissions buttons are visible, so it never covers them */
+  .actionbar[data-hidden] {
+    transform: translateY(110%);
+    visibility: hidden;
   }
   @media (max-width: 359px) {
     .actionbar .btn :global(svg) {

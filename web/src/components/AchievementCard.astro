@@ -1,0 +1,139 @@
+---
+/**
+ * Student achievement card. Shows the student's photograph and name only when
+ * the record is consent-approved (`image`/`name` are only passed for those);
+ * otherwise renders an anonymous card with the grade, course and university.
+ */
+import type { ImageMetadata } from 'astro';
+import { Picture } from 'astro:assets';
+import Laurel from './Laurel.astro';
+
+interface Props {
+  grade: string;
+  course: string;
+  institution?: string;
+  level?: string;
+  year?: number;
+  name?: string;
+  image?: ImageMetadata;
+}
+const { grade, course, institution, level, year, name, image } = Astro.props;
+const meta = [institution, level, year].filter(Boolean).join(' · ');
+---
+
+<article class:list={['ach', image ? 'ach--photo' : 'ach--anon']}>
+  <div class="ach__frame">
+    {
+      image ? (
+        <Picture
+          src={image}
+          formats={['avif', 'webp']}
+          widths={[320, 560]}
+          sizes="(min-width: 960px) 22vw, 70vw"
+          alt={`${name ?? 'BIA JUPEB alumnus'}, ${course}`}
+        />
+      ) : (
+        <div class="ach__placeholder" aria-hidden="true">
+          <Laurel class="ach__laurel" size={150} centre={grade || undefined} />
+        </div>
+      )
+    }
+    <p class="ach__tag">Congratulations</p>
+  </div>
+  <div class="ach__body">
+    {grade && image && <p class="ach__grade"><span class="sr-only">Grades {grade.split('').join(', ')}</span><span aria-hidden="true">{grade}</span></p>}
+    {grade && !image && <p class="sr-only">Grades {grade.split('').join(', ')}</p>}
+    <h3 class="ach__course">{course}</h3>
+    {meta && <p class="ach__meta">{meta}</p>}
+    <p class="ach__who">{name ?? 'BIA JUPEB alumnus'}</p>
+    {!image && <p class="ach__note">Photograph published with the student’s consent</p>}
+  </div>
+</article>
+
+<style>
+  .ach {
+    display: grid;
+    gap: var(--s-3);
+    height: 100%;
+  }
+  .ach__frame {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    aspect-ratio: 4 / 5;
+    background: var(--paper-2);
+  }
+  .ach__frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    transition: transform 0.8s var(--ease);
+  }
+  .ach:hover .ach__frame :global(img) {
+    transform: scale(1.04);
+  }
+  .ach__placeholder {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    background:
+      radial-gradient(90% 70% at 50% 40%, rgb(255 255 255 / 0.9), transparent 70%),
+      var(--paper-2);
+    color: var(--brass);
+  }
+  .ach__placeholder :global(.ach__laurel) {
+    width: 62%;
+    transition: transform 0.8s var(--ease);
+  }
+  .ach:hover .ach__placeholder :global(.ach__laurel) {
+    transform: scale(1.04) rotate(-2deg);
+  }
+  .ach__placeholder :global(.laurel__centre) {
+    fill: var(--crimson);
+    font-size: 40px;
+  }
+  .ach__tag {
+    position: absolute;
+    left: var(--s-3);
+    top: var(--s-3);
+    padding: 0.2em 0.7em;
+    background: var(--crimson);
+    color: #fff;
+    border-radius: 999px;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.85rem;
+  }
+  .ach__body {
+    display: grid;
+    gap: 2px;
+  }
+  .ach__grade {
+    font-family: var(--serif);
+    font-size: var(--step-2);
+    color: var(--brass);
+    letter-spacing: 0.04em;
+  }
+  .ach__course {
+    font-size: var(--step-1);
+    line-height: 1.2;
+  }
+  .ach__meta {
+    font-size: var(--step--1);
+    color: var(--ink-2);
+  }
+  .ach__who {
+    margin-top: var(--s-1);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .ach__note {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+</style>

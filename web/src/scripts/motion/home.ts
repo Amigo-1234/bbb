@@ -7,13 +7,13 @@ import { gsap, ScrollTrigger, SplitText, root, EASE, EASE_TEXT, $, $$, safely, o
 function hero() {
   const title = $('.hero__title')!;
   const copy = $$('.hero__copy > *').filter((el) => el !== title);
-  const media = $('.hero__media')!;
   const track = $('.hero__media .carousel__track');
   const bar = $('.hero__media .carousel__bar');
   const facts = $$('.facts > div');
 
   // Take over from the CSS pre-hide with inline state, then animate with explicit end values.
-  gsap.set([...copy, title, media, '.facts'], { autoAlpha: 0 });
+  // The hero photograph is never hidden (it is the LCP element); it is only clipped, then revealed.
+  gsap.set([...copy, title, '.facts'], { autoAlpha: 0 });
   const split = SplitText.create(title, { type: 'lines', mask: 'lines', aria: 'auto' });
   const show = { autoAlpha: 1 };
 
@@ -31,12 +31,17 @@ function hero() {
     .set(title, show, '<')
     .from(split.lines, { yPercent: 110, duration: 1.05, ease: EASE_TEXT, stagger: 0.1 }, '<0.1')
     .fromTo(copy.slice(1), { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.09 }, '-=0.7')
-    .set(media, show, 0.35)
     .fromTo(
       track,
       { clipPath: 'inset(14% 10% 14% 10% round 4px)' },
       { clipPath: 'inset(0% 0% 0% 0% round 4px)', duration: 1.3, ease: 'expo.out', clearProps: 'clipPath' },
-      0.35,
+      0.1,
+    )
+    .fromTo(
+      '.hero__inset',
+      { y: 40, autoAlpha: 0, rotate: -3 },
+      { y: 0, autoAlpha: 1, rotate: 0, duration: 1.1, ease: 'expo.out', clearProps: 'transform' },
+      0.9,
     )
     .fromTo(bar, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, '-=0.9')
     .set('.facts', show, '-=0.6')
@@ -222,30 +227,35 @@ function calendar() {
 function modes() {
   const modes = $$('.mode');
   const icons = $$('.mode__icon');
-  const ticks = $$('.mode--shared li svg path');
   gsap.set(modes, { autoAlpha: 0 });
-  gsap.set(ticks, { drawSVG: '0%' });
   onEnter($('.modes')!, () => {
     const tl = gsap.timeline({ defaults: { ease: EASE } });
     tl.fromTo(modes, { y: 30, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.8, stagger: 0.12 })
-      .from(icons, { scale: 0.3, rotate: -25, duration: 0.7, ease: 'back.out(2)', stagger: 0.12 }, 0.15)
-      .to(ticks, { drawSVG: '100%', duration: 0.5, ease: 'power2.out', stagger: 0.1 }, 0.5);
+      .from(icons, { scale: 0.3, rotate: -25, duration: 0.7, ease: 'back.out(2)', stagger: 0.12 }, 0.15);
   });
 }
 
 /** Gallery: photographs unveil upward with a slow settle; slider moves stay native. */
 function gallery() {
-  const shots = $$('.shot');
-  const imgs = $$('.shot img');
-  gsap.set(shots, { autoAlpha: 0 });
-  onEnter($('.gallery [data-carousel]')!, () => {
-    const tl = gsap.timeline();
-    tl.fromTo(
-      shots,
-      { autoAlpha: 0, clipPath: 'inset(100% 0% 0% 0%)' },
-      { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.out', stagger: 0.12, clearProps: 'clipPath' },
-    ).from(imgs, { scale: 1.25, duration: 1.6, ease: 'expo.out', stagger: 0.12, clearProps: 'transform' }, 0);
+  const tiles = $$('.life__item');
+  const imgs = $$('.life__item img');
+  const band = $('.band');
+  gsap.set(tiles, { autoAlpha: 0 });
+  onEnter($('.life')!, () => {
+    gsap
+      .timeline()
+      .fromTo(
+        tiles,
+        { autoAlpha: 0, clipPath: 'inset(100% 0% 0% 0%)' },
+        { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.out', stagger: 0.08, clearProps: 'clipPath' },
+      )
+      .from(imgs, { scale: 1.18, duration: 1.4, ease: 'expo.out', stagger: 0.08, clearProps: 'transform' }, 0);
   }, 'top 78%');
+  if (band) {
+    onEnter(band, () =>
+      gsap.fromTo(band, { clipPath: 'inset(8% 6% 8% 6%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'expo.out', clearProps: 'clipPath' }),
+    );
+  }
 }
 
 /** Leadership: portrait unveils, mission sets line by line, team rows slide in. */
@@ -293,22 +303,19 @@ function guides() {
   );
 }
 
-/** Apply: the closing statement rises, the centre photograph opens from the side. */
-function apply(desktop: boolean) {
+/** Apply: the closing statement rises, the address card slides in. */
+function apply() {
   const title = $('.apply__title')!;
   const rest = $$('.apply__eyebrow, .apply__lead, .apply__ctas');
-  const frame = $('.apply__visit picture');
-  const caption = $('.apply__visit figcaption');
-  gsap.set([title, ...rest, frame, caption].filter(Boolean), { autoAlpha: 0 });
+  const card = $('.apply__card');
+  gsap.set([title, ...rest, card].filter(Boolean), { autoAlpha: 0 });
   onEnter($('.apply')!, () => {
     const tl = gsap.timeline({ defaults: { ease: EASE } });
     tl.fromTo(rest[0], { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 })
       .add(maskLines(title, { duration: 1.2 }), 0.1)
       .fromTo(rest.slice(1), { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.1 }, 0.45)
-      .fromTo(frame, { autoAlpha: 1, clipPath: 'inset(0% 0% 0% 100%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut', clearProps: 'clipPath' }, 0.2)
-      .fromTo(caption, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, 1);
+      .fromTo(card, { x: 30, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.9, clearProps: 'transform' }, 0.3);
   }, 'top 72%');
-  if (desktop) parallax($('.apply__visit img'), $('.apply__visit'), 6);
 }
 
 let heroPlayed = false;
@@ -328,11 +335,11 @@ export function initHomeMotion() {
     safely('programme', '.stream *, .plan, .combos *', programme);
     safely('calendar', '.timeline, .timeline__item', calendar);
     safely('modes', '.mode', modes);
-    safely('gallery', '.shot, .shot img', gallery);
+    safely('gallery', '.life__item, .life__item img', gallery);
     safely('people', '.founder *, .mission *, .team *', () => people(desktop));
     safely('faq', '.faq__item', faq);
     safely('guides', '.guides li', guides);
-    safely('apply', '.apply *', () => apply(desktop));
+    safely('apply', '.apply *', apply);
     safely('footer', '.footer__grid > *', footer);
     return () => undoJourney?.();
   });

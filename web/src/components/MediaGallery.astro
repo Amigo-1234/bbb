@@ -1,0 +1,456 @@
+---
+/**
+ * BIA media gallery: category filters, an editorial grid with varied tile
+ * sizes, batches of 12, and a full-screen lightbox (swipe, arrow keys, Esc).
+ *
+ * Performance: thumbnails are responsive AVIF/WebP and lazy; items beyond the
+ * current batch are `hidden` (so their images are never requested); the large
+ * 1600px WebP is fetched only when a photo is opened, and a video element is
+ * created only when a video is played. Without JavaScript every item shows and
+ * links straight to its full-size file.
+ */
+import { Picture, getImage } from 'astro:assets';
+import { categories, counts, gallery } from '../data/gallery';
+
+const BATCH = 12;
+const items = await Promise.all(
+  gallery.map(async (g, i) => {
+    const { width: w, height: h } = g.image;
+    const landscape = w > h * 1.15;
+    const shape = i === 0 || (landscape && i % 9 === 4) ? 'big' : landscape ? 'wide' : i % 4 === 1 ? 'tall' : 'std';
+    const full = g.kind === 'photo' ? await getImage({ src: g.image, format: 'webp', width: Math.min(w, 1600) }) : null;
+    return { ...g, shape, full };
+  }),
+);
+const sizes = { big: '(min-width: 960px) 50vw, 100vw', wide: '(min-width: 960px) 50vw, 100vw', tall: '(min-width: 960px) 25vw, 50vw', std: '(min-width: 960px) 25vw, 50vw' };
+const dur = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+const total = gallery.length;
+---
+
+<div class="mg" data-mg data-batch={BATCH}>
+  <div class="mg__filters" role="toolbar" aria-label="Filter the gallery" data-mg-filters hidden>
+    <button type="button" class="mg__chip" data-filter="all" aria-pressed="true">All <span class="num">{total}</span></button>
+    {
+      categories.map((c) => (
+        <button type="button" class="mg__chip" data-filter={c.id} aria-pressed="false" data-empty={counts[c.id] === 0 ? '' : undefined}>
+          {c.label} <span class="num">{counts[c.id] || 'soon'}</span>
+        </button>
+      ))
+    }
+  </div>
+  <p class="mg__status" aria-live="polite" data-mg-status></p>
+
+  <ul class="mg__grid" aria-label="BIA photographs and videos">
+    {
+      items.map((g, i) => (
+        <li class:list={['mg__item', `mg__item--${g.shape}`]} data-cat={g.category} data-i={i}>
+          <a
+            class="mg__link"
+            href={g.kind === 'photo' ? g.full!.src : g.video!.src}
+            data-kind={g.kind}
+            data-alt={g.alt}
+            data-caption={g.caption}
+            data-w={g.kind === 'photo' ? g.full!.attributes.width : g.video!.width}
+            data-h={g.kind === 'photo' ? g.full!.attributes.height : g.video!.height}
+            data-track={g.video?.track}
+            target="_blank"
+            rel="noopener"
+          >
+            <Picture
+              src={g.image}
+              formats={['avif', 'webp']}
+              widths={[320, 560, 900]}
+              sizes={sizes[g.shape as keyof typeof sizes]}
+              alt={g.kind === 'video' ? '' : g.alt}
+              loading={i < 2 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              style={g.position ? `object-position:${g.position}` : undefined}
+            />
+            {g.kind === 'video' && (
+              <span class="mg__play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22"><path d="M8 5.5v13l10-6.5-10-6.5Z" fill="currentColor" /></svg>
+                <span class="num">{dur(g.video!.duration)}</span>
+              </span>
+            )}
+            {g.kind === 'video' && <span class="sr-only">Play video ({dur(g.video!.duration)}): </span>}
+            <span class="mg__cap">{g.title}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="mg__empty" data-mg-empty hidden>
+    <strong>Coming soon.</strong> More photographs from BIA are being added to this collection.
+  </p>
+  <div class="mg__more" data-mg-more-wrap hidden>
+    <button type="button" class="btn btn--outline" data-mg-more>Show more <span class="num" data-mg-remaining></span></button>
+  </div>
+
+  <dialog class="mg__lb" aria-label="Gallery viewer" data-mg-lb>
+    <div class="mg__stage" data-mg-stage></div>
+    <div class="mg__bar">
+      <p class="mg__lbcap" data-mg-cap></p>
+      <p class="mg__count num" data-mg-count></p>
+    </div>
+    <button type="button" class="mg__btn mg__close" data-mg-close aria-label="Close viewer">×</button>
+    <button type="button" class="mg__btn mg__prev" data-mg-prev aria-label="Previous">‹</button>
+    <button type="button" class="mg__btn mg__next" data-mg-next aria-label="Next">›</button>
+  </dialog>
+</div>
+
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-mg]')) {
+    const batch = Number(root.dataset.batch);
+    const items = [...root.querySelectorAll<HTMLLIElement>('.mg__item')];
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const status = root.querySelector<HTMLElement>('[data-mg-status]')!;
+    const empty = root.querySelector<HTMLElement>('[data-mg-empty]')!;
+    const moreWrap = root.querySelector<HTMLElement>('[data-mg-more-wrap]')!;
+    const remaining = root.querySelector<HTMLElement>('[data-mg-remaining]')!;
+    const lb = root.querySelector<HTMLDialogElement>('[data-mg-lb]')!;
+    const stage = root.querySelector<HTMLElement>('[data-mg-stage]')!;
+    const cap = root.querySelector<HTMLElement>('[data-mg-cap]')!;
+    const count = root.querySelector<HTMLElement>('[data-mg-count]')!;
+    root.querySelector<HTMLElement>('[data-mg-filters]')!.hidden = false;
+    let filter = 'all';
+    let shown = batch;
+    let current: HTMLLIElement[] = [];
+    let index = 0;
+
+    const matching = () => items.filter((li) => filter === 'all' || li.dataset.cat === filter);
+    const render = () => {
+      const m = matching();
+      items.forEach((li) => (li.hidden = true));
+      m.slice(0, shown).forEach((li) => (li.hidden = false));
+      const left = Math.max(0, m.length - shown);
+      moreWrap.hidden = left === 0;
+      remaining.textContent = `(${left})`;
+      empty.hidden = m.length > 0;
+      const label = chips.find((c) => c.dataset.filter === filter)!.firstChild!.textContent!.trim();
+      status.textContent = m.length ? `Showing ${Math.min(shown, m.length)} of ${m.length} — ${label}` : `${label}: coming soon`;
+    };
+    chips.forEach((chip) =>
+      chip.addEventListener('click', () => {
+        filter = chip.dataset.filter!;
+        shown = batch;
+        chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+        render();
+      }),
+    );
+    root.querySelector('[data-mg-more]')!.addEventListener('click', () => {
+      const first = matching()[shown];
+      shown += batch;
+      render();
+      first?.querySelector<HTMLElement>('a')?.focus();
+    });
+    render();
+
+    // Lightbox
+    const show = (i: number) => {
+      index = (i + current.length) % current.length;
+      const a = current[index].querySelector<HTMLAnchorElement>('a')!;
+      stage.replaceChildren();
+      if (a.dataset.kind === 'video') {
+        const v = document.createElement('video');
+        v.src = a.href;
+        v.controls = true;
+        v.playsInline = true;
+        v.width = Number(a.dataset.w);
+        v.height = Number(a.dataset.h);
+        v.setAttribute('aria-label', a.dataset.alt!);
+        if (a.dataset.track) {
+          const t = document.createElement('track');
+          Object.assign(t, { kind: 'captions', src: a.dataset.track, srclang: 'en', label: 'English' });
+          v.append(t);
+        }
+        stage.append(v);
+        v.play().catch(() => {});
+      } else {
+        const img = new Image(Number(a.dataset.w), Number(a.dataset.h));
+        img.src = a.href;
+        img.alt = a.dataset.alt!;
+        img.decoding = 'async';
+        stage.append(img);
+      }
+      cap.textContent = a.dataset.caption!;
+      count.textContent = `${index + 1} / ${current.length}`;
+    };
+    items.forEach((li) =>
+      li.querySelector('a')!.addEventListener('click', (e) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || typeof lb.showModal !== 'function') return;
+        e.preventDefault();
+        current = matching();
+        lb.showModal();
+        show(current.indexOf(li));
+      }),
+    );
+    root.querySelector('[data-mg-prev]')!.addEventListener('click', () => show(index - 1));
+    root.querySelector('[data-mg-next]')!.addEventListener('click', () => show(index + 1));
+    root.querySelector('[data-mg-close]')!.addEventListener('click', () => lb.close());
+    lb.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(index - 1);
+      if (e.key === 'ArrowRight') show(index + 1);
+    });
+    lb.addEventListener('click', (e) => e.target === lb && lb.close());
+    let x0: number | null = null;
+    stage.addEventListener('pointerdown', (e) => (x0 = e.clientX));
+    stage.addEventListener('pointerup', (e) => {
+      if (x0 === null) return;
+      const dx = e.clientX - x0;
+      x0 = null;
+      if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+    });
+    lb.addEventListener('close', () => {
+      stage.replaceChildren(); // stops any playing video
+      const li = current[index];
+      if (li && !li.hidden) li.querySelector('a')!.focus();
+    });
+  }
+</script>
+
+<style>
+  .mg__filters[hidden] {
+    display: none;
+  }
+  .mg__filters {
+    display: flex;
+    gap: var(--s-2);
+    margin: 0 calc(-1 * var(--gutter)) var(--s-3);
+    padding: var(--s-1) var(--gutter) var(--s-2);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .mg__chip {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    min-height: 44px;
+    padding: 0 1em;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font: 700 0.9rem/1 var(--sans);
+    cursor: pointer;
+  }
+  .mg__chip .num {
+    font-weight: 600;
+    color: var(--muted);
+  }
+  .mg__chip[aria-pressed='true'] {
+    background: var(--bia-red);
+    border-color: var(--bia-red);
+    color: #fff;
+  }
+  .mg__chip[aria-pressed='true'] .num {
+    color: var(--on-red-muted);
+  }
+  .mg__chip[data-empty] .num {
+    font-style: italic;
+  }
+  .mg__status {
+    margin-bottom: var(--s-4);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .mg__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 9rem;
+    grid-auto-flow: dense;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .mg__item--big {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+  .mg__item--wide {
+    grid-column: span 2;
+  }
+  .mg__item--tall {
+    grid-row: span 2;
+  }
+  .mg__item[hidden] {
+    display: none;
+  }
+  .mg__link {
+    position: relative;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--paper-2);
+  }
+  .mg__link :global(picture),
+  .mg__link :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .mg__link :global(img) {
+    object-fit: cover;
+    transition: transform 0.7s var(--ease);
+  }
+  .mg__link:hover :global(img),
+  .mg__link:focus-visible :global(img) {
+    transform: scale(1.05);
+  }
+  .mg__cap {
+    position: absolute;
+    left: var(--s-2);
+    bottom: var(--s-2);
+    max-width: calc(100% - var(--s-4));
+    padding: 0.25em 0.6em;
+    background: rgb(255 255 255 / 0.92);
+    color: var(--ink);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .mg__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.55em 0.9em 0.55em 0.7em;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background: var(--bia-red);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+  }
+  .mg__empty {
+    padding: var(--s-6) var(--s-5);
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+    text-align: center;
+    color: var(--ink-2);
+  }
+  .mg__more[hidden] {
+    display: none;
+  }
+  .mg__more {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--s-6);
+  }
+  @media (min-width: 720px) {
+    .mg__grid {
+      grid-template-columns: repeat(3, 1fr);
+      grid-auto-rows: 12rem;
+    }
+  }
+  @media (min-width: 1040px) {
+    .mg__grid {
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 14rem;
+      gap: var(--s-3);
+    }
+    .mg__cap {
+      font-size: var(--step--1);
+    }
+    .mg__filters {
+      flex-wrap: wrap;
+      margin-inline: 0;
+      padding-inline: 0;
+    }
+  }
+
+  /* Lightbox */
+  .mg__lb {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(12 13 17 / 0.97);
+    color: #fff;
+  }
+  .mg__lb[open] {
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+  .mg__lb::backdrop {
+    background: rgb(12 13 17 / 0.9);
+  }
+  .mg__stage {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    overflow: hidden;
+    padding: var(--s-7) var(--s-2) var(--s-2);
+    touch-action: pan-y;
+  }
+  .mg__stage :global(img),
+  .mg__stage :global(video) {
+    max-width: 100%;
+    max-height: calc(100dvh - 8rem);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 2px;
+  }
+  .mg__bar {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-3) var(--gutter) calc(var(--s-4) + env(safe-area-inset-bottom));
+    font-size: var(--step--1);
+  }
+  .mg__count {
+    flex: none;
+    color: #ffb3b3;
+  }
+  .mg__btn {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.12);
+    color: #fff;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .mg__btn:hover,
+  .mg__btn:focus-visible {
+    background: var(--bia-red);
+  }
+  .mg__close {
+    top: var(--s-3);
+    right: var(--s-3);
+  }
+  .mg__prev,
+  .mg__next {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .mg__prev {
+    left: var(--s-2);
+  }
+  .mg__next {
+    right: var(--s-2);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mg__link :global(img) {
+      transition: none;
+    }
+    .mg__link:hover :global(img),
+    .mg__link:focus-visible :global(img) {
+      transform: none;
+    }
+  }
+</style>
