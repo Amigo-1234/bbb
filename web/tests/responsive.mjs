@@ -259,7 +259,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const dist = new URL('../dist/', import.meta.url).pathname;
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
-  for (const path of ['', 'success-stories', 'fees', 'timetable', 'gallery', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+  for (const path of ['', 'success-stories', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
     const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
     const robots = await page.locator('meta[name="robots"]').count();
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -301,10 +301,12 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(sensitive.length === 0, `build output contains no legacy or sensitive files ${sensitive.slice(0, 5).join(', ')}`);
   const builtText = files.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(join(dist, f), 'utf8')).join('\n');
   check(!/AIzaSy|firebaseapp|apiKey/.test(builtText), 'build output contains no Firebase keys or config');
-  // Only the official contacts confirmed by Boma (October 2026) are published
-  const official = ['7012388184', '8164329204'];
+  // Only the contacts in Boma's October 2026 staff list are published
+  const official = ['7012388184', '8164329204', '9134190829', '8021047735', '9167505810', '8103113275', '9045616337', '7049733518', '9022684754', '7073551210'];
   const phones = [...new Set([...builtText.matchAll(/tel:\+234(\d{10})/g)].map((m) => m[1]))];
-  check(phones.length === 2 && phones.every((p) => official.includes(p)), `only the two official phone numbers are published (${phones.join(', ')})`);
+  check(phones.length === official.length && phones.every((p) => official.includes(p)), `only Boma's confirmed staff numbers are published (${phones.length})`);
+  const wa = [...new Set([...builtText.matchAll(/wa\.me\/234(\d{10})/g)].map((m) => m[1]))].sort();
+  check(JSON.stringify(wa) === JSON.stringify(['7012388184', '7048065326']), `WhatsApp links go only to numbers identified as WhatsApp (${wa.join(', ')})`);
   await page.close();
 }
 
@@ -558,13 +560,14 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const builtText = textFiles.map((f) => readFileSync(f, 'utf8')).join('\n');
 
   // Location consistency
-  check(!/Bariga|Igi Olugbin|Lady Lag|AP petrol/i.test(builtText), 'no outdated Bariga address remains anywhere in the build');
+  // Bariga appears only as the administrative office Boma confirmed (Oct 2026); the old V1 spelling is gone
+  check(!/Lady Lag/i.test(builtText) && [...builtText.matchAll(/Bariga/g)].every((m) => builtText.slice(m.index - 40, m.index).includes('Ladi-Lak')), 'Bariga appears only as the confirmed administrative office address');
   const pages = ['', 'fees', 'timetable', 'success-stories', 'guides', 'guides/jupeb-guide'];
   const p = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   for (const path of pages) {
     await p.goto(new URL(path, BASE).href, { waitUntil: 'domcontentloaded' });
     const ld = await p.evaluate(() => JSON.parse(document.querySelector('script[type="application/ld+json"]')?.textContent ?? 'null'));
-    const footer = await p.locator('footer address').innerText();
+    const footer = await p.locator('footer address').first().innerText();
     check(
       ld?.address?.streetAddress === '12 Ameen Street' && /Abule-Oja, Akoka/.test(ld.address.addressLocality) &&
         JSON.stringify(ld.telephone) === JSON.stringify(['+2347012388184', '+2348164329204']) &&
@@ -866,6 +869,56 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const h = await browser.newPage();
   await h.goto(BASE, { waitUntil: 'domcontentloaded' });
   check((await h.locator('a.explore[href="/gallery"]').count()) === 1 && (await h.locator('header a[href="/gallery"]').count()) >= 1, 'homepage: "Explore Life at BIA" link and navigation lead to /gallery');
+  await h.close();
+}
+
+// 13. /contact — Boma's staff directory and two official locations
+{
+  const CON = new URL('contact', BASE).href;
+  const STAFF = [
+    ['Chief Executive', 'Hon. Boma', ['+2347012388184']],
+    ['Chief Operating Officer', 'Sir Holly', ['+2348164329204']],
+    ['Personal Assistant', 'Miss Damaris', ['+2349134190829']],
+    ['JUPEB Secretary', 'Miss Gloria', ['+2348021047735']],
+    ['Reception', null, ['+2349167505810']],
+    ['Office Manager', 'Mr. Great', ['+2348103113275', '+2349045616337']],
+    ['Office Receptionist', 'Miss Temiloluwa', ['+2347049733518']],
+    ['JUPEB Academic Officer', 'Mr. Victor', ['+2349022684754', '+2347073551210']],
+  ];
+  for (const width of [320, 390, 1440]) {
+    const p = await browser.newPage({ viewport: { width, height: 900 }, isMobile: width < 768, hasTouch: width < 768, reducedMotion: 'reduce' });
+    await p.goto(CON, { waitUntil: 'networkidle' });
+    const r = await p.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
+    check(r.sw <= r.vw, `/contact ${width}px: no horizontal overflow`);
+    if (width === 390) {
+      const cards = await p.locator('[data-staff] > li').evaluateAll((els) => els.map((e) => ({ text: e.textContent, tels: [...e.querySelectorAll('a[href^="tel:"]')].map((a) => a.getAttribute('href').slice(4)), wa: [...e.querySelectorAll('a[href^="https://wa.me/"]')].map((a) => a.getAttribute('href')) })));
+      const ok = cards.length === STAFF.length && STAFF.every(([role, name, tels], i) => cards[i].text.includes(role) && (!name || cards[i].text.includes(name)) && JSON.stringify(cards[i].tels) === JSON.stringify(tels));
+      check(ok, `/contact: ${cards.length} staff entries with the exact roles, names and tap-to-call numbers Boma supplied`);
+      const was = cards.flatMap((c) => c.wa);
+      check(was.length === 1 && was[0] === 'https://wa.me/2347048065326' && cards[6].wa.length === 1, '/contact: only the number identified as WhatsApp (Miss Temiloluwa, 0704 806 5326) has a WhatsApp link');
+      const text = await p.locator('main').innerText();
+      check(!/Esther/i.test(text), '/contact: Miss Esther is not listed as Personal Assistant');
+      check(
+        /12 Ameen Street/.test(text) && /Abule-Oja, Akoka/.test(text) && /56 Igi Olugbin Street/.test(text) && /Shomolu Pedro Road/.test(text) && /Ladi-Lak, Bariga, Lagos/.test(text) && /Directly opposite AP Petrol Station/.test(text),
+        '/contact: both official locations (tutorial centre and administrative office) are shown with the landmark',
+      );
+      check((await p.locator('main a[href*="maps"]').count()) === 0, '/contact: no unverified map links');
+      const small = await p.locator('main a[href^="tel:"], main a[href^="https://wa.me/"]').evaluateAll((els) => els.filter((e) => e.getBoundingClientRect().height < 44).length);
+      check(small === 0, '/contact: every phone link is at least 44px tall');
+      await p.addScriptTag({ content: axeSource });
+      const v = await p.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => `${x.id} (${x.nodes.length})`));
+      check(v.length === 0, `/contact: no serious/critical accessibility violations ${v.join(', ')}`);
+      // Footer: both addresses, contact link
+      const foot = await p.locator('footer.footer').innerText();
+      check(/12 Ameen Street/.test(foot) && /56 Igi Olugbin Street/.test(foot) && /AP Petrol Station/.test(foot) && (await p.locator('footer a[href="/contact"]').count()) >= 1, 'footer: both addresses and a link to /contact');
+    }
+    await p.close();
+  }
+  const h = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await h.goto(BASE, { waitUntil: 'domcontentloaded' });
+  check((await h.locator('main a[href="/contact"]').count()) >= 1 && (await h.locator('main [data-staff]').count()) === 0, 'homepage: links to /contact without repeating the full staff directory');
+  const homeText = await h.locator('body').innerText();
+  check(!/Esther/i.test(homeText), 'homepage: no outdated staff names');
   await h.close();
 }
 

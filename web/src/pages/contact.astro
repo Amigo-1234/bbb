@@ -1,0 +1,247 @@
+---
+import Base from '../layouts/Base.astro';
+import Badge from '../components/Badge.astro';
+import Icon from '../components/Icon.astro';
+import { address, office, primaryContact, staff, waLink } from '../data/site';
+---
+
+<Base
+  title="Contact BIA JUPEB — Staff Phone Numbers & Office Addresses | Boma's Intellectual Academy"
+  description="Phone numbers for BIA JUPEB's admissions and office staff, the tutorial centre at 12 Ameen Street, Akoka, and the administrative office at Ladi-Lak, Bariga, Lagos."
+>
+  <section class="ch" aria-labelledby="ch-title">
+    <Badge variant="mark" size={560} class="ch__mark" />
+    <div class="wrap ch__inner">
+      <p class="ch__eyebrow">Contact · Boma’s Intellectual Academy</p>
+      <h1 id="ch-title" class="ch__title">Talk to <em>BIA.</em></h1>
+      <p class="ch__lead">Call the right person directly, or visit the tutorial centre or the administrative office.</p>
+      <div class="ch__ctas" data-cta-zone>
+        <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="contact-hero-call"><Icon name="phone" size={18} />Admissions · {primaryContact.display}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="places-title">
+    <div class="wrap">
+      <h2 id="places-title" class="sec__title">Our locations</h2>
+      <div class="places">
+        <article class="place" aria-labelledby="place-centre">
+          <p class="place__kind">Tutorial Centre</p>
+          <h3 id="place-centre" class="place__name">{address.name}</h3>
+          <address class="place__addr">{address.lines.map((l) => <span>{l}</span>)}</address>
+          <p class="place__landmark"><Icon name="pin" size={16} />Landmark: {address.landmark}</p>
+          <div class="place__links">
+            <a class="btn btn--outline" href="/#location" data-cta="contact-centre-directions"><Icon name="pin" size={18} />Directions &amp; video</a>
+          </div>
+        </article>
+        <article class="place" aria-labelledby="place-office">
+          <p class="place__kind">Administrative Office</p>
+          <h3 id="place-office" class="place__name">{office.name}</h3>
+          <address class="place__addr">{office.lines.map((l) => <span>{l}</span>)}</address>
+          <p class="place__landmark"><Icon name="pin" size={16} />Landmark: {office.landmark}</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--tint" aria-labelledby="staff-title">
+    <div class="wrap">
+      <h2 id="staff-title" class="sec__title">Staff directory</h2>
+      <p class="sec__lead">Tap a number to call.</p>
+      <ul class="staff" data-staff>
+        {staff.map((m) => (
+          <li class="person">
+            <p class="person__role">{m.role}</p>
+            {m.name && <p class="person__name">{m.name}</p>}
+            <ul class="person__nums">
+              {m.phones.map((p) => (
+                <li>
+                  <a class="person__tel num" href={`tel:${p.phone}`} data-cta={`contact-call-${p.phone.slice(-4)}`}>
+                    <Icon name="phone" size={16} /><span class="sr-only">Call {m.name ?? m.role} on </span>{p.display}
+                  </a>
+                </li>
+              ))}
+              {m.whatsapp && (
+                <li>
+                  <a class="person__tel person__wa num" href={waLink(m.whatsapp.phone)} rel="noopener" target="_blank" data-cta={`contact-whatsapp-${m.whatsapp.phone.slice(-4)}`}>
+                    WhatsApp<span class="sr-only"> {m.name ?? m.role} on</span> {m.whatsapp.display}
+                  </a>
+                </li>
+              )}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ch {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--s-8) var(--s-7);
+    background: var(--bia-red);
+    color: var(--on-red);
+  }
+  .ch :global(.ch__mark) {
+    position: absolute;
+    right: -140px;
+    top: -80px;
+    width: 560px;
+    height: auto;
+    color: #fff;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .ch__inner {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .ch__eyebrow {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-red-muted);
+  }
+  .ch__title {
+    font-size: var(--step-5);
+    font-weight: 380;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .ch__lead {
+    max-width: 44ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--on-red-muted);
+  }
+  .ch__ctas .btn {
+    white-space: normal;
+  }
+  .section {
+    padding-block: var(--s-8);
+  }
+  .section--tint {
+    background: var(--surface);
+    padding-bottom: var(--section);
+  }
+  .sec__title {
+    font-size: var(--step-3);
+    margin-bottom: var(--s-5);
+  }
+  .sec__lead {
+    margin: calc(-1 * var(--s-3)) 0 var(--s-5);
+    color: var(--muted);
+  }
+  .places {
+    display: grid;
+    gap: var(--s-5);
+  }
+  .place {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding: var(--s-6);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--bia-red);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .place__kind {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bia-red);
+  }
+  .place__name {
+    font-size: var(--step-1);
+  }
+  .place__addr {
+    display: grid;
+    font-style: normal;
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .place__landmark {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-2);
+    color: var(--muted);
+  }
+  .place__landmark :global(svg) {
+    flex: none;
+    margin-top: 3px;
+  }
+  .place__links {
+    margin-top: var(--s-3);
+  }
+  .staff {
+    display: grid;
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .person {
+    display: grid;
+    gap: var(--s-1);
+    align-content: start;
+    padding: var(--s-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .person__role {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .person__name {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.2;
+  }
+  .person__nums {
+    display: grid;
+    gap: var(--s-2);
+    margin: var(--s-2) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .person__tel {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    font-weight: 700;
+    color: var(--bia-red);
+    text-decoration: none;
+  }
+  .person__tel:hover,
+  .person__tel:focus-visible {
+    text-decoration: underline;
+  }
+  .person__wa {
+    color: var(--ink);
+  }
+  @media (min-width: 720px) {
+    .places {
+      grid-template-columns: 1fr 1fr;
+    }
+    .staff {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1040px) {
+    .staff {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>
