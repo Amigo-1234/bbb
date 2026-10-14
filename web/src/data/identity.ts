@@ -38,7 +38,7 @@ export const mission =
   'To help every student gain admission into their dream university through structured learning, discipline, and modern teaching methods.';
 
 export const founder = {
-  // Titles ("Dr.", "Hon.") from V1 are omitted until Boma confirms them.
+  // "Hon. Boma" is used on /contact, as in Boma's own staff list (Oct 2026). "Dr." from V1 stays omitted.
   name: 'Boma',
   fullName: 'Busari Muideen Oyebamiji',
   /** As published on V1 and consistent with BIA's documents. */

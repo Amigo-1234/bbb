@@ -2,7 +2,7 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import Badge from './Badge.astro';
-import { address, contacts, guides, primaryContact, site, whatsapp } from '../data/site';
+import { address, contacts, guides, office, primaryContact, site, whatsapp } from '../data/site';
 ---
 
 <footer class="footer" data-cta-zone>
@@ -33,11 +33,16 @@ import { address, contacts, guides, primaryContact, site, whatsapp } from '../da
     <div>
       <h2 class="footer__h">Visit</h2>
       <address>
-        <strong>{address.name}</strong>
-        {address.lines.map((l) => <span>{l}</span>)}
+        <strong>Tutorial Centre</strong>
+        <span>{address.short}</span>
         <span class="footer__muted">Landmark: {address.landmark}</span>
       </address>
       <a class="footer__link with-icon" href="/#location"><Icon name="pin" size={16} />Directions &amp; video</a>
+      <address class="footer__office">
+        <strong>Administrative Office</strong>
+        <span>{office.short}</span>
+        <span class="footer__muted">{office.landmark}</span>
+      </address>
     </div>
 
     <div>
@@ -50,6 +55,7 @@ import { address, contacts, guides, primaryContact, site, whatsapp } from '../da
           </li>
         ))}
         <li><a href={whatsapp} rel="noopener" target="_blank">WhatsApp {primaryContact.display}</a></li>
+        <li><a class="footer__link with-icon" href="/contact" data-cta="footer-contact">All staff contacts<Icon name="arrow-right" size={16} /></a></li>
       </ul>
     </div>
 
@@ -58,6 +64,7 @@ import { address, contacts, guides, primaryContact, site, whatsapp } from '../da
       <ul class="footer__list">
         <li><a href="/success-stories">Success stories</a></li>
         <li><a href="/gallery">Gallery</a></li>
+        <li><a href="/contact">Contact</a></li>
         <li><a href="/fees">Fees &amp; payment</a></li>
         <li><a href="/timetable">Class timetable</a></li>
         {guides.map((g) => <li><a href={g.href}>{g.title}</a></li>)}
@@ -201,6 +208,9 @@ import { address, contacts, guides, primaryContact, site, whatsapp } from '../da
   }
   .footer__link {
     font-weight: 600;
+  }
+  .footer__office {
+    margin-top: var(--s-5);
   }
   .footer__list {
     list-style: none;

@@ -534,6 +534,7 @@ const week = firstSemester.days.map((d) => ({
                 </li>
               ))}
             </ul>
+            <a class="team__more" href="/contact" data-cta="home-founder-contact">All staff contacts &amp; our two offices<Icon name="arrow-right" size={16} /></a>
           </div>
         </div>
       </div>
@@ -1897,6 +1898,14 @@ const week = firstSemester.days.map((d) => ({
   }
   .team__tel:hover {
     text-decoration: underline;
+  }
+  .team__more {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    margin-top: var(--s-3);
+    font-weight: 600;
   }
   @media (min-width: 960px) {
     .people {
