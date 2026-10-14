@@ -1,0 +1,249 @@
+---
+/**
+ * One Hall of Excellence achiever.
+ * - Name and photograph appear only when the student's consent covers them
+ *   (resolved in data/achievements.ts — this component never sees unconsented data).
+ * - `placeholder` renders a clearly labelled layout sample (preview builds only).
+ */
+import { Picture } from 'astro:assets';
+import Badge from './Badge.astro';
+import Laurel from './Laurel.astro';
+import type { Achiever } from '../data/achievements';
+
+interface Props {
+  achiever?: Achiever;
+  placeholder?: boolean;
+  /** Heading level for the name, so cards nest correctly under section headings. */
+  level?: 3 | 4;
+  eager?: boolean;
+}
+const { achiever: a, placeholder = false, level = 3, eager = false } = Astro.props;
+const H = `h${level}` as 'h3' | 'h4';
+const grade = a?.grade ?? 'AAA';
+const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
+---
+
+<article class:list={['ach', { 'ach--placeholder': placeholder, 'ach--named': !!a?.name, 'ach--nophoto': !a?.photo }]} data-achiever={a?.id ?? 'placeholder'}>
+  <div class="ach__photo">
+    {a?.photo ? (
+      <Picture src={a.photo} formats={['avif', 'webp']} widths={[280, 480]} sizes="(min-width: 960px) 260px, 70vw" alt={`${a.name ?? 'BIA JUPEB achiever'}, ${grade}`} loading={eager ? 'eager' : 'lazy'} />
+    ) : (
+      <div class="ach__portrait" aria-hidden="true">
+        <Laurel size={120} class="ach__medal" />
+        <Badge variant="mark" size={44} class="ach__mark" />
+      </div>
+    )}
+    <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : 'Straight As'}</span>
+    {placeholder && <span class="ach__tag">Placeholder</span>}
+  </div>
+
+  <div class="ach__body">
+    <p class="ach__grade">
+      <span class="sr-only">Grades {grade.split('').join(', ')}</span>
+      {grade.split('').map((g) => <span aria-hidden="true">{g}</span>)}
+    </p>
+    <H class:list={['ach__name', { 'ach__name--muted': !a?.name }]}>{label}</H>
+    <dl class="ach__meta">
+      <div><dt>Course</dt><dd>{a?.course ?? (placeholder ? 'Course' : 'Being confirmed')}</dd></div>
+      <div><dt>University</dt><dd>{a?.university ?? (placeholder ? 'University' : 'Being confirmed')}</dd></div>
+      <div><dt>Session</dt><dd>{a?.session ?? (placeholder ? '20XX/20XX' : 'Being confirmed')}</dd></div>
+    </dl>
+    {!a?.name && !placeholder && <p class="ach__note">Name and photo shown once the student consents.</p>}
+    {placeholder && <p class="ach__note">Awaiting a verified record from Boma.</p>}
+  </div>
+</article>
+
+<style>
+  .ach {
+    container-type: inline-size;
+    position: relative;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--ink-2, #1b1e24);
+    color: var(--on-ink);
+    border: 1px solid rgb(255 255 255 / 0.1);
+    box-shadow: 0 18px 40px -28px rgb(0 0 0 / 0.6);
+    transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+  }
+  .ach:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 28px 50px -30px rgb(0 0 0 / 0.7);
+  }
+  .ach__photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    background: linear-gradient(160deg, var(--bia-red) 0%, var(--bia-red-deep) 70%);
+  }
+  .ach__photo :global(img),
+  .ach__photo :global(picture) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+  }
+  .ach--nophoto .ach__photo {
+    aspect-ratio: 16 / 10;
+  }
+  .ach__portrait {
+    display: grid;
+    place-items: center;
+    height: 100%;
+  }
+  .ach__portrait > :global(*) {
+    grid-area: 1 / 1;
+  }
+  .ach__portrait :global(.ach__medal) {
+    width: 46%;
+    height: auto;
+    color: rgb(255 255 255 / 0.55);
+  }
+  .ach__portrait :global(.ach__mark) {
+    width: 17%;
+    height: auto;
+    color: #fff;
+  }
+  .ach__ribbon {
+    position: absolute;
+    left: var(--s-3);
+    bottom: var(--s-3);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgb(17 19 24 / 0.82);
+    backdrop-filter: blur(6px);
+    color: var(--brass-light);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .ach__ribbon :global(.ach__laurel) {
+    color: var(--brass-light);
+  }
+  .ach__tag {
+    position: absolute;
+    top: var(--s-3);
+    right: var(--s-3);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ach__body {
+    display: grid;
+    align-content: start;
+    gap: var(--s-2);
+    padding: var(--s-4) var(--s-5) var(--s-5);
+    border-top: 2px solid var(--brass-light);
+  }
+  .ach__grade {
+    display: flex;
+    gap: 0.06em;
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 2rem + 2vw, 3.2rem);
+    font-weight: 380;
+    line-height: 1;
+    color: var(--brass-light);
+  }
+  .ach__name {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    font-weight: 400;
+    line-height: 1.2;
+    color: #fff;
+  }
+  .ach__name--muted {
+    color: var(--on-ink-muted);
+    font-style: italic;
+  }
+  .ach__meta {
+    display: grid;
+    gap: 6px;
+    margin: var(--s-2) 0 0;
+    font-size: 0.9rem;
+  }
+  .ach__meta div {
+    display: grid;
+    grid-template-columns: 6.5em 1fr;
+    gap: var(--s-2);
+  }
+  .ach__meta dt {
+    color: var(--on-ink-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding-top: 2px;
+  }
+  .ach__meta dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .ach__note {
+    margin-top: var(--s-2);
+    font-size: 0.8rem;
+    color: var(--on-ink-muted);
+  }
+  .ach--placeholder {
+    border: 2px dashed rgb(214 182 121 / 0.5);
+  }
+  .ach--placeholder .ach__photo {
+    background: repeating-linear-gradient(135deg, #2a2d34 0 14px, #24272d 14px 28px);
+  }
+  .ach--placeholder .ach__grade,
+  .ach--placeholder .ach__meta dd {
+    opacity: 0.55;
+  }
+  /* Narrow cards (two per row on phones) */
+  @container (max-width: 264px) {
+    .ach__body {
+      padding: var(--s-3) var(--s-3) var(--s-4);
+    }
+    .ach__grade {
+      font-size: 2.3rem;
+    }
+    .ach__name {
+      font-size: 1.05rem;
+    }
+    .ach__meta {
+      gap: 4px;
+      font-size: 0.82rem;
+    }
+    .ach__meta div {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .ach__meta dt {
+      font-size: 0.65rem;
+    }
+    .ach__portrait :global(.ach__medal) {
+      width: 54%;
+    }
+    .ach__ribbon {
+      left: var(--s-2);
+      bottom: var(--s-2);
+      padding: 4px 9px;
+      font-size: 0.65rem;
+    }
+    .ach__note {
+      font-size: 0.72rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ach,
+    .ach:hover {
+      transition: none;
+      transform: none;
+    }
+  }
+</style>

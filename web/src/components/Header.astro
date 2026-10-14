@@ -4,12 +4,12 @@ import Icon from './Icon.astro';
 import { calendar, primaryContact, site } from '../data/site';
 
 const nav = [
+  { label: 'Hall of Excellence', href: '/hall-of-excellence' },
   { label: 'Fees', href: '/fees' },
   { label: 'Timetable', href: '/timetable' },
   { label: 'Success stories', href: '/success-stories' },
   { label: 'Gallery', href: '/gallery' },
   { label: 'FAQ', href: '/#faq' },
-  { label: 'Location', href: '/#location' },
   { label: 'Contact', href: '/contact' },
 ];
 
@@ -130,7 +130,7 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
       btn.focus();
     }
   });
-  matchMedia('(min-width: 960px)').addEventListener('change', (e) => e.matches && setOpen(false));
+  matchMedia('(min-width: 1100px)').addEventListener('change', (e) => e.matches && setOpen(false));
 
   // Hide the header while reading downwards; bring it back on any upward scroll.
   let lastY = window.scrollY;
@@ -250,6 +250,7 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
   }
   .nav a {
     display: block;
+    white-space: nowrap;
     padding: var(--s-2) var(--s-3);
     font-size: 0.95rem;
     font-weight: 500;
@@ -279,6 +280,7 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
   }
   .header__call {
     display: none;
+    white-space: nowrap;
     font-size: 0.95rem;
     font-weight: 600;
     text-decoration: none;
@@ -402,7 +404,7 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
       display: inline-flex;
     }
   }
-  @media (min-width: 960px) {
+  @media (min-width: 1100px) {
     .nav {
       display: block;
     }
@@ -419,9 +421,12 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
       margin-inline: auto;
     }
   }
-  @media (min-width: 960px) and (max-width: 1100px) {
+  @media (min-width: 1100px) and (max-width: 1320px) {
     .header__call {
       display: none;
+    }
+    .nav a {
+      padding-inline: 10px;
     }
   }
 </style>

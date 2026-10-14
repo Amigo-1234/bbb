@@ -45,7 +45,7 @@ await page.goto(BASE, { waitUntil: 'networkidle' });
 await page.waitForTimeout(2600); // let the hero entrance finish
 const carousels = page.locator('[data-carousel]');
 const count = await carousels.count();
-check(count === 2, `found ${count} carousels (hero, results)`);
+check(count === 1, `found ${count} carousel (hero)`);
 for (let i = 0; i < count; i++) {
   const c = carousels.nth(i);
   const label = await c.getAttribute('aria-label');
@@ -138,7 +138,7 @@ for (const [label, opts] of [
   await scrollThrough(page);
   const stuck = await hiddenContent(page);
   check(stuck.length === 0, `${label}: all content visible after scrolling ${stuck.join(' | ')}`);
-  check(await page.locator('.route__end').evaluate((el) => el.classList.contains('is-active')), `${label}: journey reaches the 200 Level destination`);
+  check((await page.locator('#success [data-achiever]').count()) >= 1 && (await opacity(page, '#success .hall__title')) === 1, `${label}: Hall of Excellence band is visible after the hero`);
   const { sw, vw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
   check(sw <= vw, `${label}: no horizontal overflow after animations`);
   check(errors.length === 0, `${label}: no script errors ${errors.join(' | ')}`);
@@ -158,7 +158,7 @@ const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { wid
 const nojs = await ctx.newPage();
 await nojs.goto(BASE, { waitUntil: 'networkidle' });
 check((await hiddenContent(nojs)).length === 0, 'no JavaScript: all content visible');
-check((await nojs.locator('.route > li').count()) === 4 && (await opacity(nojs, '.route__end h3')) === 1, 'no JavaScript: journey steps readable');
+check((await nojs.locator('.ess__steps > li').count()) === 4 && (await nojs.locator('#success [data-achiever]').count()) >= 1, 'no JavaScript: achievers and admission steps readable');
 await ctx.close();
 
 // 6. Success-stories page, accessibility and privacy
@@ -259,7 +259,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const dist = new URL('../dist/', import.meta.url).pathname;
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
-  for (const path of ['', 'success-stories', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+  for (const path of ['', 'success-stories', 'hall-of-excellence', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
     const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
     const robots = await page.locator('meta[name="robots"]').count();
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -430,6 +430,12 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const where = url === BASE ? 'home' : '/fees';
     const reg = await page.locator('[data-registration]').first().textContent();
     check(reg === '₦45,000', `${where}: registration fee shows ₦45,000`);
+    if (url === BASE) {
+      const ess = await page.locator('#programme').innerText();
+      check(/₦686,700/.test(ess) && /Non-Science: ask admissions/.test(ess) && /₦25,000/.test(ess) && !/₦671,000|₦687,000|₦287,000/.test(ess) && (await page.locator('#programme a[href="/fees"]').count()) >= 1,
+        'home: admissions essentials summarise fees (Science total, Non-Science pending, tutorials) and link to /fees');
+      continue;
+    }
     const sci = await page.locator('[data-stream="science"]').first().innerText();
     const non = await page.locator('[data-stream="non-science"]').first().innerText();
     check(
@@ -581,9 +587,9 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check((await p.locator('a[href="https://wa.me/2347012388184"]').count()) >= 1, 'WhatsApp link uses the official number');
 
   // Homepage sections an applicant needs, in one page
-  const ids = await p.evaluate(() => ['about', 'success', 'programme', 'tutorials', 'study-modes', 'calendar', 'founder', 'location', 'faq', 'apply'].filter((id) => !document.getElementById(id) && !document.querySelector(`[aria-labelledby="${id}"]`)));
-  check(ids.length === 0, `homepage covers about, results, fees, tutorials, ways to study, timetable, founder, location, FAQ and enquiry ${ids.join(', ')}`);
-  for (const href of ['/fees', '/timetable', '/#location', '/success-stories']) {
+  const ids = await p.evaluate(() => ['success', 'programme', 'tutorials', 'calendar', 'founder', 'location', 'faq', 'apply'].filter((id) => !document.getElementById(id) && !document.querySelector(`[aria-labelledby="${id}"]`)));
+  check(ids.length === 0, `homepage covers achievers, admissions essentials (fees, tutorials, dates), founder, location, FAQ and enquiry ${ids.join(', ')}`);
+  for (const href of ['/hall-of-excellence', '/fees', '/timetable', '/success-stories', '/contact']) {
     check((await p.locator(`header a[href="${href}"], #mobile-menu a[href="${href}"]`).count()) >= 1, `navigation links to ${href}`);
   }
 
@@ -602,14 +608,14 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const poster = await p.request.get(new URL(v.poster, BASE).href);
   check(vid.ok() && (await vid.body()).length > 5e6 && poster.ok(), 'directions video file and poster are served');
   check(vtt.startsWith('WEBVTT') && (vtt.match(/-->/g) ?? []).length >= 15 && vtt.includes('Seventh Day Adventist'), 'directions video has a WebVTT caption track');
-  check(!/Igbobi|Main Gate|turn left/i.test(await p.locator('.routes').innerText()), 'written directions only use steps stated in the video');
+  check(!/Igbobi|Main Gate|turn left/i.test(await p.locator('.routes').textContent()), 'written directions only use steps stated in the video');
 
   // Brand: official badge in header, hero, footer; BIA red sections
   const brand = await p.evaluate(() => ({
     headerLogo: !!document.querySelector('header .logo'),
     heroSeal: document.querySelector('.hero__seal [role="img"]')?.getAttribute('aria-label') ?? '',
     footerSeal: !!document.querySelector('footer .badge-seal'),
-    aboutBg: getComputedStyle(document.querySelector('.about')).backgroundColor,
+    aboutBg: getComputedStyle(document.querySelector('.ess__card--red')).backgroundColor,
     noticeBg: getComputedStyle(document.querySelector('.notice')).backgroundColor,
   }));
   check(brand.headerLogo && /Boma’s Intellectual Academy/.test(brand.heroSeal) && brand.footerSeal, 'official BIA badge appears in header, hero and footer');
@@ -697,17 +703,6 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   m.on('request', (r) => requested.push(r.url()));
   await m.goto(BASE, { waitUntil: 'networkidle' });
 
-  // Ribbon
-  const rb = await m.evaluate(() => {
-    const r = document.querySelector('.ribbon');
-    return { items: r.querySelectorAll('ul:not([aria-hidden]) li').length, label: r.querySelector('ul').getAttribute('aria-label'), anim: getComputedStyle(r.querySelector('.ribbon__track')).animationName };
-  });
-  check(rb.items >= 6 && rb.label && rb.anim === 'none', `ribbon: ${rb.items} facts, labelled list, static under reduced motion`);
-  const anim = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await anim.goto(BASE, { waitUntil: 'domcontentloaded' });
-  check((await anim.evaluate(() => getComputedStyle(document.querySelector('.ribbon__track')).animationName)) !== 'none', 'ribbon: rolls when motion is allowed (CSS only)');
-  await anim.close();
-
   // Gallery: lazy tiles, lightbox loads the large image only when opened
   const tiles = m.locator('[data-life-open]');
   const n = await tiles.count();
@@ -726,17 +721,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(!(await dlg.isVisible()) && (await m.evaluate(() => document.activeElement?.hasAttribute('data-life-open'))), 'gallery: Escape closes and returns focus');
   const vreq = requested.filter((u) => /\.(mp4|mov)(\?|$)/.test(u));
   check(vreq.length === 0, `no video is downloaded before a visitor presses play ${vreq.join(', ')}`);
-  // Lesson videos: three click-to-play cards with lazy posters
-  const lv = await m.evaluate(() => [...document.querySelectorAll('.lv__frame')].map((f) => ({ src: f.dataset.src, poster: f.querySelector('img')?.loading, label: f.querySelector('[data-lv-play]')?.getAttribute('aria-label') })));
-  check(lv.length === 3 && lv.every((v) => v.poster === 'lazy' && /^Play video: /.test(v.label ?? '')), 'lesson videos: 3 cards, lazy posters, labelled play buttons');
-  const sizes = await Promise.all(lv.map(async (v) => { const r = await m.request.get(new URL(v.src, BASE).href); return r.ok() && (r.headers()['content-type'] ?? '').startsWith('video/mp4') ? (await r.body()).length : 0; }));
-  check(sizes.every((b) => b > 5e5 && b < 8e6), `lesson video files served as MP4 (${sizes.map((b) => (b / 1e6).toFixed(1) + ' MB').join(', ')})`);
-  const play = m.locator('[data-lv-play]').first();
-  await play.scrollIntoViewIfNeeded();
-  await play.click();
-  await m.waitForTimeout(600);
-  const vid = await m.evaluate(() => { const v = document.querySelector('.lv video'); return v && { controls: v.controls, inline: v.playsInline, focused: document.activeElement === v, src: v.getAttribute('src') }; });
-  check(vid && vid.controls && vid.inline && vid.focused && requested.some((u) => u.endsWith(vid.src)), 'lesson video: pressing play loads that video only, with native controls and focus');
+  // Lesson videos now live in /gallery (section 12 covers playback).
   await m.close();
 
   // 320px: gallery, band and ribbon fit
@@ -924,6 +909,68 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const homeText = await h.locator('body').innerText();
   check(!/Esther/i.test(homeText), 'homepage: no outdated staff names');
   await h.close();
+}
+
+// 14. Homepage redesign: achievements first; Hall of Excellence; testimonials; V1 archive catalogue
+{
+  const { readdirSync, statSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const HALL = new URL('hall-of-excellence', BASE).href;
+  const recs = JSON.parse(readFileSync(new URL('../content/achievements/records.json', import.meta.url), 'utf8')).records;
+  const aaa = recs.filter((r) => r.grade === 'AAA' && r.kind === 'student-portrait');
+
+  // Homepage: compact, achievers immediately after the hero
+  const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  await m.goto(BASE, { waitUntil: 'networkidle' });
+  const pos = await m.evaluate(() => {
+    const top = (sel) => document.querySelector(sel).getBoundingClientRect().top + scrollY;
+    const main = [...document.querySelectorAll('main > section')].map((x) => x.id || x.className.split(' ')[0]);
+    return { hall: top('#success'), h: document.documentElement.scrollHeight, order: main };
+  });
+  check(pos.order[0] === 'hero' && pos.order[1] === 'success', `homepage: Hall of Excellence follows the hero (${pos.order.slice(0, 4).join(' → ')})`);
+  check(pos.hall < 844 * 1.3, `homepage: achievers start within ~1 phone screen (${Math.round(pos.hall)}px)`);
+  check(pos.h < 844 * 18, `homepage: reduced scrolling on phones (${(pos.h / 844).toFixed(1)} screens, was 33)`);
+  check((await m.locator('#success [data-achiever]').count()) === Math.min(8, aaa.length), 'homepage: AAA achiever cards come from records.json');
+  check((await m.locator('#success a[href="/hall-of-excellence"]').count()) >= 1 && (await m.locator('header a[href="/hall-of-excellence"], #mobile-menu a[href="/hall-of-excellence"]').count()) >= 1, 'Hall of Excellence linked from the homepage band and the navigation');
+  const rail = await m.evaluate(() => { const r = document.querySelector('.hall__rail'); return { scroll: r.scrollWidth > r.clientWidth, tab: r.tabIndex }; });
+  check(rail.scroll && rail.tab === 0, 'homepage: achiever cards swipe sideways on phones and the rail is keyboard reachable');
+  await m.close();
+
+  // Hall page
+  const h = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const res = await h.goto(HALL, { waitUntil: 'networkidle' });
+  check(res.status() === 200 && /16 Points/.test(await h.locator('h1').innerText()), '/hall-of-excellence: 200, titled "16 Points (AAA) Achievers"');
+  const cards = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, text: e.textContent })));
+  check(cards.length === aaa.length && cards.every((c) => /AAA/.test(c.text)), `/hall-of-excellence: one card per recorded AAA result (${cards.length})`);
+  const sessions = await h.locator('[data-session]').evaluateAll((els) => els.map((e) => e.dataset.session));
+  const known = [...new Set(aaa.map((r) => r.session).filter(Boolean))].sort().reverse();
+  check(JSON.stringify(sessions.filter((x) => x !== 'unconfirmed')) === JSON.stringify(known) && (aaa.some((r) => !r.session) ? sessions.at(-1) === 'unconfirmed' : true), `/hall-of-excellence: grouped by session, newest first, unconfirmed last (${sessions.join(', ')})`);
+  check(!(await h.content()).match(/20XX|Placeholder|data-placeholder-section/), '/hall-of-excellence: no placeholder content in a production build');
+  const r = await h.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
+  check(r.sw <= r.vw, '/hall-of-excellence 390px: no horizontal overflow');
+  await h.addScriptTag({ content: axeSource });
+  const v = await h.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
+  check(v.length === 0, `/hall-of-excellence: no serious/critical accessibility violations ${v.join(', ')}`);
+  await h.close();
+
+  // Privacy: no unconsented name or photo anywhere; no placeholders in production
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const all = [];
+  const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : all.push(join(d, f))));
+  walk(dist);
+  const html = all.filter((f) => f.endsWith('.html')).map((f) => readFileSync(f, 'utf8')).join('\n');
+  const pendingNames = aaa.filter((x) => x.consent.status !== 'granted').map((x) => x.name).filter(Boolean);
+  check(!pendingNames.some((n) => html.includes(n)), `privacy: no unconsented AAA achiever is named (${pendingNames.length} withheld)`);
+  check(!/data-placeholder-section|ach--placeholder|tst--placeholder|Awaiting a verified record/.test(html), 'production build contains no layout placeholders');
+  const tst = JSON.parse(readFileSync(new URL('../content/testimonials/testimonials.json', import.meta.url), 'utf8')).records;
+  const shown = tst.filter((t) => t.consent.status === 'granted' && (t.consent.allow ?? ['name', 'photo', 'result']).includes('quote'));
+  check((await (async () => { const p = await browser.newPage(); await p.goto(BASE); const n = await p.locator('[data-testimonial]').count(); await p.close(); return n; })()) === Math.min(3, shown.length), `homepage: shows only consented testimonials (${shown.length} of ${tst.length})`);
+
+  // V1 archive catalogue: every testii/slider/scroll file recorded and recoverable
+  const cat = JSON.parse(readFileSync(new URL('../content/v1-archive/catalogue.json', import.meta.url), 'utf8'));
+  check(cat.count.testii === 43 && cat.count.slider === 16 && cat.count.scroll === 32 && cat.items.every((i) => /^[0-9a-f]{64}$/.test(i.sha256)), 'V1 archive: 91 testimonial assets catalogued with SHA-256');
+  check(cat.items.filter((i) => i.folder === 'testii').every((i) => recs.some((r) => r.id === i.recordId)), 'V1 archive: every testii file is linked to an achievement record');
+  check(!all.some((f) => /testii|scroll\/|slider\/|v1-archive/.test(f)), 'V1 archive images are not published in the build');
 }
 
 await browser.close();

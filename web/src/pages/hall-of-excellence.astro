@@ -1,0 +1,305 @@
+---
+import Base from '../layouts/Base.astro';
+import Badge from '../components/Badge.astro';
+import Icon from '../components/Icon.astro';
+import Laurel from '../components/Laurel.astro';
+import AchieverCard from '../components/AchieverCard.astro';
+import { achievers, hallSessions, showPlaceholders } from '../data/achievements';
+import { primaryContact } from '../data/site';
+
+const slug = (s: string | null) => (s ? `session-${s.replace('/', '-')}` : 'session-being-confirmed');
+const named = achievers.filter((a) => a.name).length;
+const sessions = hallSessions.filter((g) => g.session).length;
+---
+
+<Base
+  title="BIA JUPEB Hall of Excellence — 16 Points (AAA) Achievers | Boma's Intellectual Academy"
+  description="BIA JUPEB students who achieved straight As (AAA) in JUPEB, listed by academic session, with the courses and universities they went on to."
+>
+  <section class="hh" aria-labelledby="hh-title">
+    <Badge variant="mark" size={560} class="hh__mark" />
+    <div class="wrap hh__inner">
+      <Laurel size={84} class="hh__laurel" />
+      <p class="hh__eyebrow">BIA JUPEB Hall of Excellence</p>
+      <h1 id="hh-title" class="hh__title">16 Points <em>(AAA)</em> Achievers</h1>
+      <p class="hh__lead">Students who earned straight As in JUPEB with Boma’s Intellectual Academy — by academic session.</p>
+      <ul class="hh__stats" role="list">
+        <li><strong class="num">{achievers.length}</strong> AAA results recorded</li>
+        {sessions > 0 && <li><strong class="num">{sessions}</strong> {sessions === 1 ? 'session' : 'sessions'}</li>}
+        {named > 0 && <li><strong class="num">{named}</strong> named with consent</li>}
+      </ul>
+    </div>
+  </section>
+
+  {(hallSessions.length > 1 || showPlaceholders) && (
+    <nav class="hnav" aria-label="Sessions">
+      <div class="wrap">
+        <ul class="hnav__list" role="list">
+          {showPlaceholders && <li><a href="#session-sample">Sample layout</a></li>}
+          {hallSessions.map((g) => <li><a href={`#${slug(g.session)}`}>{g.session ?? 'Session being confirmed'}</a></li>)}
+        </ul>
+      </div>
+    </nav>
+  )}
+
+  <div class="hbody">
+    {showPlaceholders && (
+      <section class="hsess hsess--sample" id="session-sample" aria-labelledby="session-sample-title" data-placeholder-section>
+        <div class="wrap">
+          <header class="hsess__head">
+            <h2 id="session-sample-title" class="hsess__title">Sample session <span>layout preview</span></h2>
+            <p class="hsess__note">Placeholder cards show where verified achievers will appear. They are visible on preview builds only and never in production.</p>
+          </header>
+          <div class="hgrid">
+            {[0, 1, 2, 3].map(() => <AchieverCard placeholder />)}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {hallSessions.map((g, i) => (
+      <section class="hsess" id={slug(g.session)} aria-labelledby={`${slug(g.session)}-title`} data-session={g.session ?? 'unconfirmed'}>
+        <div class="wrap">
+          <header class="hsess__head">
+            <h2 id={`${slug(g.session)}-title`} class="hsess__title">
+              {g.session ? <>{g.session} <span>session</span></> : <>Session <span>being confirmed</span></>}
+            </h2>
+            <p class="hsess__count num">{g.achievers.length} AAA {g.achievers.length === 1 ? 'achiever' : 'achievers'}</p>
+            {!g.session && (
+              <p class="hsess__note">These straight-A results are from BIA’s records. Boma is confirming the session for each; names and photographs appear once each student gives permission.</p>
+            )}
+          </header>
+          <div class="hgrid">
+            {g.achievers.map((a, j) => <AchieverCard achiever={a} eager={i === 0 && j < 2 && !showPlaceholders} />)}
+          </div>
+        </div>
+      </section>
+    ))}
+
+    {hallSessions.length === 0 && !showPlaceholders && (
+      <section class="hsess">
+        <div class="wrap"><p class="hsess__note">Verified achievers will be listed here soon.</p></div>
+      </section>
+    )}
+
+    <section class="hhow" aria-labelledby="hhow-title">
+      <div class="wrap hhow__inner">
+        <h2 id="hhow-title" class="hhow__title">How a student joins the Hall</h2>
+        <ol class="hhow__steps">
+          <li><strong>Straight As.</strong> The student earns AAA in the JUPEB examination.</li>
+          <li><strong>Verified by BIA.</strong> Boma confirms the result, the session and the course.</li>
+          <li><strong>With permission.</strong> The student agrees to their name and photograph being shown.</li>
+        </ol>
+        <p class="hhow__more">
+          <a class="link-arrow" href="/success-stories">All results and university admissions<Icon name="arrow-right" size={16} /></a>
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <section class="hcta" aria-labelledby="hcta-title" data-cta-zone>
+    <div class="wrap hcta__inner">
+      <h2 id="hcta-title" class="hcta__title">Your name could be next.</h2>
+      <div class="hcta__ctas">
+        <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="hall-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+        <a class="btn btn--on-red" href="/#apply" data-cta="hall-enquire">Enquire about admission<Icon name="arrow-right" size={18} /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hh {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--s-8) var(--s-7);
+    background: var(--ink);
+    color: var(--on-ink);
+    text-align: center;
+  }
+  .hh :global(.hh__mark) {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 560px;
+    height: auto;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    opacity: 0.04;
+    pointer-events: none;
+  }
+  .hh__inner {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--s-3);
+  }
+  .hh :global(.hh__laurel) {
+    color: var(--brass-light);
+  }
+  .hh__eyebrow {
+    font-size: var(--step--1, 0.85rem);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass-light);
+  }
+  .hh__title {
+    font-size: var(--step-5);
+    font-weight: 380;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .hh__title em {
+    color: var(--brass-light);
+  }
+  .hh__lead {
+    max-width: 40ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--on-ink-muted);
+  }
+  .hh__stats {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--s-2);
+    margin: var(--s-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hh__stats li {
+    padding: 8px 16px;
+    border: 1px solid rgb(214 182 121 / 0.35);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    color: var(--on-ink);
+  }
+  .hh__stats strong {
+    color: var(--brass-light);
+  }
+  .hnav {
+    position: sticky;
+    top: var(--header-h, 64px);
+    z-index: 20;
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .hnav__list {
+    display: flex;
+    gap: var(--s-2);
+    margin: 0;
+    padding: var(--s-3) 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .hnav__list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    white-space: nowrap;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .hnav__list a:hover,
+  .hnav__list a:focus-visible {
+    background: var(--ink);
+    color: #fff;
+  }
+  .hsess {
+    padding-block: var(--s-7);
+    scroll-margin-top: calc(var(--header-h, 64px) + 72px);
+  }
+  .hsess + .hsess {
+    border-top: 1px solid var(--line);
+  }
+  .hsess--sample {
+    background: var(--surface);
+  }
+  .hsess__head {
+    display: grid;
+    gap: var(--s-2);
+    margin-bottom: var(--s-5);
+  }
+  .hsess__title {
+    font-size: var(--step-3);
+    font-weight: 400;
+  }
+  .hsess__title span {
+    color: var(--muted);
+    font-style: italic;
+  }
+  .hsess__count {
+    font-weight: 800;
+    color: var(--crimson);
+  }
+  .hsess__note {
+    max-width: 60ch;
+    color: var(--muted);
+  }
+  .hgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 158px), 1fr));
+    gap: var(--s-3);
+  }
+  @media (min-width: 720px) {
+    .hgrid {
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: var(--s-5);
+    }
+  }
+  .hhow {
+    padding-block: var(--s-7) var(--section);
+    background: var(--surface);
+  }
+  .hhow__inner {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .hhow__title {
+    font-size: var(--step-2);
+  }
+  .hhow__steps {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding-left: 1.2em;
+  }
+  @media (min-width: 840px) {
+    .hhow__steps {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-6);
+    }
+  }
+  .hcta {
+    padding-block: var(--s-8);
+    background: var(--bia-red);
+    color: var(--on-red);
+  }
+  .hcta__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+  .hcta__title {
+    font-size: var(--step-3);
+    color: #fff;
+  }
+  .hcta__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .hcta__ctas .btn {
+    white-space: normal;
+  }
+</style>

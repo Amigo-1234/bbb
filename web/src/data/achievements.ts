@@ -25,13 +25,31 @@ export const outcomeCategories: { id: OutcomeCategory; label: string }[] = [
   { id: 'arts', label: 'Arts, Education & Social Sciences' },
 ];
 
-const Consent = z.object({
+/** Parts of a record a student may agree to publish. */
+export const ConsentPart = z.enum(['name', 'photo', 'result', 'quote']);
+export type ConsentPart = z.infer<typeof ConsentPart>;
+
+export const Consent = z.object({
   status: z.enum(['pending', 'granted', 'declined']),
   confirmedBy: z.string().nullable(),
   date: z.string().nullable(),
-  /** What the student agreed to, e.g. "name, photo and grade on website". */
+  /** What the student agreed to, in words, e.g. "name, photo and grade on website". */
   scope: z.string().nullable(),
+  /** The same, as a list the site enforces. Omitted on a granted record = name, photo and result. */
+  allow: z.array(ConsentPart).optional(),
 });
+
+/** Academic session as BIA writes it, e.g. "2025/2026". */
+export const Session = z.string().regex(/^20\d\d\/20\d\d$/, 'session must look like "2025/2026"');
+
+/** True when a granted consent covers this part of the record. */
+export const allows = (c: z.infer<typeof Consent>, part: ConsentPart) =>
+  c.status === 'granted' && (c.allow ?? ['name', 'photo', 'result']).includes(part);
+
+/** Layout placeholders render on Vercel preview builds (or when PUBLIC_SHOW_PLACEHOLDERS=true),
+ * never in production — so a placeholder can never be mistaken for a real student. */
+const env = (globalThis as { process?: { env: Record<string, string | undefined> } }).process?.env ?? {};
+export const showPlaceholders = env.VERCEL_ENV === 'preview' || env.PUBLIC_SHOW_PLACEHOLDERS === 'true';
 
 const Record = z
   .object({
@@ -44,6 +62,10 @@ const Record = z
     university: z.string().nullable(),
     level: z.string().nullable(),
     year: z.number().int().min(2015).max(2100).nullable(),
+    /** Academic session confirmed by Boma, e.g. "2025/2026". Required for the Hall of Excellence. */
+    session: Session.nullable().optional().default(null),
+    /** Points total only when BIA has confirmed how it was counted. */
+    points: z.number().int().min(1).max(20).nullable().optional().default(null),
     category: z.enum(['medicine', 'law', 'science', 'business', 'arts']).nullable(),
     featured: z.boolean(),
     image: z.string(),
@@ -111,7 +133,7 @@ export const outcomes: Outcome[] = records
     category: r.category!,
     featured: r.featured,
     consentVerified: r.consent.status === 'granted',
-    name: r.consent.status === 'granted' ? (r.name ?? undefined) : undefined,
+    name: allows(r.consent, 'name') ? (r.name ?? undefined) : undefined,
   }))
   .sort((a, b) => Number(b.featured) - Number(a.featured) || gradeRank(a.grade).localeCompare(gradeRank(b.grade)));
 
@@ -125,3 +147,50 @@ export const admissionsByInstitution = Object.entries(
 
 /** Records still waiting for a consent decision (for the content checklist). */
 export const pendingConsent = records.filter((r) => r.consent.status === 'pending');
+
+/* ---------- BIA JUPEB Hall of Excellence — 16 Points (AAA) achievers ---------- */
+
+export type Achiever = {
+  id: string;
+  session: string | null;
+  grade: string;
+  points: number | null;
+  course: string | null;
+  university: string | null;
+  level: string | null;
+  /** Present only when the student's consent covers it. */
+  name?: string;
+  photo?: ImageMetadata;
+};
+
+const toAchiever = (r: AchievementRecord): Achiever => {
+  const published = publishedAchievements.find((p) => p.id === r.id);
+  return {
+    id: r.id,
+    session: r.session,
+    grade: r.grade!,
+    points: r.points,
+    course: r.course,
+    university: r.university,
+    level: r.level,
+    name: allows(r.consent, 'name') ? (r.name ?? undefined) : undefined,
+    photo: allows(r.consent, 'photo') ? published?.image : undefined,
+  };
+};
+
+/** Every individual AAA record (one student per record). */
+export const achievers: Achiever[] = records
+  .filter((r) => r.grade === 'AAA' && r.kind === 'student-portrait')
+  .map(toAchiever)
+  // Students who agreed to be named come first.
+  .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo));
+
+/** Achievers grouped by session, newest session first. Records without a confirmed
+ * session are collected under `null` and shown last. */
+export const hallSessions: { session: string | null; achievers: Achiever[] }[] = [
+  ...[...new Set(achievers.map((a) => a.session).filter((x): x is string => !!x))]
+    .sort()
+    .reverse()
+    .map((session) => ({ session, achievers: achievers.filter((a) => a.session === session) })),
+  ...(achievers.some((a) => !a.session) ? [{ session: null, achievers: achievers.filter((a) => !a.session) }] : []),
+];

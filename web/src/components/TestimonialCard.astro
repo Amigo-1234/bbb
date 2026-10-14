@@ -1,0 +1,118 @@
+---
+/**
+ * A student's own words. Only consented testimonials reach this component
+ * (data/testimonials.ts); `placeholder` renders a labelled layout sample on preview builds.
+ */
+import { Picture } from 'astro:assets';
+import Badge from './Badge.astro';
+import type { PublicTestimonial } from '../data/testimonials';
+
+interface Props {
+  t?: PublicTestimonial;
+  placeholder?: boolean;
+}
+const { t, placeholder = false } = Astro.props;
+const who = t?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB student');
+const meta = t ? [t.grade, t.course, t.university, t.session].filter(Boolean).join(' · ') : 'Grade · Course · University · Session';
+---
+
+<figure class:list={['tst', { 'tst--placeholder': placeholder }]} data-testimonial={t?.id ?? 'placeholder'}>
+  <span class="tst__quote-mark" aria-hidden="true">“</span>
+  <blockquote class="tst__quote">
+    <p>{t?.quote ?? 'A short testimonial in the student’s own words will appear here once Boma sends it and the student consents.'}</p>
+  </blockquote>
+  <figcaption class="tst__who">
+    <span class="tst__avatar" aria-hidden={t?.photo ? undefined : 'true'}>
+      {t?.photo ? <Picture src={t.photo} formats={['avif', 'webp']} widths={[96, 160]} sizes="56px" alt={who} /> : <Badge variant="mark" size={28} />}
+    </span>
+    <span>
+      <span class="tst__name">{who}</span>
+      <span class="tst__meta">{meta}</span>
+    </span>
+    {placeholder && <span class="tst__tag">Placeholder</span>}
+  </figcaption>
+</figure>
+
+<style>
+  .tst {
+    position: relative;
+    display: grid;
+    align-content: space-between;
+    gap: var(--s-5);
+    height: 100%;
+    margin: 0;
+    padding: var(--s-6) var(--s-5) var(--s-5);
+    border-radius: var(--radius);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    box-shadow: 0 16px 36px -30px rgb(17 19 24 / 0.5);
+  }
+  .tst__quote-mark {
+    position: absolute;
+    top: -0.1em;
+    left: var(--s-4);
+    font-family: var(--serif);
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--bia-red);
+  }
+  .tst__quote p {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .tst__who {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--line);
+  }
+  .tst__who > span:nth-child(2) {
+    display: grid;
+    min-width: 0;
+  }
+  .tst__avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: var(--bia-red);
+    color: #fff;
+  }
+  .tst__avatar :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .tst__name {
+    font-weight: 700;
+  }
+  .tst__meta {
+    font-size: var(--step--1, 0.85rem);
+    color: var(--muted);
+  }
+  .tst__tag {
+    margin-left: auto;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tst--placeholder {
+    border: 2px dashed var(--line-strong);
+    background: var(--paper-2, var(--surface));
+  }
+  .tst--placeholder .tst__quote p,
+  .tst--placeholder .tst__name,
+  .tst--placeholder .tst__meta {
+    color: var(--muted);
+  }
+</style>
