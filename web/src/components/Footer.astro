@@ -33,20 +33,22 @@ import { address, contacts, guides, office, primaryContact, site, whatsapp } fro
     <div>
       <h2 class="footer__h">Visit</h2>
       <address>
-        <strong>Tutorial Centre</strong>
+        <strong>{office.name}</strong>
+        <span>{office.short}</span>
+        <span class="footer__muted">{office.purpose}</span>
+        <span class="footer__muted">Landmark: {office.landmark}</span>
+      </address>
+      <address class="footer__office">
+        <strong>{address.name}</strong>
         <span>{address.short}</span>
+        <span class="footer__muted">{address.purpose}</span>
         <span class="footer__muted">Landmark: {address.landmark}</span>
       </address>
       <a class="footer__link with-icon" href="/#location"><Icon name="pin" size={16} />Directions &amp; video</a>
-      <address class="footer__office">
-        <strong>Administrative Office</strong>
-        <span>{office.short}</span>
-        <span class="footer__muted">{office.landmark}</span>
-      </address>
     </div>
 
     <div>
-      <h2 class="footer__h">Admissions</h2>
+      <h2 class="footer__h">Main contacts</h2>
       <ul class="footer__list">
         {contacts.map((c) => (
           <li>
