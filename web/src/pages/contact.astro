@@ -7,14 +7,14 @@ import { address, office, primaryContact, staff, waLink } from '../data/site';
 
 <Base
   title="Contact BIA JUPEB — Staff Phone Numbers & Office Addresses | Boma's Intellectual Academy"
-  description="Phone numbers for BIA JUPEB's admissions and office staff, the tutorial centre at 12 Ameen Street, Akoka, and the administrative office at Ladi-Lak, Bariga, Lagos."
+  description="Phone numbers for BIA JUPEB's admissions and office staff, the administrative office at 56 Igi Olugbin Street, Shomolu/Bariga, and the physical tutorial centre at 12 Ameen Street, Akoka, near UNILAG."
 >
   <section class="ch" aria-labelledby="ch-title">
     <Badge variant="mark" size={560} class="ch__mark" />
     <div class="wrap ch__inner">
       <p class="ch__eyebrow">Contact · Boma’s Intellectual Academy</p>
       <h1 id="ch-title" class="ch__title">Talk to <em>BIA.</em></h1>
-      <p class="ch__lead">Call the right person directly, or visit the tutorial centre or the administrative office.</p>
+      <p class="ch__lead">Call the right person directly, or visit the administrative office or the physical tutorial centre.</p>
       <div class="ch__ctas" data-cta-zone>
         <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="contact-hero-call"><Icon name="phone" size={18} />Admissions · {primaryContact.display}</a>
       </div>
@@ -25,20 +25,22 @@ import { address, office, primaryContact, staff, waLink } from '../data/site';
     <div class="wrap">
       <h2 id="places-title" class="sec__title">Our locations</h2>
       <div class="places">
-        <article class="place" aria-labelledby="place-centre">
-          <p class="place__kind">Tutorial Centre</p>
-          <h3 id="place-centre" class="place__name">{address.name}</h3>
-          <address class="place__addr">{address.lines.map((l) => <span>{l}</span>)}</address>
-          <p class="place__landmark"><Icon name="pin" size={16} />Landmark: {address.landmark}</p>
-          <div class="place__links">
-            <a class="btn btn--outline" href="/#location" data-cta="contact-centre-directions"><Icon name="pin" size={18} />Directions &amp; video</a>
-          </div>
-        </article>
         <article class="place" aria-labelledby="place-office">
           <p class="place__kind">Administrative Office</p>
           <h3 id="place-office" class="place__name">{office.name}</h3>
           <address class="place__addr">{office.lines.map((l) => <span>{l}</span>)}</address>
+          <p class="place__purpose">{office.purpose}</p>
           <p class="place__landmark"><Icon name="pin" size={16} />Landmark: {office.landmark}</p>
+        </article>
+        <article class="place" aria-labelledby="place-centre">
+          <p class="place__kind">Physical Tutorial Centre</p>
+          <h3 id="place-centre" class="place__name">{address.name}</h3>
+          <address class="place__addr">{address.lines.map((l) => <span>{l}</span>)}</address>
+          <p class="place__purpose">{address.purpose}</p>
+          <p class="place__landmark"><Icon name="pin" size={16} />Landmark: {address.landmark}</p>
+          <div class="place__links">
+            <a class="btn btn--outline" href="/#location" data-cta="contact-centre-directions"><Icon name="pin" size={18} />Directions &amp; video</a>
+          </div>
         </article>
       </div>
     </div>
@@ -166,6 +168,9 @@ import { address, office, primaryContact, staff, waLink } from '../data/site';
     font-style: normal;
     font-size: var(--step-1);
     line-height: 1.4;
+  }
+  .place__purpose {
+    font-weight: 600;
   }
   .place__landmark {
     display: flex;

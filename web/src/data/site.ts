@@ -33,11 +33,12 @@ export const site = {
   tiktok: 'https://www.tiktok.com/@bomaacademylimited',
 };
 
-/** Official contacts confirmed by Boma (October 2026); both appear beside the
- * WhatsApp icon on BIA's 2026/27 flyers. Roles and names from Boma's staff list. */
+/** Main contacts, in Boma's order of priority (October 2026). Boma's line is always first;
+ * it and the COO line appear beside the WhatsApp icon on BIA's 2026/27 flyers. */
 export const contacts: Contact[] = [
   { role: 'Chief Executive', name: 'Hon. Boma', phone: '+2347012388184', display: '0701 238 8184' },
   { role: 'Chief Operating Officer', name: 'Sir Holly', phone: '+2348164329204', display: '0816 432 9204' },
+  { role: 'Personal Assistant', name: 'Miss Damaris', phone: '+2349134190829', display: '0913 419 0829' },
 ];
 
 export const primaryContact = contacts[0];
@@ -54,13 +55,13 @@ export type StaffMember = {
 const tel = (local: string) => ({ phone: `+234${local.slice(1)}`, display: `${local.slice(0, 4)} ${local.slice(4, 7)} ${local.slice(7)}` });
 
 /** Staff directory supplied by Boma (October 2026), shown on /contact.
- * Miss Esther is not listed until Boma confirms her new role. */
+ * Miss Esther is not listed until Boma confirms her new role; the former
+ * receptionist's line was removed at Boma's request (October 2026). */
 export const staff: StaffMember[] = [
   { role: 'Chief Executive', name: 'Hon. Boma', phones: [tel('07012388184')] },
   { role: 'Chief Operating Officer', name: 'Sir Holly', phones: [tel('08164329204')] },
   { role: 'Personal Assistant', name: 'Miss Damaris', phones: [tel('09134190829')] },
   { role: 'JUPEB Secretary', name: 'Miss Gloria', phones: [tel('08021047735')] },
-  { role: 'Reception', phones: [tel('09167505810')] },
   { role: 'Office Manager', name: 'Mr. Great', phones: [tel('08103113275'), tel('09045616337')] },
   { role: 'Office Receptionist', name: 'Miss Temiloluwa', phones: [tel('07049733518')], whatsapp: tel('07048065326') },
   { role: 'JUPEB Academic Officer', name: 'Mr. Victor', phones: [tel('09022684754'), tel('07073551210')] },
@@ -71,13 +72,14 @@ export const waLink = (phone: string) => `https://wa.me/${phone.replace(/^\+/, '
 /** Official centre address confirmed by Boma (October 2026). The landmark is
  * the school named in BIA's directions video and shown on the gate sign. */
 export const address = {
-  name: 'BIA JUPEB Academy / Tutorial Centre',
+  name: 'BIA Physical Tutorial Centre',
+  purpose: 'For JUPEB physical tutorials, academic activities and student learning.',
   street: '12 Ameen Street',
   locality: 'Abule-Oja, Akoka',
   region: 'Lagos',
   country: 'Nigeria',
-  lines: ['12 Ameen Street', 'Abule-Oja, Akoka', 'Lagos, Nigeria'],
-  short: '12 Ameen Street, Abule-Oja, Akoka, Lagos',
+  lines: ['12 Ameen Street', 'Abule-Oja, Akoka, near UNILAG', 'Lagos, Nigeria'],
+  short: '12 Ameen Street, Abule-Oja, Akoka, near UNILAG, Lagos',
   landmark: 'Seventh Day Adventist Primary and Secondary School, Abule-Oja',
   mapsUrl: 'https://www.google.com/maps/search/?api=1&query=12+Ameen+Street%2C+Abule-Oja%2C+Akoka%2C+Lagos%2C+Nigeria',
 };
@@ -86,8 +88,9 @@ export const address = {
  * map destination has been checked against the real office. */
 export const office = {
   name: 'BIA Administrative Office',
-  lines: ['56 Igi Olugbin Street', 'Shomolu Pedro Road', 'Ladi-Lak, Bariga, Lagos'],
-  short: '56 Igi Olugbin Street, Shomolu Pedro Road, Ladi-Lak, Bariga, Lagos',
+  purpose: 'For official meetings, business enquiries, partnerships and consultations.',
+  lines: ['56 Igi Olugbin Street', 'Shomolu/Bariga, Lagos'],
+  short: '56 Igi Olugbin Street, Shomolu/Bariga, Lagos',
   landmark: 'Directly opposite AP Petrol Station',
 };
 
