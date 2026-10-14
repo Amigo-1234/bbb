@@ -11,7 +11,7 @@ import { directions, directionsCaptions, founder as founderInfo, mission, routeC
 import { programmes, tutorialPackage } from '../data/fees';
 import AchieverCard from '../components/AchieverCard.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
-import { achievers, showPlaceholders } from '../data/achievements';
+import { achievers } from '../data/achievements';
 import { testimonials } from '../data/testimonials';
 import poster from '../assets/official/directions-poster.jpg';
 import {
@@ -134,8 +134,8 @@ const homeAchievers = achievers.slice(0, 8);
     </div>
   </section>
 
-  <!-- 02 TESTIMONIALS (only when consented testimonials exist; placeholders on preview builds) -->
-  {(testimonials.length > 0 || showPlaceholders) && (
+  <!-- 02 TESTIMONIALS (shown only when consented testimonials exist) -->
+  {testimonials.length > 0 && (
     <section class="section voices" id="testimonials" aria-labelledby="voices-title">
       <div class="wrap">
         <header class="voices__head">
@@ -144,7 +144,6 @@ const homeAchievers = achievers.slice(0, 8);
         </header>
         <ul class="voices__grid" role="list" data-voices>
           {testimonials.slice(0, 3).map((t) => <li><TestimonialCard t={t} /></li>)}
-          {showPlaceholders && testimonials.length === 0 && [0, 1, 2].map(() => <li><TestimonialCard placeholder /></li>)}
         </ul>
         <a class="link-arrow" href="/success-stories#voices" data-cta="home-testimonials-more">More success stories<Icon name="arrow-right" size={16} /></a>
       </div>

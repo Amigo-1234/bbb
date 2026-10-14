@@ -976,8 +976,8 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const pendingNames = aaa.filter((x) => x.consent.status !== 'granted').map((x) => x.name).filter(Boolean);
   check(!pendingNames.some((n) => html.includes(n)), `privacy: no unconsented AAA achiever is named (${pendingNames.length} withheld)`);
   check(!/data-placeholder-section|ach--placeholder|tst--placeholder|Awaiting a verified record/.test(html), 'production build contains no layout placeholders');
-  const pageSrc = ['index.astro', 'hall-of-excellence.astro'].map((f) => readFileSync(new URL(`../src/pages/${f}`, import.meta.url), 'utf8')).join('\n');
-  check(!/<AchieverCard[^>]*placeholder/.test(pageSrc), 'Hall carousel and /hall-of-excellence render only genuine achievement records (no placeholder cards, even on preview)');
+  const pageSrc = ['index.astro', 'hall-of-excellence.astro', 'success-stories.astro'].map((f) => readFileSync(new URL(`../src/pages/${f}`, import.meta.url), 'utf8')).join('\n');
+  check(!/<(AchieverCard|TestimonialCard)[^>]*placeholder/.test(pageSrc), 'Hall and testimonials render only genuine records — no placeholder cards, even on preview');
   const tst = JSON.parse(readFileSync(new URL('../content/testimonials/testimonials.json', import.meta.url), 'utf8')).records;
   const shown = tst.filter((t) => t.consent.status === 'granted' && (t.consent.allow ?? ['name', 'photo', 'result']).includes('quote'));
   check((await (async () => { const p = await browser.newPage(); await p.goto(BASE); const n = await p.locator('[data-testimonial]').count(); await p.close(); return n; })()) === Math.min(3, shown.length), `homepage: shows only consented testimonials (${shown.length} of ${tst.length})`);

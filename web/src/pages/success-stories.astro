@@ -25,7 +25,6 @@ const categoryLabel = Object.fromEntries(outcomeCategories.map((c) => [c.id, c.l
 const tel = `tel:${primaryContact.phone}`;
 import TestimonialCard from '../components/TestimonialCard.astro';
 import { testimonials } from '../data/testimonials';
-import { showPlaceholders } from '../data/achievements';
 const currentVoices = testimonials.filter((t) => !t.archive);
 const archiveVoices = testimonials.filter((t) => t.archive);
 ---
@@ -203,19 +202,17 @@ const archiveVoices = testimonials.filter((t) => t.archive);
   <section class="section" aria-labelledby="voices">
     <div class="wrap voices">
       <SectionHead index="05" eyebrow="In their own words" title="Testimonials, published with consent." id="voices" />
-      {(currentVoices.length > 0 || showPlaceholders) && (
+      {currentVoices.length > 0 && (
         <ul class="voices__grid" role="list" data-voices>
           {currentVoices.map((t) => <li><TestimonialCard t={t} /></li>)}
-          {showPlaceholders && currentVoices.length === 0 && [0, 1, 2].map(() => <li><TestimonialCard placeholder /></li>)}
         </ul>
       )}
-      {(archiveVoices.length > 0 || showPlaceholders) && (
+      {archiveVoices.length > 0 && (
         <div class="voices__archive" data-archive-voices>
           <h3 class="voices__archive-title">From the BIA archive</h3>
           <p class="voices__archive-lead">Messages students sent to Boma after their results, shared with each student’s permission.</p>
           <ul class="voices__grid" role="list">
             {archiveVoices.map((t) => <li><TestimonialCard t={t} /></li>)}
-            {showPlaceholders && archiveVoices.length === 0 && [0, 1].map(() => <li><TestimonialCard placeholder /></li>)}
           </ul>
         </div>
       )}
