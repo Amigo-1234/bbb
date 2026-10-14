@@ -45,7 +45,7 @@ await page.goto(BASE, { waitUntil: 'networkidle' });
 await page.waitForTimeout(2600); // let the hero entrance finish
 const carousels = page.locator('[data-carousel]');
 const count = await carousels.count();
-check(count === 1, `found ${count} carousel (hero)`);
+check(count === 2, `found ${count} carousels (hero, Hall of Excellence)`);
 for (let i = 0; i < count; i++) {
   const c = carousels.nth(i);
   const label = await c.getAttribute('aria-label');
@@ -932,8 +932,16 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(pos.h < 844 * 18, `homepage: reduced scrolling on phones (${(pos.h / 844).toFixed(1)} screens, was 33)`);
   check((await m.locator('#success [data-achiever]').count()) === Math.min(8, aaa.length), 'homepage: AAA achiever cards come from records.json');
   check((await m.locator('#success a[href="/hall-of-excellence"]').count()) >= 1 && (await m.locator('header a[href="/hall-of-excellence"], #mobile-menu a[href="/hall-of-excellence"]').count()) >= 1, 'Hall of Excellence linked from the homepage band and the navigation');
-  const rail = await m.evaluate(() => { const r = document.querySelector('.hall__rail'); return { scroll: r.scrollWidth > r.clientWidth, tab: r.tabIndex }; });
-  check(rail.scroll && rail.tab === 0, 'homepage: achiever cards swipe sideways on phones and the rail is keyboard reachable');
+  const hc = m.locator('.hall__carousel');
+  const hcInfo = await hc.evaluate((c) => {
+    const t = c.querySelector('[data-track]');
+    const first = t.querySelector('[data-slide]').getBoundingClientRect();
+    return { scroll: t.scrollWidth > t.clientWidth, tab: t.tabIndex, role: c.getAttribute('aria-roledescription'), peek: first.width < t.clientWidth * 0.9, btns: c.querySelectorAll('[data-prev], [data-next]').length, total: c.querySelector('[data-total]').textContent };
+  });
+  check(hcInfo.role === 'carousel' && hcInfo.scroll && hcInfo.tab === 0 && hcInfo.btns === 2 && hcInfo.peek && Number(hcInfo.total) === Math.min(8, aaa.length),
+    `homepage: Hall carousel (V2 carousel) swipes, peeks the next card, has arrows, a counter (${hcInfo.total}) and a focusable track`);
+  const smallBtns = await hc.locator('[data-prev], [data-next]').evaluateAll((b) => b.filter((x) => x.getBoundingClientRect().height < 44 || x.getBoundingClientRect().width < 44).length);
+  check(smallBtns === 0, 'homepage: Hall carousel arrows are at least 44px');
   await m.close();
 
   // Hall page

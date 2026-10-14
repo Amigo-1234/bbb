@@ -116,12 +116,10 @@ const homeAchievers = achievers.slice(0, 8);
         <p class="hall__lead">Straight As in JUPEB — and straight into 200 Level. Meet the students who did it with BIA.</p>
       </header>
 
-      <div class="hall__rail" data-track tabindex="0" role="region" aria-label="AAA achievers — swipe or scroll to see more">
-        <ul class="hall__cards" role="list" aria-label="AAA achievers">
-          {showPlaceholders && [0, 1].map(() => <li><AchieverCard placeholder /></li>)}
-          {homeAchievers.map((a) => <li><AchieverCard achiever={a} /></li>)}
-        </ul>
-      </div>
+      <Carousel label="BIA JUPEB AAA achievers" variant="cards" tone="ink" class="hall__carousel">
+        {showPlaceholders && [0, 1].map(() => <div data-slide class="hall__slide"><AchieverCard placeholder /></div>)}
+        {homeAchievers.map((a, i) => <div data-slide class="hall__slide"><AchieverCard achiever={a} eager={i < 2 && !showPlaceholders} /></div>)}
+      </Carousel>
 
       <div class="hall__foot">
         <ul class="hall__stats" role="list">
@@ -761,45 +759,24 @@ const homeAchievers = achievers.slice(0, 8);
     max-width: 38ch;
     color: var(--on-ink-muted);
   }
-  /* Phones: a swipeable rail that peeks the next card */
-  .hall__rail {
-    margin-inline: calc(-1 * var(--gutter));
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
+  /* Achiever carousel (V2 Carousel, "cards" variant): bleeds to the screen edge on phones */
+  .hall__head + :global(.hall__carousel) {
+    margin-top: var(--s-2);
   }
-  .hall__rail::-webkit-scrollbar {
-    display: none;
+  .hall__slide {
+    display: flex;
   }
-  .hall__cards {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: min(68vw, 250px);
-    gap: var(--s-3);
-    margin: 0;
-    padding: var(--s-2) var(--gutter) var(--s-4);
-    list-style: none;
+  .hall__slide > :global(*) {
+    flex: 1;
   }
-  .hall__cards > li {
-    scroll-snap-align: start;
-    scroll-margin-inline: var(--gutter);
+  :global(.hall__carousel .carousel__btn) {
+    border-color: rgb(214 182 121 / 0.45);
+    color: #fff;
   }
-  @media (min-width: 960px) {
-    .hall__rail {
-      margin-inline: 0;
-      overflow: visible;
-    }
-    .hall__cards {
-      grid-auto-flow: row;
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--s-5);
-      padding: 0;
-    }
-    /* One row on desktop; the full list lives on /hall-of-excellence */
-    .hall__cards > li:nth-child(n + 5) {
-      display: none;
-    }
+  :global(.hall__carousel .carousel__btn:not(:disabled):hover) {
+    background: var(--brass-light);
+    border-color: var(--brass-light);
+    color: var(--ink);
   }
   .hall__foot {
     display: grid;

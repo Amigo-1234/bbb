@@ -461,7 +461,7 @@
       "level": "200 Level",
       "year": null,
       "category": "medicine",
-      "featured": false,
+      "featured": true,
       "image": "originals/v1-testii-019.png",
       "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/019.png",
       "sourceSha256": "3e85163dc8e7260e4f8d8b5b2550bd7ba83730ae9150f10c69b7a2a5d5fb1428",
@@ -473,7 +473,7 @@
         "scope": null
       },
       "publishedImage": null,
-      "review": null,
+      "review": "Boma priority profile (Oct 2026). Boma's description: AAA, reported 16 points, MBBS, University of Lagos. Pending: session, written consent (name/photo), points rule, confirmation of University of Lagos (record has none). New photo from Boma to be uploaded as published/v1-019.jpg once consented. Corroboration (private): V1 caption, scroll/01.",
       "names": null
     },
     {
@@ -648,7 +648,7 @@
         "scope": null
       },
       "publishedImage": null,
-      "review": null,
+      "review": "Boma priority profile (Oct 2026). Boma's description: AAA, reported 16 points, Law, University of Lagos. Pending: session (V1 caption says only 2026), written consent (name/photo), points rule, spelling of the name (V1 caption vs Boma's description differ). New photo from Boma to be uploaded as published/v1-026.jpg once consented. Corroboration (private): V1 caption, scroll/016.",
       "names": null
     },
     {
@@ -698,7 +698,7 @@
         "scope": null
       },
       "publishedImage": null,
-      "review": null,
+      "review": "Boma priority profile (Oct 2026). Boma's description: AAA, reported 16 points, MBBS, University of Lagos. Pending: session, written consent (name/photo), points rule, level. New photo from Boma to be uploaded as published/v1-028.jpg once consented. Corroboration (private): V1 caption, scroll/028.",
       "names": null
     },
     {
@@ -911,7 +911,7 @@
       "level": "200 Level",
       "year": null,
       "category": "medicine",
-      "featured": true,
+      "featured": false,
       "image": "originals/v1-testii-037.png",
       "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/037.png",
       "sourceSha256": "d47c49c97205b7d641e551c859d4654621af36a4841933ee8b13acb69529305b",

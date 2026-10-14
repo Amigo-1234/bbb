@@ -52,7 +52,7 @@ function hero() {
 function honours(_desktop: boolean) {
   const section = $('.honours')!;
   const head = $$('.hall__head > *', section);
-  const cards = $$('.hall__cards .ach', section);
+  const cards = $$('.hall__carousel .ach', section);
   const laurel = $$('.hall__head .laurel path, .hall__head .laurel ellipse', section);
   gsap.set([...head, ...cards], { autoAlpha: 0 });
   gsap.set(laurel, { drawSVG: '0%' });
@@ -154,7 +154,7 @@ export function initHomeMotion() {
       safely('hero', '.notice, .header, .hero__copy > *, .hero__media', hero);
     }
     safely('headings', '.head__label, .head__title, .head__intro', headings);
-    safely('honours', '.hall__head > *, .hall__cards .ach', () => honours(desktop));
+    safely('honours', '.hall__head > *, .hall__carousel .ach', () => honours(desktop));
     safely('gallery', '.life__item, .life__item img', gallery);
     safely('people', '.founder *, .mission *, .team *', () => people(desktop));
     safely('faq', '.faq__item', faq);

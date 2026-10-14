@@ -158,6 +158,7 @@ export type Achiever = {
   course: string | null;
   university: string | null;
   level: string | null;
+  featured: boolean;
   /** Present only when the student's consent covers it. */
   name?: string;
   photo?: ImageMetadata;
@@ -173,6 +174,7 @@ const toAchiever = (r: AchievementRecord): Achiever => {
     course: r.course,
     university: r.university,
     level: r.level,
+    featured: r.featured,
     name: allows(r.consent, 'name') ? (r.name ?? undefined) : undefined,
     photo: allows(r.consent, 'photo') ? published?.image : undefined,
   };
@@ -182,8 +184,8 @@ const toAchiever = (r: AchievementRecord): Achiever => {
 export const achievers: Achiever[] = records
   .filter((r) => r.grade === 'AAA' && r.kind === 'student-portrait')
   .map(toAchiever)
-  // Students who agreed to be named come first.
-  .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo));
+  // Students who agreed to be named come first, then Boma's featured achievers.
+  .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
 
 /** Achievers grouped by session, newest session first. Records without a confirmed
  * session are collected under `null` and shown last. */
