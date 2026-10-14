@@ -117,7 +117,6 @@ const homeAchievers = achievers.slice(0, 8);
       </header>
 
       <Carousel label="BIA JUPEB AAA achievers" variant="cards" tone="ink" class="hall__carousel">
-        {showPlaceholders && [0, 1].map(() => <div data-slide class="hall__slide"><AchieverCard placeholder /></div>)}
         {homeAchievers.map((a) => <div data-slide class="hall__slide"><AchieverCard achiever={a} /></div>)}
       </Carousel>
 

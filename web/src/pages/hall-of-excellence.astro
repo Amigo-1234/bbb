@@ -4,7 +4,7 @@ import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
 import Laurel from '../components/Laurel.astro';
 import AchieverCard from '../components/AchieverCard.astro';
-import { achievers, hallSessions, showPlaceholders } from '../data/achievements';
+import { achievers, hallSessions } from '../data/achievements';
 import { primaryContact } from '../data/site';
 
 const slug = (s: string | null) => (s ? `session-${s.replace('/', '-')}` : 'session-being-confirmed');
@@ -31,11 +31,10 @@ const sessions = hallSessions.filter((g) => g.session).length;
     </div>
   </section>
 
-  {(hallSessions.length > 1 || showPlaceholders) && (
+  {hallSessions.length > 1 && (
     <nav class="hnav" aria-label="Sessions">
       <div class="wrap">
         <ul class="hnav__list" role="list">
-          {showPlaceholders && <li><a href="#session-sample">Sample layout</a></li>}
           {hallSessions.map((g) => <li><a href={`#${slug(g.session)}`}>{g.session ?? 'Session being confirmed'}</a></li>)}
         </ul>
       </div>
@@ -43,20 +42,6 @@ const sessions = hallSessions.filter((g) => g.session).length;
   )}
 
   <div class="hbody">
-    {showPlaceholders && (
-      <section class="hsess hsess--sample" id="session-sample" aria-labelledby="session-sample-title" data-placeholder-section>
-        <div class="wrap">
-          <header class="hsess__head">
-            <h2 id="session-sample-title" class="hsess__title">Sample session <span>layout preview</span></h2>
-            <p class="hsess__note">Placeholder cards show where verified achievers will appear. They are visible on preview builds only and never in production.</p>
-          </header>
-          <div class="hgrid">
-            {[0, 1, 2, 3].map(() => <AchieverCard placeholder />)}
-          </div>
-        </div>
-      </section>
-    )}
-
     {hallSessions.map((g, i) => (
       <section class="hsess" id={slug(g.session)} aria-labelledby={`${slug(g.session)}-title`} data-session={g.session ?? 'unconfirmed'}>
         <div class="wrap">
@@ -70,13 +55,13 @@ const sessions = hallSessions.filter((g) => g.session).length;
             )}
           </header>
           <div class="hgrid">
-            {g.achievers.map((a, j) => <AchieverCard achiever={a} eager={i === 0 && j < 2 && !showPlaceholders} />)}
+            {g.achievers.map((a, j) => <AchieverCard achiever={a} eager={i === 0 && j < 2} />)}
           </div>
         </div>
       </section>
     ))}
 
-    {hallSessions.length === 0 && !showPlaceholders && (
+    {hallSessions.length === 0 && (
       <section class="hsess">
         <div class="wrap"><p class="hsess__note">Verified achievers will be listed here soon.</p></div>
       </section>
