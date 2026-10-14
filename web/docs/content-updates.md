@@ -6,7 +6,7 @@ editing a file on GitHub) can do this in a few minutes.
 
 ```
 web/content/achievements/records.json      ← one entry per photo / flyer / result
-web/content/achievements/originals/        ← archive of original files (NEVER published)
+web/content/achievements/originals/        ← archive of original files (local only: gitignored, keep a private backup)
 web/src/assets/achievements/published/     ← copies cleared for the website (consent granted)
 ```
 
