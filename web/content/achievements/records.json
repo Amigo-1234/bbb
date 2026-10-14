@@ -454,16 +454,16 @@
     {
       "id": "v1-019",
       "kind": "student-portrait",
-      "name": "EMMANUEL EKA",
+      "name": "Eka Emmanuel",
       "grade": "AAA",
       "course": "Medicine & Surgery (MBBS)",
-      "university": null,
+      "university": "University of Lagos",
       "level": "200 Level",
       "year": null,
       "category": "medicine",
       "featured": true,
-      "image": "originals/v1-testii-019.png",
-      "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/019.png",
+      "image": "originals/v1-019-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Hall_Three_Students_Photos.zip; sha256 c7c22cc08781b023db6c2e5b254287a75ef83818eb069bc5d5f8f2738aaa9bcc); V1 original testii/019.png",
       "sourceSha256": "3e85163dc8e7260e4f8d8b5b2550bd7ba83730ae9150f10c69b7a2a5d5fb1428",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
@@ -473,7 +473,7 @@
         "scope": null
       },
       "publishedImage": null,
-      "review": "Boma priority profile (Oct 2026). Boma's description: AAA, reported 16 points, MBBS, University of Lagos. Pending: session, written consent (name/photo), points rule, confirmation of University of Lagos (record has none). New photo from Boma to be uploaded as published/v1-019.jpg once consented. Corroboration (private): V1 caption, scroll/01.",
+      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: EMMANUEL EKA. Photo received and matched to the V1 portrait. NOT PUBLISHED until: written consent (name + photo) is recorded; session confirmed; points rule confirmed (points left null). On consent: copy originals/v1-019-boma-2026-10.jpg to src/assets/achievements/published/ and set publishedImage.",
       "names": null
     },
     {
@@ -629,7 +629,7 @@
     {
       "id": "v1-026",
       "kind": "student-portrait",
-      "name": "AMODU RAFIAT BUSAYOMI",
+      "name": "Amodu Rofiat Oluwabusayomi",
       "grade": "AAA",
       "course": "Law",
       "university": "University of Lagos",
@@ -637,8 +637,8 @@
       "year": 2026,
       "category": "law",
       "featured": true,
-      "image": "originals/v1-testii-026.png",
-      "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/026.png",
+      "image": "originals/v1-026-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Hall_Three_Students_Photos.zip; sha256 4be493fafc59921f0f929c0c1af38446f68c4c5da8a297db3c0563d6f15faa9c); V1 original testii/026.png",
       "sourceSha256": "cb556b311eca0a338a9f96823853021d6706e5ea32095e3595f14554687d1f81",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
@@ -648,7 +648,7 @@
         "scope": null
       },
       "publishedImage": null,
-      "review": "Boma priority profile (Oct 2026). Boma's description: AAA, reported 16 points, Law, University of Lagos. Pending: session (V1 caption says only 2026), written consent (name/photo), points rule, spelling of the name (V1 caption vs Boma's description differ). New photo from Boma to be uploaded as published/v1-026.jpg once consented. Corroboration (private): V1 caption, scroll/016.",
+      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: AMODU RAFIAT BUSAYOMI. Photo received and matched to the V1 portrait. NOT PUBLISHED until: written consent (name + photo) is recorded; session confirmed; points rule confirmed (points left null); spelling of the name confirmed (Rofiat/Rafiat, Oluwabusayomi/Busayomi). On consent: copy originals/v1-026-boma-2026-10.jpg to src/assets/achievements/published/ and set publishedImage.",
       "names": null
     },
     {
@@ -687,8 +687,8 @@
       "year": null,
       "category": "medicine",
       "featured": true,
-      "image": "originals/v1-testii-028.png",
-      "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/028.png",
+      "image": "originals/v1-028-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Hall_Three_Students_Photos.zip; sha256 3c3d6674b9afe5447c37c74593f1353627c6987d1ee9c21ee9c7ae3a06944a83); V1 original testii/028.png",
       "sourceSha256": "b73191fddcfec014e2ffa639844f83a771581595f34f51c29e840f257a309b25",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
@@ -698,7 +698,7 @@
         "scope": null
       },
       "publishedImage": null,
-      "review": "Boma priority profile (Oct 2026). Boma's description: AAA, reported 16 points, MBBS, University of Lagos. Pending: session, written consent (name/photo), points rule, level. New photo from Boma to be uploaded as published/v1-028.jpg once consented. Corroboration (private): V1 caption, scroll/028.",
+      "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: Onasanya Darasimi. Photo received and matched to the V1 portrait. NOT PUBLISHED until: written consent (name + photo) is recorded; session confirmed; points rule confirmed (points left null). On consent: copy originals/v1-028-boma-2026-10.jpg to src/assets/achievements/published/ and set publishedImage.",
       "names": null
     },
     {
