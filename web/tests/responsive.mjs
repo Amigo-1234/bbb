@@ -263,7 +263,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const dist = new URL('../dist/', import.meta.url).pathname;
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
-  for (const path of ['', 'success-stories', 'hall-of-excellence', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+  for (const path of ['', 'success-stories', 'hall-of-excellence', 'team', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
     const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
     const robots = await page.locator('meta[name="robots"]').count();
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -332,6 +332,9 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const text = all.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(f, 'utf8')).join('\n').toLowerCase();
   // Words that are also part of a consented name (e.g. a shared first name) are not evidence of a leak.
   const consentedWords = recs.filter((r) => r.consent.status === 'granted' && r.name).flatMap((r) => r.name.toLowerCase().replace(/[()]/g, '').split(/\s+/));
+  // Staff names approved for /team (some staff are also alumni; their unconsented results stay unpublished).
+  const staffNames = JSON.parse(readFileSync(new URL('../content/team/team.json', import.meta.url), 'utf8')).people.map((x) => x.name);
+  consentedWords.push(...staffNames.flatMap((n) => n.toLowerCase().replace(/[()]/g, '').split(/\s+/)));
   const leaked = [...new Set(pendingNames.filter((n) => !n.toLowerCase().split(/\s+/).every((w) => consentedWords.includes(w)) && text.includes(n.toLowerCase())))];
   check(recs.length >= 43 && leaked.length === 0, `privacy: no unconsented student name (${pendingNames.length} name tokens) appears anywhere in the build ${leaked.slice(0, 5).join(', ')}`);
   check(!all.some((f) => /testii|originals|achievements/i.test(f)), 'privacy: no archived achievement image is emitted into the build');
@@ -987,6 +990,27 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(cat.count.testii === 43 && cat.count.slider === 16 && cat.count.scroll === 32 && cat.items.every((i) => /^[0-9a-f]{64}$/.test(i.sha256)), 'V1 archive: 91 testimonial assets catalogued with SHA-256');
   check(cat.items.filter((i) => i.folder === 'testii').every((i) => recs.some((r) => r.id === i.recordId)), 'V1 archive: every testii file is linked to an achievement record');
   check(!all.some((f) => /testii|scroll\/|slider\/|v1-archive/.test(f)), 'V1 archive images are not published in the build');
+}
+
+// 15. /team — staff directory from BIA's official role documents
+{
+  const team = JSON.parse(readFileSync(new URL('../content/team/team.json', import.meta.url), 'utf8')).people;
+  const t = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const res = await t.goto(new URL('team', BASE).href, { waitUntil: 'networkidle' });
+  const cards = await t.locator('[data-member]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.member, text: e.textContent, open: e.querySelector('details').open, imgs: e.querySelectorAll('img').length, tel: e.querySelectorAll('a[href^="tel:"], a[href^="mailto:"]').length, items: e.querySelectorAll('details li').length })));
+  check(res.status() === 200 && team.length === 14 && cards.length === 14, `/team: all ${cards.length} staff profiles shown`);
+  check(team.every((p) => { const c = cards.find((x) => x.id === p.id); return c && c.text.includes(p.name) && c.text.includes(p.title) && c.items === p.sections.reduce((n, s) => n + s.items.length, 0); }), '/team: every profile shows its full name, official position and every documented responsibility');
+  check(cards.every((c) => !c.open && c.imgs === 0 && c.tel === 0), '/team: responsibilities start collapsed; initials avatars only; no invented photos or contact details');
+  await t.locator('[data-member] summary').first().click();
+  check(await t.locator('[data-member] details').first().evaluate((d) => d.open), '/team: a profile expands to show its responsibilities');
+  const r = await t.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
+  check(r.sw <= r.vw, '/team 390px: no horizontal overflow');
+  await t.addScriptTag({ content: axeSource });
+  const v = await t.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
+  check(v.length === 0, `/team: no serious/critical accessibility violations ${v.join(', ')}`);
+  await t.goto(BASE, { waitUntil: 'domcontentloaded' });
+  check((await t.locator('header a[href="/team"], #mobile-menu a[href="/team"]').count()) >= 1 && (await t.locator('footer a[href="/team"]').count()) >= 1 && (await t.locator('#founder a[href="/team"], main a[href="/team"]').count()) >= 1, '/team linked from navigation, footer and the homepage founder section');
+  await t.close();
 }
 
 await browser.close();
