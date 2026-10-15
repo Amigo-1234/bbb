@@ -919,27 +919,34 @@
     {
       "id": "v1-037",
       "kind": "student-portrait",
-      "name": "O.S Ayo -Yusuf Jomiloju Samuel",
+      "name": "O.S Ayo Yusuf Jomiloju",
       "grade": "AAA",
-      "course": "Medicine & Surgery",
-      "university": "Federal University Oye-Ekiti",
+      "course": "Medicine & Surgery (MBBS)",
+      "university": "University of Lagos",
       "level": "200 Level",
       "year": null,
       "category": "medicine",
       "featured": false,
-      "image": "originals/v1-testii-037.png",
-      "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/037.png",
+      "image": "originals/v1-037-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Five_New_Achievers.zip/ayo-yusuf-jomiloju.jpg; sha256 367a576842588f741dbd613c2152b5b7d9d1a06c8f1bc7c9d677452aa214359b); V1 original testii/037.png",
       "sourceSha256": "d47c49c97205b7d641e551c859d4654621af36a4841933ee8b13acb69529305b",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-15",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": "V1 caption names one student, but the image is a group award photograph (visually like v1-testii-05.png). Confirm who is pictured.",
-      "names": null
+      "publishedImage": "v1-037-boma-2026-10.jpg",
+      "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). V1 caption: 'O.S Ayo -Yusuf Jomiloju Samuel', Medicine and Surgery, Federal University of Oye-Ekiti (FUOYE), 16 points. Boma (Oct 2026) gives University of Lagos — discrepancy to confirm. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null).",
+      "names": null,
+      "session": null,
+      "points": null
     },
     {
       "id": "v1-038",
@@ -1000,25 +1007,32 @@
       "kind": "student-portrait",
       "name": "Masha David",
       "grade": "AAA",
-      "course": "Medicine & Surgery (MBBS)",
-      "university": null,
+      "course": "Dental Surgery (BDS)",
+      "university": "University of Lagos",
       "level": null,
       "year": null,
       "category": "medicine",
       "featured": false,
-      "image": "originals/v1-testii-040.png",
-      "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/040.png",
+      "image": "originals/v1-040-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Five_New_Achievers.zip/masha-david.jpg; sha256 8ab0d5591b239554579d3c6105988be5070f3d94d53bd3a3425a937eeebea475); V1 original testii/040.png",
       "sourceSha256": "9a190b055c4fc51bd6da53d06aed3fd3130ef0283f4de612ef58473f3e55989a",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-15",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": null,
-      "names": null
+      "publishedImage": "v1-040-boma-2026-10.jpg",
+      "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). V1 caption: 'Masha David', MBBS (Medicine and Surgery), 16 points. Boma (Oct 2026) gives Dental Surgery (BDS) — discrepancy to confirm. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null).",
+      "names": null,
+      "session": null,
+      "points": null
     },
     {
       "id": "v1-041",
@@ -1094,6 +1108,102 @@
       "publishedImage": null,
       "review": null,
       "names": null
+    },
+    {
+      "id": "boma-2026-nwolisa-peter",
+      "kind": "student-portrait",
+      "name": "Nwolisa Peter",
+      "names": null,
+      "grade": "AAA",
+      "course": "Law",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "law",
+      "featured": false,
+      "image": "originals/boma-2026-nwolisa-peter-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Five_New_Achievers.zip/nwolisa-peter.jpg; sha256 d264436b6886cc9f8722fd675be12d91676614b8ce8b23c54cf3fcfba9bfe798)",
+      "sourceSha256": "d264436b6886cc9f8722fd675be12d91676614b8ce8b23c54cf3fcfba9bfe798",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-15",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-nwolisa-peter-boma-2026-10.jpg",
+      "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). Also in V1 group photo v1-038 (caption: 16 Points (Law)); no individual V1 record. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null)."
+    },
+    {
+      "id": "boma-2026-nwokwe-onyedikachi",
+      "kind": "student-portrait",
+      "name": "Nwokwe Onyedikachi (Dominique)",
+      "names": null,
+      "grade": "AAA",
+      "course": "Creative Arts",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-nwokwe-onyedikachi-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Five_New_Achievers.zip/nwokwe-onyedikachi.jpg; sha256 d41ba7317bc495e1b5ad2e84b8a5a95f2d6f4e9af716669e3196c0b197b765ac)",
+      "sourceSha256": "d41ba7317bc495e1b5ad2e84b8a5a95f2d6f4e9af716669e3196c0b197b765ac",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-15",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-nwokwe-onyedikachi-boma-2026-10.jpg",
+      "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). Also in V1 group photo v1-038 (caption: 16 point creative art); no individual V1 record. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null)."
+    },
+    {
+      "id": "boma-2026-ayeni-tenioluwa",
+      "kind": "student-portrait",
+      "name": "Ayeni Tenioluwa Oluwasekemi",
+      "names": null,
+      "grade": "AAA",
+      "course": "Medicine & Surgery (MBBS)",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-ayeni-tenioluwa-boma-2026-10.jpg",
+      "sourceAsset": "Photo from Boma, Oct 2026 (BIA_Five_New_Achievers.zip/ayeni-tenioluwa.jpg; sha256 974b10ea1a717838e52ecee9d2dcfbba34083c51b9282663b1eeb607091b86ad)",
+      "sourceSha256": "974b10ea1a717838e52ecee9d2dcfbba34083c51b9282663b1eeb607091b86ad",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "Boma (academy attestation)",
+        "date": "2026-10-15",
+        "scope": "Academy attestation by Boma that BIA obtained the student's permission to publish name, photograph and result. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-ayeni-tenioluwa-boma-2026-10.jpg",
+      "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). Not in the V1 archive. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null)."
     }
   ]
 }

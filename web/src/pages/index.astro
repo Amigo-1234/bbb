@@ -42,7 +42,7 @@ const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
 const posterImg = await getImage({ src: poster, format: 'webp', width: 464 });
 const fmtCap = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 // Hall of Excellence band: consented achievers first (sorted in data/achievements.ts).
-const homeAchievers = achievers.slice(0, 8);
+const homeAchievers = achievers;
 ---
 
 <Base

@@ -331,15 +331,15 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   walk(dist);
   const text = all.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(f, 'utf8')).join('\n').toLowerCase();
   // Words that are also part of a consented name (e.g. a shared first name) are not evidence of a leak.
-  const consentedWords = recs.filter((r) => r.consent.status === 'granted' && r.name).flatMap((r) => r.name.toLowerCase().split(/\s+/));
-  const leaked = [...new Set(pendingNames.filter((n) => !consentedWords.includes(n.toLowerCase()) && text.includes(n.toLowerCase())))];
-  check(recs.length === 43 && leaked.length === 0, `privacy: no unconsented student name (${pendingNames.length} name tokens) appears anywhere in the build ${leaked.slice(0, 5).join(', ')}`);
+  const consentedWords = recs.filter((r) => r.consent.status === 'granted' && r.name).flatMap((r) => r.name.toLowerCase().replace(/[()]/g, '').split(/\s+/));
+  const leaked = [...new Set(pendingNames.filter((n) => !n.toLowerCase().split(/\s+/).every((w) => consentedWords.includes(w)) && text.includes(n.toLowerCase())))];
+  check(recs.length >= 43 && leaked.length === 0, `privacy: no unconsented student name (${pendingNames.length} name tokens) appears anywhere in the build ${leaked.slice(0, 5).join(', ')}`);
   check(!all.some((f) => /testii|originals|achievements/i.test(f)), 'privacy: no archived achievement image is emitted into the build');
   const publishedDir = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
   const publishedFiles = readdirSync(publishedDir).filter((f) => !f.startsWith('.'));
   const granted = recs.filter((r) => r.consent.status === 'granted' && r.publishedImage).map((r) => r.publishedImage);
   check(publishedFiles.length === granted.length && publishedFiles.every((f) => granted.includes(f)), `consent: published images (${publishedFiles.length}) match consent-granted records (${granted.length})`);
-  check(recs.every((r) => !('points' in r) && !('recordedPoints' in r)), 'records carry no unverified V1 point totals');
+  check(recs.every((r) => r.points == null && !('recordedPoints' in r)), 'records carry no unverified point totals (points stay null until BIA confirms the scale)');
 
   // Image performance on first load (mobile)
   for (const path of ['', 'success-stories']) {
@@ -936,7 +936,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(pos.order[0] === 'hero' && pos.order[1] === 'success', `homepage: Hall of Excellence follows the hero (${pos.order.slice(0, 4).join(' → ')})`);
   check(pos.hall < 844 * 1.3, `homepage: achievers start within ~1 phone screen (${Math.round(pos.hall)}px)`);
   check(pos.h < 844 * 18, `homepage: reduced scrolling on phones (${(pos.h / 844).toFixed(1)} screens, was 33)`);
-  check((await m.locator('#success [data-achiever]').count()) === Math.min(8, aaa.length), 'homepage: AAA achiever cards come from records.json');
+  check((await m.locator('#success [data-achiever]').count()) === aaa.length, 'homepage: AAA achiever cards come from records.json');
   check((await m.locator('#success a[href="/hall-of-excellence"]').count()) >= 1 && (await m.locator('header a[href="/hall-of-excellence"], #mobile-menu a[href="/hall-of-excellence"]').count()) >= 1, 'Hall of Excellence linked from the homepage band and the navigation');
   const hc = m.locator('.hall__carousel');
   const hcInfo = await hc.evaluate((c) => {
@@ -944,7 +944,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const first = t.querySelector('[data-slide]').getBoundingClientRect();
     return { scroll: t.scrollWidth > t.clientWidth, tab: t.tabIndex, role: c.getAttribute('aria-roledescription'), peek: first.width < t.clientWidth * 0.9, btns: c.querySelectorAll('[data-prev], [data-next]').length, total: c.querySelector('[data-total]').textContent };
   });
-  check(hcInfo.role === 'carousel' && hcInfo.scroll && hcInfo.tab === 0 && hcInfo.btns === 2 && hcInfo.peek && Number(hcInfo.total) === Math.min(8, aaa.length),
+  check(hcInfo.role === 'carousel' && hcInfo.scroll && hcInfo.tab === 0 && hcInfo.btns === 2 && hcInfo.peek && Number(hcInfo.total) === aaa.length,
     `homepage: Hall carousel (V2 carousel) swipes, peeks the next card, has arrows, a counter (${hcInfo.total}) and a focusable track`);
   const smallBtns = await hc.locator('[data-prev], [data-next]').evaluateAll((b) => b.filter((x) => x.getBoundingClientRect().height < 44 || x.getBoundingClientRect().width < 44).length);
   check(smallBtns === 0, 'homepage: Hall carousel arrows are at least 44px');
