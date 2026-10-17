@@ -1016,7 +1016,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const withPhoto = ['abolade-victor', 'caleb-aghedo', 'adenusi-gloria', 'williams-favour-ogunbayo', 'achief-halimat-anuoluwapo', 'ighofimoni-gabriel-oghenekevwe', 'nwokwe-onyedikachi'];
   check(cards.every((c) => !c.open && c.tel === 0), '/team: responsibilities start collapsed; no invented contact details');
   check(cards.every((c) => (withPhoto.includes(c.id) ? c.imgs === 1 && !c.initials : c.imgs === 0 && /^[A-Z]{2}$/.test(c.initials ?? ''))), '/team: portraits only on the seven matched profiles; initials for everyone else');
-  { const av = cards.find((c) => c.id === 'abolade-victor'); check(av && av.text.includes('Academic Director') && av.items === 0 && !/Responsibilities/.test(av.text), '/team: Academic Director profile shows name, title and photo only (no responsibilities provided)'); }
+  { const av = cards.find((c) => c.id === 'abolade-victor'); check(av && av.text.includes('Academic Director') && av.items === 20 && av.imgs === 1, '/team: Academic Director profile shows his photo, title and all 20 official responsibilities'); }
   check(cards.every((c) => c.photoOk), '/team: every portrait loads, is a 68px circle crop and has its name as alt text');
   await t.locator('[data-member] summary').first().click();
   check(await t.locator('[data-member] details').first().evaluate((d) => d.open), '/team: a profile expands to show its responsibilities');

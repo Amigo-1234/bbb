@@ -1,5 +1,5 @@
 {
-  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Sir Holly and the COO are separate positions (Boma, 2026-10-17). Added 2026-10-17 on Boma's confirmation: Abolade Victor, Academic Director (no responsibilities provided yet).",
+  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Sir Holly and the COO are separate positions (Boma, 2026-10-17). Added 2026-10-17 on Boma's confirmation: Abolade Victor, Academic Director, with his official responsibilities.",
   "people": [
     {
       "name": "Caleb Aghedo",
@@ -223,8 +223,34 @@
       "title": "Academic Director",
       "summary": "",
       "department": "academics",
-      "sections": [],
-      "source": "Confirmed by Boma, 17 Oct 2026 (name and position only; responsibilities not yet provided)"
+      "sections": [
+        {
+          "heading": "Official responsibilities",
+          "items": [
+            "Oversee and coordinate academic activities and operations.",
+            "Plan and schedule classes, tutorials, and academic programmes.",
+            "Coordinate with tutors on schedules, teaching responsibilities, and academic plans.",
+            "Supervise tutors to maintain punctuality, professionalism, and teaching quality.",
+            "Develop strategies to improve student performance and educational standards.",
+            "Coordinate JAMB, JUPEB, and other examination past questions and study materials.",
+            "Organize assessments, quizzes, tests, and practice examinations.",
+            "Monitor student performance and recommend improvement strategies.",
+            "Collaborate with the editorial team to review academic content for accuracy.",
+            "Coordinate educational publications, academic polls, quizzes, and explanatory materials.",
+            "Plan academic outreach programmes and educational campaigns.",
+            "Collaborate with the CEO, COO, and management on academic policies and programmes.",
+            "Maintain communication between tutors, students, and management.",
+            "Identify academic operational challenges and recommend solutions.",
+            "Coordinate academic meetings and planning sessions.",
+            "Maintain academic records, schedules, assessments, and progress reports.",
+            "Support tutor recruitment, selection, and onboarding.",
+            "Encourage student participation in academic activities.",
+            "Prepare periodic academic reports and recommendations for management.",
+            "Perform other academic and administrative duties assigned by management."
+          ]
+        }
+      ],
+      "source": "Confirmed by Boma, 17 Oct 2026 (name, position and official responsibilities)"
     },
     {
       "name": "Williams Favour Ogunbayo",
