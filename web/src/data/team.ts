@@ -17,9 +17,10 @@ const Person = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   name: z.string(),
   title: z.string(),
-  summary: z.string(),
+  summary: z.string().default(''),
   department: z.enum(['management', 'administration', 'academics', 'student-affairs', 'brand']),
-  sections: z.array(z.object({ heading: z.string(), items: z.array(z.string()).min(1) })).min(1),
+  /** Empty until BIA provides documented responsibilities; never filled in by guesswork. */
+  sections: z.array(z.object({ heading: z.string(), items: z.array(z.string()).min(1) })).default([]),
   source: z.string(),
 });
 export type TeamMember = z.infer<typeof Person>;

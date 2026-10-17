@@ -1000,8 +1000,8 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     await img.scrollIntoViewIfNeeded();
     await img.evaluate((i) => i.complete || new Promise((r) => i.addEventListener('load', r, { once: true })));
   }
-  const cards = await t.locator('[data-member]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.member, text: e.textContent, open: e.querySelector('details').open, imgs: e.querySelectorAll('img').length, photoOk: [...e.querySelectorAll('.tcard__avatar img')].every((i) => i.complete && i.naturalWidth > 0 && i.alt === `Portrait of ${e.querySelector('h3').textContent.trim()}` && Math.round(i.getBoundingClientRect().width) === 68 && Math.round(i.getBoundingClientRect().height) === 68), initials: e.querySelector('.tcard__avatar:not(.tcard__avatar--photo)')?.textContent.trim() ?? null, tel: e.querySelectorAll('a[href^="tel:"], a[href^="mailto:"]').length, items: e.querySelectorAll('details li').length })));
-  check(res.status() === 200 && team.length === 13 && cards.length === 13, `/team: all ${cards.length} staff profiles shown`);
+  const cards = await t.locator('[data-member]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.member, text: e.textContent, open: !!e.querySelector('details')?.open, imgs: e.querySelectorAll('img').length, photoOk: [...e.querySelectorAll('.tcard__avatar img')].every((i) => i.complete && i.naturalWidth > 0 && i.alt === `Portrait of ${e.querySelector('h3').textContent.trim()}` && Math.round(i.getBoundingClientRect().width) === 68 && Math.round(i.getBoundingClientRect().height) === 68), initials: e.querySelector('.tcard__avatar:not(.tcard__avatar--photo)')?.textContent.trim() ?? null, tel: e.querySelectorAll('a[href^="tel:"], a[href^="mailto:"]').length, items: e.querySelectorAll('details li').length })));
+  check(res.status() === 200 && team.length === 14 && cards.length === 14, `/team: all ${cards.length} staff profiles shown`);
   {
     const { readdirSync, statSync } = await import('node:fs');
     const { join } = await import('node:path');
@@ -1013,9 +1013,10 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     check(!/Sir Holly\s*(·|,|-|–)?\s*(Chief Operating Officer|COO)\b/.test(html) && !/(Chief Operating Officer|COO)\s*(·|:|,|-|–)\s*Sir Holly/.test(html) && /Sir Holly and the Chief Operating Officer \(COO\)/.test(html), 'site: Sir Holly is not described as COO; Achief Halimat remains PA to Sir Holly and the COO');
   }
   check(team.every((p) => { const c = cards.find((x) => x.id === p.id); return c && c.text.includes(p.name) && c.text.includes(p.title) && c.items === p.sections.reduce((n, s) => n + s.items.length, 0); }), '/team: every profile shows its full name, official position and every documented responsibility');
-  const withPhoto = ['caleb-aghedo', 'adenusi-gloria', 'williams-favour-ogunbayo', 'achief-halimat-anuoluwapo', 'ighofimoni-gabriel-oghenekevwe', 'nwokwe-onyedikachi'];
+  const withPhoto = ['abolade-victor', 'caleb-aghedo', 'adenusi-gloria', 'williams-favour-ogunbayo', 'achief-halimat-anuoluwapo', 'ighofimoni-gabriel-oghenekevwe', 'nwokwe-onyedikachi'];
   check(cards.every((c) => !c.open && c.tel === 0), '/team: responsibilities start collapsed; no invented contact details');
-  check(cards.every((c) => (withPhoto.includes(c.id) ? c.imgs === 1 && !c.initials : c.imgs === 0 && /^[A-Z]{2}$/.test(c.initials ?? ''))), '/team: portraits only on the six matched profiles; initials for everyone else');
+  check(cards.every((c) => (withPhoto.includes(c.id) ? c.imgs === 1 && !c.initials : c.imgs === 0 && /^[A-Z]{2}$/.test(c.initials ?? ''))), '/team: portraits only on the seven matched profiles; initials for everyone else');
+  { const av = cards.find((c) => c.id === 'abolade-victor'); check(av && av.text.includes('Academic Director') && av.items === 0 && !/Responsibilities/.test(av.text), '/team: Academic Director profile shows name, title and photo only (no responsibilities provided)'); }
   check(cards.every((c) => c.photoOk), '/team: every portrait loads, is a 68px circle crop and has its name as alt text');
   await t.locator('[data-member] summary').first().click();
   check(await t.locator('[data-member] details').first().evaluate((d) => d.open), '/team: a profile expands to show its responsibilities');

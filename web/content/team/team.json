@@ -1,5 +1,5 @@
 {
-  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Sir Holly and the COO are separate positions (Boma, 2026-10-17).",
+  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Sir Holly and the COO are separate positions (Boma, 2026-10-17). Added 2026-10-17 on Boma's confirmation: Abolade Victor, Academic Director (no responsibilities provided yet).",
   "people": [
     {
       "name": "Caleb Aghedo",
@@ -216,6 +216,15 @@
       "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
       "department": "administration",
       "id": "ibitoye-esther"
+    },
+    {
+      "id": "abolade-victor",
+      "name": "Abolade Victor",
+      "title": "Academic Director",
+      "summary": "",
+      "department": "academics",
+      "sections": [],
+      "source": "Confirmed by Boma, 17 Oct 2026 (name and position only; responsibilities not yet provided)"
     },
     {
       "name": "Williams Favour Ogunbayo",
