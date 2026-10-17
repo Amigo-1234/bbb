@@ -168,9 +168,13 @@ const sessions = hallSessions.filter((g) => g.session).length;
     position: sticky;
     top: var(--header-h, 64px);
     z-index: 20;
+    transition: top 0.4s var(--ease);
     background: color-mix(in srgb, var(--paper) 94%, transparent);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
+  }
+  :global(body:has(.header[data-hidden]:not(:focus-within))) .hnav {
+    top: 0;
   }
   .hnav__list {
     display: flex;
@@ -200,7 +204,7 @@ const sessions = hallSessions.filter((g) => g.session).length;
   }
   .hsess {
     padding-block: var(--s-7);
-    scroll-margin-top: calc(var(--header-h, 64px) + 72px);
+    scroll-margin-top: 84px;
   }
   .hsess + .hsess {
     border-top: 1px solid var(--line);

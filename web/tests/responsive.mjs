@@ -1017,6 +1017,29 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await t.addScriptTag({ content: axeSource });
   const v = await t.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
   check(v.length === 0, `/team: no serious/critical accessibility violations ${v.join(', ')}`);
+  // Sticky department bar: follows the auto-hiding header (no gap above it) and never hides a heading after a tap
+  for (const path of ['team', 'hall-of-excellence']) {
+    const q = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 });
+    await q.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
+    const bar = path === 'team' ? '.tnav' : '.hnav';
+    if (!(await q.locator(bar).count())) { await q.close(); continue; }
+    const geo = () => q.evaluate((sel) => { const h = document.querySelector('header.header').getBoundingClientRect(); const n = document.querySelector(sel).getBoundingClientRect(); return { hBottom: Math.round(h.bottom), nTop: Math.round(n.top), nBottom: Math.round(n.bottom) }; }, bar);
+    await q.mouse.wheel(0, 1600); await q.waitForTimeout(900);
+    const down = await geo();
+    await q.mouse.wheel(0, -200); await q.waitForTimeout(900);
+    const up = await geo();
+    check(down.hBottom <= 0 && Math.abs(down.nTop) <= 1 && Math.abs(up.nTop - up.hBottom) <= 1, `/${path} mobile: department bar sits flush under the header, and at the top when the header hides (down ${down.nTop}px, up ${up.nTop}px vs header ${up.hBottom}px)`);
+    const links = await q.locator(`${bar} a`).evaluateAll((a) => a.map((x) => x.getAttribute('href')));
+    const hidden = [];
+    for (const href of links) {
+      await q.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); await q.waitForTimeout(300);
+      await q.locator(`${bar} a[href="${href}"]`).click(); await q.waitForTimeout(1600);
+      const r = await q.evaluate(([sel, id]) => { const h = document.querySelector(`${id} h2`).getBoundingClientRect(); const n = document.querySelector(sel).getBoundingClientRect(); const hd = document.querySelector('header.header').getBoundingClientRect(); return { headTop: h.top, covered: h.top < Math.max(n.bottom, hd.bottom) - 1, visible: h.bottom < innerHeight }; }, [bar, href]);
+      if (r.covered || !r.visible) hidden.push(`${href}@${Math.round(r.headTop)}`);
+    }
+    check(hidden.length === 0, `/${path} mobile: tapping each section link shows its heading below the bar (${links.length} links) ${hidden.join(' ')}`);
+    await q.close();
+  }
   await t.goto(BASE, { waitUntil: 'domcontentloaded' });
   check((await t.locator('header a[href="/team"], #mobile-menu a[href="/team"]').count()) >= 1 && (await t.locator('footer a[href="/team"]').count()) >= 1 && (await t.locator('#founder a[href="/team"], main a[href="/team"]').count()) >= 1, '/team linked from navigation, footer and the homepage founder section');
   await t.close();
