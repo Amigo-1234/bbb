@@ -4,31 +4,24 @@ import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Carousel from '../components/Carousel.astro';
 import Icon from '../components/Icon.astro';
-import ProgrammeFees from '../components/ProgrammeFees.astro';
-import InstalmentPlan from '../components/InstalmentPlan.astro';
-import TutorialPackage from '../components/TutorialPackage.astro';
-import FeePaths from '../components/FeePaths.astro';
 import Laurel from '../components/Laurel.astro';
 import Badge from '../components/Badge.astro';
-import OfficialDocs from '../components/OfficialDocs.astro';
 import { getImage } from 'astro:assets';
-import { audiences, directions, directionsCaptions, founder as founderInfo, mission, offers, routeCaption } from '../data/identity';
-import { docs } from '../data/documents';
-import { tutorialPackage } from '../data/fees';
-import { firstSemester } from '../data/timetable';
+import { directions, directionsCaptions, founder as founderInfo, mission, routeCaption } from '../data/identity';
+import { programmes, tutorialPackage } from '../data/fees';
+import AchieverCard from '../components/AchieverCard.astro';
+import TestimonialCard from '../components/TestimonialCard.astro';
+import { achievers } from '../data/achievements';
+import { testimonials } from '../data/testimonials';
 import poster from '../assets/official/directions-poster.jpg';
 import {
   admissionsByInstitution,
   address,
   calendar,
-  combinations,
   contacts,
   faqs,
   registration,
-  gradePoints,
-  guides,
   naira,
-  outcomes,
   primaryContact,
   site,
   whatsapp,
@@ -36,34 +29,20 @@ import {
 import founder from '../assets/photos/founder.png';
 import founderTeaching from '../assets/photos/founder-teaching.jpg';
 import centre from '../assets/photos/centre-entrance.jpg';
-import Ribbon from '../components/Ribbon.astro';
 import LifeGallery from '../components/LifeGallery.astro';
-import LessonVideos from '../components/LessonVideos.astro';
-import { bandPhoto, heroPhotos, lessonVideos, lifePhotos, modePhotos, tutorPhoto } from '../data/media';
+import { heroPhotos, lifePhotos, tutorPhoto } from '../data/media';
 import { gallery } from '../data/gallery';
 const galleryCount = { photos: gallery.filter((g) => g.kind === 'photo').length, videos: gallery.filter((g) => g.kind === 'video').length };
 
-const today = new Date().toISOString().slice(0, 10);
-const nextIndex = calendar.findIndex((c) => !c.unconfirmed && (c.end ?? c.start) >= today);
 const tz = { timeZone: 'Africa/Lagos' } as const;
 const d = (s: string) => new Date(s + 'T12:00:00Z');
-const day = (s: string) => d(s).toLocaleDateString('en-GB', { day: 'numeric', ...tz });
-const month = (s: string) => d(s).toLocaleDateString('en-GB', { month: 'short', ...tz });
 const full = (s: string) => d(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', ...tz });
 
 const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
 const posterImg = await getImage({ src: poster, format: 'webp', width: 464 });
 const fmtCap = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
-// "This week" preview, straight from the official first-semester timetable.
-const week = firstSemester.days.map((d) => ({
-  day: d.day,
-  name: d.name,
-  items: d.sessions.map((x) => x.title ?? x.subjects?.join(' · ') ?? ''),
-  span: (() => {
-    const t = d.sessions.filter((x) => x.time);
-    return t.length ? `${t[0].time!.split('–')[0].trim()} – ${t[t.length - 1].time!.split('–')[1].trim()}` : '';
-  })(),
-}));
+// Hall of Excellence band: consented achievers first (sorted in data/achievements.ts).
+const homeAchievers = achievers;
 ---
 
 <Base
@@ -81,13 +60,11 @@ const week = firstSemester.days.map((d) => ({
           Your direct route to <em>200&nbsp;Level.</em>
         </h1>
         <p class="lead hero__lead">
-          An {site.programmeLength.replace('months', 'month')} JUPEB programme for Science and Non-Science students —
-          taught in person in Lagos and online, with weekly tests, intensive tutorials and admission
-          guidance.
+          An {site.programmeLength.replace('months', 'month')} JUPEB programme for Science and Non-Science students — in class near UNILAG and online.
         </p>
         <div class="hero__ctas" data-cta-zone>
           <a class="btn" href="#apply" data-cta="home-hero-enquire">Enquire about JUPEB admission<Icon name="arrow-right" size={18} /></a>
-          <a class="btn btn--outline" href="#programme">Explore programmes</a>
+          <a class="btn btn--outline" href="#success" data-cta="home-hero-achievers"><Laurel size={18} class="hero__laurel" />See our AAA achievers</a>
         </div>
         <a class="hero__call" href={`tel:${primaryContact.phone}`} data-cta="home-hero-call">
           <span class="hero__call-icon"><Icon name="phone" size={18} /></span>
@@ -124,330 +101,123 @@ const week = firstSemester.days.map((d) => ({
       </div>
     </div>
 
-    <div class="wrap">
-      <dl class="facts">
-        <div>
-          <dt>Programme</dt>
-          <dd>{site.programmeLength}</dd>
-        </div>
-        <div>
-          <dt>Streams</dt>
-          <dd>Science · Non‑Science</dd>
-        </div>
-        <div>
-          <dt>Study mode</dt>
-          <dd>Physical &amp; online</dd>
-        </div>
-        <div>
-          <dt>Registration fee</dt>
-          <dd class="num">{naira(registration.amount)}<small>Non-refundable</small></dd>
-        </div>
-      </dl>
-    </div>
   </section>
 
-  <Ribbon />
-
-  <!-- 01 ABOUT BIA -->
-  <section class="about" id="about" aria-labelledby="about-title">
-    <Badge variant="mark" size={620} class="about__watermark" />
-    <div class="wrap about__grid">
-      <div class="about__intro">
-        <p class="about__label"><span class="num">01</span><span>About BIA</span></p>
-        <h2 id="about-title" class="about__title">This is BIA — <em>Boma’s Intellectual Academy.</em></h2>
-        <p class="about__lead">
-          BIA JUPEB is the JUPEB programme of Boma’s Intellectual Academy — {site.descriptor}. We prepare Science and
-          Non-Science students for the JUPEB examinations and Direct Entry into 200 Level, in class in Lagos and online.
-        </p>
-        <div class="about__ctas">
-          <a class="btn btn--white" href="#programme" data-cta="home-about-programme">Programme &amp; fees<Icon name="arrow-right" size={18} /></a>
-          <a class="btn btn--on-red" href="#founder" data-cta="home-about-founder">Meet the founder</a>
-        </div>
-      </div>
-      <div class="about__side">
-        <div class="about__block">
-          <h3 class="about__h">What BIA offers</h3>
-          <ul class="about__offers">
-            {offers.map((o) => <li><Icon name="check" size={18} />{o}</li>)}
-          </ul>
-        </div>
-        <div class="about__block">
-          <h3 class="about__h">Who it is for</h3>
-          <ol class="about__who">
-            {audiences.map((a, i) => (
-              <li>
-                <span class="about__n num">{String(i + 1).padStart(2, '0')}</span>
-                <span><strong>{a.title}</strong>{a.text}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 02 STUDENT SUCCESS -->
+  <!-- 01 HALL OF EXCELLENCE (main attraction) -->
   <section class="section section--ink honours" id="success" aria-labelledby="outcomes">
     <svg class="honours__mark" viewBox="0 0 400 400" aria-hidden="true" data-clip>
       <text x="200" y="330" text-anchor="middle">A</text>
     </svg>
     <div class="wrap">
-      <SectionHead index="02" eyebrow="Student success" title="Results our students have carried into university." id="outcomes" tone="ink">
-        <p>JUPEB grades and university places achieved by BIA JUPEB students, as recorded by BIA JUPEB.</p>
-      </SectionHead>
+      <header class="hall__head">
+        <Laurel class="hall__laurel" size={72} />
+        <p class="hall__eyebrow">BIA JUPEB Hall of Excellence</p>
+        <h2 id="outcomes" class="hall__title">16 Points <em>(AAA)</em> Achievers</h2>
+        <p class="hall__lead">Straight As in JUPEB — and straight into 200 Level. Meet the students who did it with BIA.</p>
+      </header>
 
-      <div class="honours__grid">
-        <aside class="congrats" aria-labelledby="congrats-title">
-          <Laurel class="congrats__laurel" size={120} />
-          <p class="congrats__kicker">With pride, from all of us at BIA JUPEB</p>
-          <h3 id="congrats-title" class="congrats__title">Congratulations</h3>
-          <p class="congrats__text">to every student who turned months of focused work into a university place.</p>
-          <div class="congrats__unis">
-            <p class="congrats__label">Admissions recorded at</p>
-            <ul>{admissionsByInstitution.map((a) => <li>{a.institution}</li>)}</ul>
-          </div>
-          <div class="congrats__ctas">
-            <a class="btn" href="/success-stories" data-cta="home-success-stories">Read success stories<Icon name="arrow-right" size={18} /></a>
-            <a class="btn btn--on-ink" href="#apply" data-cta="home-success-enquire">Enquire about admission</a>
-          </div>
-        </aside>
+      <Carousel label="BIA JUPEB AAA achievers" variant="cards" tone="ink" class="hall__carousel">
+        {homeAchievers.map((a) => <div data-slide class="hall__slide"><AchieverCard achiever={a} /></div>)}
+      </Carousel>
 
-        <div class="honours__slider">
-          <Carousel label="Student results" variant="pair" tone="ink">
-            {outcomes.filter((o) => o.grade).slice(0, 10).map((o) => (
-              <div data-slide class="result">
-                <p class="result__top">
-                  <span>Congratulations</span>
-                  {o.level && <span class="result__level">{o.level}</span>}
-                </p>
-                <p class="result__grade"><span class="sr-only">Grades {o.grade.split('').join(', ')}</span>{o.grade.split('').map((g) => <span aria-hidden="true">{g}</span>)}</p>
-                <p class="result__course">{o.course}</p>
-                <p class="result__inst">{o.institution ?? (o.consentVerified && o.name ? o.name : 'BIA JUPEB alumnus')}</p>
-              </div>
-            ))}
-          </Carousel>
-        </div>
-      </div>
-      <p class="honours__note">Names, photographs and testimonials are published only with each student’s written consent.</p>
-    </div>
-  </section>
-
-  <!-- 03 HOW JUPEB WORKS -->
-  <section class="section" aria-labelledby="how">
-    <div class="wrap">
-      <SectionHead index="03" eyebrow="How JUPEB works" title="One focused year between O-Level and 200 Level." id="how">
-        <p>
-          JUPEB — the Joint Universities Preliminary Examinations Board — runs a one-year, A-Level standard programme
-          recognised by Nigerian universities. Successful candidates use their results for Direct Entry admission into
-          200 Level.
-        </p>
-      </SectionHead>
-
-      <div class="journey">
-      <div class="route__rail" aria-hidden="true"><span class="route__fill"></span></div>
-      <ol class="route">
-        <li>
-          <span class="route__n num">01</span>
-          <h3>Register with BIA JUPEB</h3>
-          <p>Secure your place for the session and choose a subject combination that matches your intended course.</p>
-        </li>
-        <li>
-          <span class="route__n num">02</span>
-          <h3>Study for {site.programmeLength}</h3>
-          <p>Online and physical lectures, weekly tests, intensive tutorials and continuous assessment.</p>
-        </li>
-        <li>
-          <span class="route__n num">03</span>
-          <h3>Sit the JUPEB examinations</h3>
-          <p>Your grades convert to points. The higher your points, the stronger your admission chances.</p>
-        </li>
-        <li class="route__end">
-          <span class="route__n num">04</span>
-          <h3>Apply for Direct Entry</h3>
-          <p>We guide you through the Direct Entry window, timelines and documentation for 200 Level.</p>
-          <span class="route__dest">Destination · 200 Level</span>
-        </li>
-      </ol>
-      </div>
-
-      <div class="scale">
-        <p class="scale__title">JUPEB points scale</p>
-        <ul class="scale__list">
-          {gradePoints.map(([g, p]) => (
-            <li>
-              <span class="scale__g">{g}</span>
-              <span class="scale__bar" style={`--w:${p * 20}%`} aria-hidden="true"></span>
-              <span class="scale__p num">{p} {p === 1 ? 'point' : 'points'}</span>
-            </li>
-          ))}
+      <div class="hall__foot">
+        <ul class="hall__stats" role="list">
+          <li><strong class="num">{achievers.length}</strong> AAA results recorded</li>
+          {admissionsByInstitution.length > 0 && <li>Admissions recorded at {admissionsByInstitution.map((a) => a.institution).join(', ')}</li>}
         </ul>
+        <div class="hall__ctas">
+          <a class="btn btn--brass" href="/hall-of-excellence" data-cta="home-hall">Enter the Hall of Excellence<Icon name="arrow-right" size={18} /></a>
+          <a class="btn btn--on-ink" href="/success-stories" data-cta="home-success-stories">All results &amp; admissions</a>
+        </div>
       </div>
+      <p class="honours__note">Names and photographs appear only with each student’s written permission.</p>
     </div>
   </section>
 
-  <figure class="band" data-clip>
-    <Picture
-      src={bandPhoto.src}
-      formats={formats}
-      widths={[640, 1080, 1600, 2200]}
-      sizes="100vw"
-      alt={bandPhoto.alt}
-      style={bandPhoto.position ? `object-position:${bandPhoto.position}` : undefined}
-    />
-    <figcaption class="wrap"><span>{bandPhoto.caption}</span></figcaption>
-  </figure>
+  <!-- 02 TESTIMONIALS (shown only when consented testimonials exist) -->
+  {testimonials.length > 0 && (
+    <section class="section voices" id="testimonials" aria-labelledby="voices-title">
+      <div class="wrap">
+        <header class="voices__head">
+          <p class="eyebrow">In their own words</p>
+          <h2 id="voices-title" class="voices__title">What our students say.</h2>
+        </header>
+        <ul class="voices__grid" role="list" data-voices>
+          {testimonials.slice(0, 3).map((t) => <li><TestimonialCard t={t} /></li>)}
+        </ul>
+        <a class="link-arrow" href="/success-stories#voices" data-cta="home-testimonials-more">More success stories<Icon name="arrow-right" size={16} /></a>
+      </div>
+    </section>
+  )}
 
-  <!-- 04 PROGRAMME & FEES -->
-  <section class="section section--tint" id="programme" aria-labelledby="fees">
+  <!-- 03 ADMISSIONS ESSENTIALS -->
+  <section class="section section--tint ess" id="programme" aria-labelledby="ess-title">
     <div class="wrap">
-      <SectionHead index="04" eyebrow={`Programme & fees · ${site.session}`} title="Two ways to study with BIA. Clear, published fees." id="fees">
-        <p>
-          Join the full JUPEB admission programme, or take our physical tutorials only. Fees below are from BIA JUPEB’s
-          official 2026/27 payment advice. All payments are non-refundable.
-        </p>
-      </SectionHead>
+      <header class="ess__head">
+        <p class="eyebrow">Admissions · {site.session} session</p>
+        <h2 id="ess-title" class="ess__title">Everything you need to <em>start.</em></h2>
+        <p class="ess__lead">An {site.programmeLength.replace('months', 'month')} JUPEB programme for Science and Non-Science students — in class in Akoka, near UNILAG, and online — leading to Direct Entry into 200 Level.</p>
+      </header>
 
-      <FeePaths base="" cta="home" />
+      <ul class="ess__cards" role="list">
+        <li class="ess__card ess__card--red">
+          <p class="ess__k">Registration</p>
+          <p class="ess__v num" data-registration>{naira(registration.amount)}</p>
+          <p class="ess__s">Application form · non-refundable</p>
+        </li>
+        <li class="ess__card">
+          <p class="ess__k">Programme fees</p>
+          <p class="ess__v num">{naira(programmes.find((x) => x.id === 'science')!.total)}</p>
+          <p class="ess__s">Science total · Non-Science: ask admissions</p>
+          <a class="ess__link" href="/fees" data-cta="home-ess-fees">Full fees<Icon name="arrow-right" size={16} /></a>
+        </li>
+        <li class="ess__card" id="tutorials">
+          <p class="ess__k">Physical tutorials only</p>
+          <p class="ess__v num">{naira(tutorialPackage.monthly.amount)}<small>/month</small></p>
+          <p class="ess__s">or {naira(tutorialPackage.oneTime.amount)} one-time</p>
+          <a class="ess__link" href="/fees#tutorials" data-cta="home-ess-tutorials">Tutorial package<Icon name="arrow-right" size={16} /></a>
+        </li>
+        <li class="ess__card">
+          <p class="ess__k">How you study</p>
+          <p class="ess__v ess__v--text">Physical &amp; online</p>
+          <p class="ess__s">Lectures, weekly tests, marathon classes</p>
+          <a class="ess__link" href="/timetable" data-cta="home-ess-timetable">Class timetable<Icon name="arrow-right" size={16} /></a>
+        </li>
+      </ul>
 
-      <h3 class="path-title" id="programme-fees"><span class="path-badge">A</span>Full JUPEB admission programme</h3>
-      <ProgrammeFees level={4} />
-
-      <div class="fees-foot">
-        <InstalmentPlan />
-
-        <div class="combos">
-          <h3 class="combos__title">Popular subject combinations</h3>
-          <dl class="combos__list">
-            {combinations.map((c) => (
-              <div>
-                <dt>{c.course}</dt>
-                <dd>
-                  {c.subjects.map((s) => <span class="combos__chip">{s}</span>)}
-                </dd>
-              </div>
+      <div class="ess__grid">
+        <div class="ess__block">
+          <h3 class="ess__h">How it works</h3>
+          <ol class="ess__steps">
+            <li><strong>Register</strong> with BIA and choose your subject combination.</li>
+            <li><strong>Study</strong> for {site.programmeLength} — physical or online.</li>
+            <li><strong>Sit JUPEB</strong> and earn your grades.</li>
+            <li><strong>Apply for Direct Entry</strong> into 200 Level, with BIA’s guidance.</li>
+          </ol>
+        </div>
+        <div class="ess__block">
+          <h3 class="ess__h">To register you need</h3>
+          <ul class="ess__req">{registration.requirements.map((r) => <li><Icon name="check" size={18} />{r}</li>)}</ul>
+        </div>
+        <div class="ess__block" id="calendar">
+          <h3 class="ess__h">Key dates</h3>
+          <ul class="ess__dates">
+            {calendar.map((c) => (
+              <li>
+                <span class="ess__date num">{full(c.start)}{c.end ? ` – ${full(c.end)}` : ''}</span>
+                <span>{c.label}</span>
+              </li>
             ))}
-          </dl>
-        </div>
-      </div>
-      <div class="reqdocs">
-        <div class="req">
-          <h3 class="req__title">To register you need</h3>
-          <ul class="req__list">
-            {registration.requirements.map((r) => <li><Icon name="check" size={18} />{r}</li>)}
           </ul>
-          <p class="req__note">All payments are final and non-refundable. Registration and payment are handled by the admissions office — not online.</p>
         </div>
-        <div class="reqdocs__docs">
-          <h3 class="req__title">Official documents</h3>
-          <OfficialDocs docs={[docs.scienceRequirements, docs.scienceFees, docs.entranceExam]} label="Official BIA fee documents" size="sm" />
-        </div>
-      </div>
-
-      <p class="fees-more">
-        <a class="link-arrow" href="/fees" data-cta="home-fees-details">Requirements, payment terms &amp; full fee details<Icon name="arrow-right" size={16} /></a>
-      </p>
-
-      <div class="tutorials" id="tutorials">
-        <TutorialPackage />
       </div>
     </div>
   </section>
 
-  <!-- 05 WAYS TO STUDY & TIMETABLE -->
-  <section class="section" id="study-modes" aria-labelledby="study">
-    <div class="wrap">
-      <SectionHead index="05" eyebrow="Ways to study · Timetable" title="In class, online — or tutorials only." id="study">
-        <p>Choose how you learn. Every route follows BIA’s official {site.session} timetable.</p>
-      </SectionHead>
-
-      <div class="modes">
-        <article class="mode">
-          {modePhotos.physical && (
-            <figure class="mode__photo">
-              <Picture src={modePhotos.physical.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.physical.alt} style={modePhotos.physical.position ? `object-position:${modePhotos.physical.position}` : undefined} />
-            </figure>
-          )}
-          <span class="mode__icon"><Icon name="building" size={26} /></span>
-          <p class="mode__kicker">Physical classes</p>
-          <h3>Lectures, tests and private classes in Lagos</h3>
-          <p>Weekday lectures, Saturday tests and evening Special Private Classes. Self-study days run inside the MTN Library, UNILAG.</p>
-        </article>
-        <article class="mode">
-          {modePhotos.online && (
-            <figure class="mode__photo">
-              <Picture src={modePhotos.online.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.online.alt} style={modePhotos.online.position ? `object-position:${modePhotos.online.position}` : undefined} />
-            </figure>
-          )}
-          <span class="mode__icon"><Icon name="monitor" size={26} /></span>
-          <p class="mode__kicker">Online · Lecture Banks</p>
-          <h3>Recorded and live lessons</h3>
-          <p>For students who cannot attend physical classes. Free online tutorials began on Monday 5 October 2026.</p>
-        </article>
-        <article class="mode mode--ext">
-          {modePhotos.tutorials && (
-            <figure class="mode__photo">
-              <Picture src={modePhotos.tutorials.src} formats={formats} widths={[360, 640, 900]} sizes="(min-width: 840px) 30vw, 100vw" alt={modePhotos.tutorials.alt} style={modePhotos.tutorials.position ? `object-position:${modePhotos.tutorials.position}` : undefined} />
-            </figure>
-          )}
-          <span class="mode__icon"><Icon name="arrow-up-right" size={26} /></span>
-          <p class="mode__kicker">Tutorials only</p>
-          <h3>For students from other institutions</h3>
-          <p>Join BIA’s physical tutorials for {naira(tutorialPackage.oneTime.amount)} until the exam, or {naira(tutorialPackage.monthly.amount)} a month.</p>
-        </article>
-      </div>
-
-      <div class="week" aria-labelledby="week-title">
-        <div class="week__head">
-          <h3 id="week-title" class="week__title">A week at BIA · first semester</h3>
-          <a class="link-arrow" href="/timetable" data-cta="home-week-timetable">Full timetable, day by day<Icon name="arrow-right" size={16} /></a>
-        </div>
-        <ol class="week__list">
-          {week.map((w) => (
-            <li data-day={w.day}>
-              <span class="week__day"><abbr title={w.name}>{w.day}</abbr></span>
-              <span class="week__span num">{w.span}</span>
-              <span class="week__items">{w.items.join(' · ')}</span>
-            </li>
-          ))}
-        </ol>
-        <p class="week__note">Every third week: night classes before the Monthly Mock Examination, held at the end of every fourth week.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- 06 CALENDAR -->
-  <section class="section section--ink" aria-labelledby="calendar">
-    <div class="wrap">
-      <SectionHead index="06" eyebrow="Academic calendar" title={`The ${site.session} session.`} id="calendar" tone="ink">
-        <p>Key dates as published by BIA JUPEB.</p>
-      </SectionHead>
-
-      <ol class="timeline">
-        {calendar.map((c, i) => {
-          const state = c.unconfirmed ? 'tbc' : i === nextIndex ? 'next' : (c.end ?? c.start) < today ? 'past' : 'upcoming';
-          return (
-            <li class:list={['timeline__item', `is-${state}`]}>
-              <span class="timeline__date">
-                <span class="timeline__day num">{day(c.start)}</span>
-                <span class="timeline__month">{month(c.start)}</span>
-              </span>
-              <span class="timeline__body">
-                <span class="timeline__label">{c.label}</span>
-                <span class="timeline__range">{c.end ? `${full(c.start)} – ${full(c.end)}` : full(c.start)}</span>
-                {state === 'next' && <span class="timeline__tag">Next</span>}
-                {state === 'tbc' && <span class="timeline__tag timeline__tag--tbc">To be confirmed</span>}
-              </span>
-            </li>
-          );
-        })}
-      </ol>
-    </div>
-  </section>
-
-  <!-- 07 LIFE AT BIA -->
+  <!-- 04 LIFE AT BIA -->
   <section class="section section--tint gallery" id="life" aria-labelledby="inside">
     <div class="wrap">
-      <SectionHead index="07" eyebrow="Life at BIA" title="Real classes. Real tutors. Real work." id="inside">
+      <SectionHead index="03" eyebrow="Life at BIA" title="Real classes. Real tutors. Real work." id="inside">
         <p>A look inside Boma’s Intellectual Academy — tap any photograph to see it full size.</p>
       </SectionHead>
       <LifeGallery photos={lifePhotos} label="Photographs from BIA classes" />
@@ -459,19 +229,13 @@ const week = firstSemester.days.map((d) => ({
         </span>
         <span class="explore__arrow" aria-hidden="true"><Icon name="arrow-right" size={26} /></span>
       </a>
-      {lessonVideos.length > 0 && (
-        <div class="lessons">
-          <h3 class="lessons__title">Watch a lesson</h3>
-          <LessonVideos videos={lessonVideos} />
-        </div>
-      )}
     </div>
   </section>
 
-  <!-- 08 FOUNDER -->
+  <!-- 05 FOUNDER -->
   <section class="section fsec" id="founder" aria-labelledby="people">
     <div class="wrap">
-      <SectionHead index="08" eyebrow="Founder & leadership" title="Boma’s Intellectual Academy, led by its founder." id="people" />
+      <SectionHead index="04" eyebrow="Founder & leadership" title="Boma’s Intellectual Academy, led by its founder." id="people" />
 
       <div class="people">
         <figure class="founder" data-clip>
@@ -535,16 +299,17 @@ const week = firstSemester.days.map((d) => ({
               ))}
             </ul>
             <a class="team__more" href="/contact" data-cta="home-founder-contact">All staff contacts &amp; our two offices<Icon name="arrow-right" size={16} /></a>
+            <a class="team__more" href="/team" data-cta="home-founder-team">Meet our team<Icon name="arrow-right" size={16} /></a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 09 LOCATION -->
+  <!-- 06 LOCATION -->
   <section class="section loc" id="location" aria-labelledby="location-title">
     <div class="wrap">
-      <SectionHead index="09" eyebrow="Location & directions" title="Find us at 12 Ameen Street, Akoka." id="location-title" tone="ink">
+      <SectionHead index="05" eyebrow="Location & directions" title="Find us at 12 Ameen Street, Akoka." id="location-title" tone="ink">
         <p>Our tutorial centre is a short walk from the University of Lagos. Watch BIA’s own directions video, or follow the written steps.</p>
       </SectionHead>
 
@@ -563,6 +328,8 @@ const week = firstSemester.days.map((d) => ({
             <a class="btn btn--on-ink" href={address.mapsUrl} rel="noopener" target="_blank" data-cta="home-location-map"><Icon name="pin" size={18} />Open in Google Maps</a>
           </div>
 
+          <details class="loc__routes">
+            <summary>Written directions from UNILAG and Yaba</summary>
           <div class="routes">
             <div class="route-card">
               <h3>From the University of Lagos</h3>
@@ -578,6 +345,7 @@ const week = firstSemester.days.map((d) => ({
             </div>
           </div>
           <p class="loc__caption"><strong>Route shown on screen:</strong> {routeCaption}</p>
+          </details>
         </div>
 
         <div class="loc__media">
@@ -624,10 +392,10 @@ const week = firstSemester.days.map((d) => ({
     </div>
   </section>
 
-  <!-- 10 FAQ -->
+  <!-- 07 FAQ -->
   <section class="section section--tint" aria-labelledby="faq">
     <div class="wrap faq">
-      <SectionHead index="10" eyebrow="Questions" title="What applicants ask us most." id="faq" />
+      <SectionHead index="06" eyebrow="Questions" title="What applicants ask us most." id="faq" />
       <div class="faq__list">
         {faqs.map((f) => (
           <details class="faq__item">
@@ -639,24 +407,6 @@ const week = firstSemester.days.map((d) => ({
           </details>
         ))}
       </div>
-    </div>
-  </section>
-
-  <!-- 11 GUIDES -->
-  <section class="section" aria-labelledby="guides">
-    <div class="wrap">
-      <SectionHead index="11" eyebrow="Guides" title="Read before you register." id="guides" />
-      <ul class="guides">
-        {guides.map((g, i) => (
-          <li>
-            <a href={g.href}>
-              <span class="guides__n num">{String(i + 1).padStart(2, '0')}</span>
-              <span class="guides__t">{g.title}</span>
-              <Icon name="arrow-up-right" size={20} class="guides__arrow" />
-            </a>
-          </li>
-        ))}
-      </ul>
     </div>
   </section>
 
@@ -730,10 +480,11 @@ const week = firstSemester.days.map((d) => ({
   .hero__copy {
     position: relative;
     display: grid;
-    gap: var(--s-5);
+    gap: var(--s-4);
+    padding-bottom: var(--s-6);
   }
   .hero__title {
-    font-size: var(--step-5);
+    font-size: clamp(2.6rem, 1.8rem + 4vw, 5rem);
     font-weight: 380;
     line-height: 0.98;
     letter-spacing: -0.03em;
@@ -840,8 +591,8 @@ const week = firstSemester.days.map((d) => ({
       border-radius: 0;
     }
     .hero__slide :global(img) {
-      aspect-ratio: 1 / 1;
-      max-height: 60vh;
+      aspect-ratio: 4 / 3;
+      max-height: 40vh;
     }
     .hero__slide figcaption {
       left: var(--gutter);
@@ -872,7 +623,7 @@ const week = firstSemester.days.map((d) => ({
   }
   @media (max-width: 959px) and (max-height: 700px) {
     .hero__slide :global(img) {
-      max-height: 42vh;
+      max-height: 32vh;
     }
   }
 
@@ -903,8 +654,8 @@ const week = firstSemester.days.map((d) => ({
       padding-left: 26%;
     }
     .hero__slide :global(img) {
-      aspect-ratio: 6 / 5;
-      max-height: min(78vh, 760px);
+      aspect-ratio: 5 / 4;
+      max-height: min(66vh, 620px);
     }
     .hero__slide figcaption {
       right: max(var(--gutter), (100vw - var(--max)) / 2);
@@ -968,6 +719,279 @@ const week = firstSemester.days.map((d) => ({
     .facts > div:last-child {
       border-right: 0;
     }
+  }
+
+
+  /* ---------- Hall of Excellence band (homepage main attraction) ---------- */
+  .honours {
+    padding-block: var(--s-8) var(--s-8);
+  }
+  .hall__head {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    gap: var(--s-2);
+    text-align: center;
+    margin-bottom: var(--s-6);
+  }
+  .hall__head :global(.hall__laurel) {
+    color: var(--brass-light);
+  }
+  .hall__eyebrow {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--brass-light);
+  }
+  .hall__title {
+    font-size: var(--step-4);
+    font-weight: 380;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+  .hall__title em {
+    color: var(--brass-light);
+  }
+  .hall__lead {
+    max-width: 38ch;
+    color: var(--on-ink-muted);
+  }
+  /* Achiever carousel (V2 Carousel, "cards" variant): bleeds to the screen edge on phones */
+  .hall__head + :global(.hall__carousel) {
+    margin-top: var(--s-2);
+  }
+  .hall__slide {
+    display: flex;
+  }
+  .hall__slide > :global(*) {
+    flex: 1;
+  }
+  :global(.hall__carousel .carousel__btn) {
+    border-color: rgb(214 182 121 / 0.45);
+    color: #fff;
+  }
+  :global(.hall__carousel .carousel__btn:not(:disabled):hover) {
+    background: var(--brass-light);
+    border-color: var(--brass-light);
+    color: var(--ink);
+  }
+  .hall__foot {
+    display: grid;
+    gap: var(--s-5);
+    margin-top: var(--s-5);
+  }
+  .hall__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hall__stats li {
+    padding: 6px 14px;
+    border: 1px solid rgb(214 182 121 / 0.35);
+    border-radius: 999px;
+    font-size: 0.9rem;
+  }
+  .hall__stats strong {
+    color: var(--brass-light);
+  }
+  .hall__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .hall__ctas .btn {
+    white-space: normal;
+  }
+  .btn--brass {
+    background: var(--brass-light);
+    border-color: var(--brass-light);
+    color: var(--ink);
+  }
+  .btn--brass:hover {
+    background: #fff;
+    border-color: #fff;
+    color: var(--ink);
+  }
+  @media (min-width: 960px) {
+    .hall__foot {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+    }
+  }
+
+  /* ---------- Testimonials ---------- */
+  .voices {
+    padding-block: var(--s-8);
+  }
+  .voices__head {
+    margin-bottom: var(--s-5);
+  }
+  .voices__title {
+    font-size: var(--step-3);
+  }
+  .voices__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 290px), 1fr));
+    gap: var(--s-4);
+    margin: 0 0 var(--s-5);
+    padding: 0;
+    list-style: none;
+  }
+
+  /* ---------- Admissions essentials ---------- */
+  .ess {
+    padding-block: var(--s-8);
+  }
+  .ess__head {
+    display: grid;
+    gap: var(--s-3);
+    margin-bottom: var(--s-6);
+  }
+  .ess__title {
+    font-size: var(--step-3);
+  }
+  .ess__title em {
+    color: var(--crimson);
+  }
+  .ess__lead {
+    max-width: 60ch;
+    color: var(--muted);
+  }
+  .ess__cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ess__card {
+    display: grid;
+    align-content: start;
+    gap: 4px;
+    padding: var(--s-4);
+    border-radius: var(--radius);
+    background: var(--paper);
+    border: 1px solid var(--line);
+    scroll-margin-top: calc(var(--header-h, 64px) + 16px);
+  }
+  .ess__card--red {
+    background: var(--bia-red);
+    border-color: var(--bia-red);
+    color: #fff;
+  }
+  .ess__card--red .ess__k,
+  .ess__card--red .ess__s {
+    color: var(--on-red-muted);
+  }
+  .ess__k {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .ess__v {
+    font-family: var(--serif);
+    font-size: clamp(1.45rem, 1.2rem + 1vw, 2rem);
+    line-height: 1.1;
+  }
+  .ess__v small {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .ess__v--text {
+    font-size: clamp(1.2rem, 1rem + 0.8vw, 1.6rem);
+  }
+  .ess__s {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .ess__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: auto;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .ess__grid {
+    display: grid;
+    gap: var(--s-5);
+    margin-top: var(--s-6);
+  }
+  .ess__block {
+    scroll-margin-top: calc(var(--header-h, 64px) + 16px);
+  }
+  .ess__h {
+    font-size: var(--step-1);
+    margin-bottom: var(--s-3);
+  }
+  .ess__steps {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding-left: 1.3em;
+  }
+  .ess__req {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ess__req li {
+    display: flex;
+    gap: var(--s-2);
+  }
+  .ess__req :global(svg) {
+    flex: none;
+    margin-top: 3px;
+    color: var(--crimson);
+  }
+  .ess__dates {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ess__dates li {
+    display: grid;
+    padding-left: var(--s-3);
+    border-left: 3px solid var(--crimson);
+  }
+  .ess__date {
+    font-weight: 800;
+  }
+  @media (min-width: 840px) {
+    .ess__cards {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .ess__grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--s-7);
+    }
+  }
+
+  /* Location: written routes collapse behind the video */
+  .loc__routes summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: var(--s-4);
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .hero__ctas :global(.hero__laurel) {
+    color: var(--brass);
   }
 
   /* ---------- Honours ---------- */
@@ -1134,429 +1158,6 @@ const week = firstSemester.days.map((d) => ({
     color: var(--on-ink-muted);
   }
 
-  /* ---------- Route (how it works) ---------- */
-  .journey {
-    position: relative;
-  }
-  .route__rail {
-    display: none;
-    position: absolute;
-    z-index: 1;
-    left: -1px;
-    top: 7px;
-    width: 2px;
-    pointer-events: none;
-  }
-  .journey.is-live .route__rail {
-    display: block;
-  }
-  .route__fill {
-    display: block;
-    width: 100%;
-    height: 100%;
-    background: var(--crimson);
-    transform-origin: top;
-    transform: scaleY(0);
-  }
-  .route li::before {
-    z-index: 2;
-    transition: background-color 0.3s var(--ease), border-color 0.3s var(--ease), transform 0.4s var(--ease);
-  }
-  .journey.is-live .route li > :not(.route__n) {
-    transition: opacity 0.4s var(--ease);
-  }
-  .journey.is-live .route li:not(.is-active) h3,
-  .journey.is-live .route li:not(.is-active) p {
-    opacity: 0.45;
-  }
-  .journey.is-live .route li.is-active::before {
-    background: var(--crimson);
-    border-color: var(--crimson);
-    transform: scale(1.15);
-  }
-  .journey.is-live .route li.route__end:not(.is-active)::before {
-    background: var(--paper);
-    border-color: var(--ink);
-    box-shadow: none;
-  }
-  @media (min-width: 900px) {
-    .journey.is-live .route li.route__end:not(.is-active) {
-      border-top: 1px dashed var(--line-strong);
-    }
-  }
-  .journey.is-live .route li.route__end:not(.is-active) .route__dest {
-    background: var(--line-strong);
-    color: var(--ink-2);
-  }
-  .route__dest {
-    transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
-  }
-  .journey.is-live .route li.route__end.is-active::before {
-    animation: route-pulse 1.5s var(--ease) 3;
-  }
-  @keyframes route-pulse {
-    0% {
-      box-shadow: 0 0 0 5px var(--crimson-wash), 0 0 0 5px rgb(163 22 43 / 0.4);
-    }
-    100% {
-      box-shadow: 0 0 0 5px var(--crimson-wash), 0 0 0 22px rgb(163 22 43 / 0);
-    }
-  }
-  .route__dest {
-    justify-self: start;
-    margin-top: var(--s-2);
-    padding: 0.3em 0.75em;
-    border-radius: 999px;
-    background: var(--crimson);
-    color: #fff;
-    font-size: 0.75rem;
-    font-weight: 800;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-  .route {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-  }
-  .route li {
-    position: relative;
-    display: grid;
-    gap: var(--s-2);
-    padding: 0 0 var(--s-6) var(--s-6);
-    border-left: 1px dashed var(--line-strong);
-  }
-  .route li::before {
-    content: '';
-    position: absolute;
-    left: -6px;
-    top: 2px;
-    width: 11px;
-    height: 11px;
-    border-radius: 999px;
-    background: var(--paper);
-    border: 1.5px solid var(--ink);
-  }
-  .route li.route__end {
-    border-left-color: transparent;
-    padding-bottom: 0;
-  }
-  .route li.route__end::before {
-    background: var(--crimson);
-    border-color: var(--crimson);
-    box-shadow: 0 0 0 5px var(--crimson-wash);
-  }
-  .route__n {
-    font-size: var(--step--1);
-    font-weight: 800;
-    color: var(--crimson);
-  }
-  .route h3 {
-    font-size: var(--step-1);
-  }
-  .route p {
-    color: var(--ink-2);
-    max-width: 36ch;
-  }
-  @media (min-width: 900px) {
-    .route {
-      grid-template-columns: repeat(4, 1fr);
-      gap: var(--s-5);
-    }
-    .route li {
-      padding: var(--s-6) 0 0;
-      border-left: 0;
-      border-top: 1px dashed var(--line-strong);
-    }
-    .route li::before {
-      left: 0;
-      top: -6px;
-    }
-    .route li.route__end {
-      border-top: 1px solid var(--crimson);
-    }
-    .route__rail {
-      left: 0;
-      right: 0;
-      top: -1px;
-      width: auto;
-      height: 2px;
-    }
-    .route__fill {
-      transform-origin: left;
-      transform: scaleX(0);
-    }
-  }
-
-  .scale {
-    display: grid;
-    gap: var(--s-4);
-    margin-top: var(--s-8);
-    padding-top: var(--s-5);
-    border-top: 1px solid var(--ink);
-  }
-  .scale__title {
-    font-size: var(--step--1);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .scale__list {
-    display: grid;
-    gap: var(--s-2);
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .scale__list li {
-    display: grid;
-    grid-template-columns: 2rem 1fr 5.5rem;
-    align-items: center;
-    gap: var(--s-3);
-  }
-  .scale__g {
-    font-family: var(--serif);
-    font-size: var(--step-2);
-    line-height: 1;
-  }
-  .scale__bar {
-    height: 6px;
-    border-radius: 999px;
-    background: linear-gradient(var(--crimson), var(--crimson)) left / var(--w) 100% no-repeat, var(--line);
-  }
-  .scale__p {
-    font-size: var(--step--1);
-    color: var(--muted);
-    text-align: right;
-  }
-  @media (min-width: 900px) {
-    .scale {
-      grid-template-columns: 14rem 1fr;
-      align-items: start;
-    }
-    .scale__list {
-      grid-template-columns: repeat(5, 1fr);
-      gap: var(--s-5);
-    }
-    .scale__list li {
-      grid-template-columns: auto 1fr;
-      grid-template-rows: auto auto;
-      row-gap: var(--s-2);
-    }
-    .scale__bar {
-      grid-column: 1 / -1;
-      grid-row: 2;
-    }
-    .scale__p {
-      text-align: left;
-    }
-  }
-
-  /* ---------- Fees ---------- */
-  .path-badge {
-    flex: none;
-    display: inline-grid;
-    place-items: center;
-    width: 2.2rem;
-    height: 2.2rem;
-    border-radius: 50%;
-    background: var(--crimson);
-    color: #fff;
-    font-family: var(--serif);
-    font-size: 1.1rem;
-  }
-  .path-title {
-    display: flex;
-    align-items: center;
-    gap: var(--s-3);
-    margin-bottom: var(--s-4);
-    font-size: var(--step-2);
-    scroll-margin-top: calc(var(--header-h) + var(--s-5));
-  }
-  .fees-more {
-    margin-top: var(--s-6);
-  }
-  .tutorials {
-    margin-top: var(--s-8);
-    scroll-margin-top: calc(var(--header-h) + var(--s-5));
-  }
-  .fees-foot {
-    display: grid;
-    gap: var(--s-7);
-    margin-top: var(--s-7);
-  }
-  .combos__title {
-    font-size: var(--step-2);
-    margin-bottom: var(--s-4);
-  }
-  .combos__list {
-    display: grid;
-    margin: 0;
-    border-top: 1px solid var(--line-strong);
-  }
-  .combos__list > div {
-    display: grid;
-    gap: var(--s-2);
-    padding: var(--s-4) 0;
-    border-bottom: 1px solid var(--line-strong);
-  }
-  .combos__list dt {
-    font-weight: 800;
-  }
-  .combos__list dd {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-2);
-    margin: 0;
-  }
-  .combos__chip {
-    padding: 0.25em 0.7em;
-    border: 1px solid var(--line-strong);
-    border-radius: 999px;
-    background: var(--paper);
-    font-size: var(--step--1);
-    font-weight: 600;
-  }
-  @media (min-width: 960px) {
-    .fees-foot {
-      grid-template-columns: 5fr 7fr;
-      gap: var(--s-8);
-    }
-  }
-
-  /* ---------- Timeline ---------- */
-  .timeline {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-  }
-  .timeline__item {
-    display: grid;
-    grid-template-columns: 4.5rem 1fr;
-    gap: var(--s-4);
-    padding: var(--s-5) 0;
-    border-top: 1px solid rgb(255 255 255 / 0.14);
-  }
-  .timeline__date {
-    display: grid;
-    line-height: 1;
-  }
-  .timeline__day {
-    font-family: var(--serif);
-    font-size: var(--step-3);
-  }
-  .timeline__month {
-    margin-top: var(--s-1);
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--on-ink-muted);
-  }
-  .timeline__body {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--s-1) var(--s-3);
-  }
-  .timeline__label {
-    flex-basis: 100%;
-    font-family: var(--serif);
-    font-size: var(--step-1);
-  }
-  .timeline__range {
-    font-size: var(--step--1);
-    color: var(--on-ink-muted);
-  }
-  .timeline__tag {
-    padding: 0.15em 0.6em;
-    border-radius: 999px;
-    background: var(--crimson);
-    color: #fff;
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-  }
-  .timeline__tag--tbc {
-    background: transparent;
-    border: 1px solid rgb(255 255 255 / 0.35);
-    color: var(--on-ink-muted);
-  }
-  .is-past .timeline__day,
-  .is-past .timeline__label {
-    color: var(--on-ink-muted);
-  }
-  .is-next .timeline__day {
-    color: #f0b7bf;
-  }
-  @media (min-width: 960px) {
-    .timeline {
-      grid-template-columns: repeat(5, 1fr);
-      gap: var(--s-5);
-    }
-    .timeline__item {
-      grid-template-columns: 1fr;
-      align-content: start;
-      border-top-width: 2px;
-    }
-    .is-next {
-      border-top-color: var(--crimson);
-    }
-  }
-
-  /* ---------- Modes ---------- */
-  .modes {
-    display: grid;
-    gap: var(--s-6);
-  }
-  .mode {
-    display: grid;
-    gap: var(--s-3);
-    align-content: start;
-    padding-top: var(--s-5);
-    border-top: 2px solid var(--ink);
-  }
-  .mode__icon {
-    display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    border-radius: 999px;
-    background: var(--crimson-wash);
-    color: var(--crimson);
-  }
-  .mode h3 {
-    font-size: var(--step-2);
-  }
-  .mode p:not(.mode__kicker) {
-    color: var(--ink-2);
-    max-width: 36ch;
-  }
-  .mode__kicker {
-    font-size: var(--step--1);
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--crimson);
-  }
-  .mode--ext {
-    border-top-color: var(--bia-red);
-  }
-  .mode--ext .mode__icon {
-    background: var(--bia-red);
-    color: #fff;
-  }
-  @media (min-width: 840px) {
-    .modes {
-      grid-template-columns: repeat(3, 1fr);
-      gap: var(--s-6);
-    }
-  }
-
   /* ---------- Phase 6 photography ---------- */
   .band {
     position: relative;
@@ -1659,76 +1260,6 @@ const week = firstSemester.days.map((d) => ({
   }
   .moment--tutor {
     margin-top: calc(-1 * var(--s-4));
-  }
-
-  /* ---------- Week preview ---------- */
-  .week {
-    margin-top: var(--s-8);
-    padding: var(--s-5);
-    background: var(--ink);
-    color: var(--on-ink);
-    border-radius: var(--radius);
-  }
-  .week__head {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--s-3);
-    margin-bottom: var(--s-4);
-  }
-  .week__head .link-arrow {
-    color: #ffb3b3;
-  }
-  .week__title {
-    font-size: var(--step-2);
-    color: #fff;
-  }
-  .week__list {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    border-top: 1px solid rgb(255 255 255 / 0.18);
-  }
-  .week__list li {
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    gap: 2px var(--s-4);
-    padding: var(--s-3) 0;
-    border-bottom: 1px solid rgb(255 255 255 / 0.12);
-  }
-  .week__day abbr {
-    font-family: var(--serif);
-    font-size: var(--step-1);
-    text-decoration: none;
-    color: #fff;
-  }
-  .week__span {
-    font-size: var(--step--1);
-    font-weight: 800;
-    color: #ffb3b3;
-  }
-  .week__items {
-    grid-column: 2;
-    color: var(--on-ink);
-    font-size: var(--step--1);
-  }
-  .week__note {
-    margin-top: var(--s-4);
-    font-size: var(--step--1);
-    color: var(--on-ink-muted);
-  }
-  @media (min-width: 840px) {
-    .week {
-      padding: var(--s-6) var(--s-7);
-    }
-    .week__list li {
-      grid-template-columns: 4rem 11rem 1fr;
-      align-items: baseline;
-    }
-    .week__items {
-      grid-column: auto;
-    }
   }
 
   /* ---------- Gallery ---------- */
@@ -1991,45 +1522,6 @@ const week = firstSemester.days.map((d) => ({
     }
   }
 
-  /* ---------- Guides ---------- */
-  .guides {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: 1px solid var(--ink);
-  }
-  .guides a {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr auto;
-    align-items: baseline;
-    gap: var(--s-3);
-    padding: var(--s-5) 0;
-    border-bottom: 1px solid var(--line-strong);
-    text-decoration: none;
-  }
-  .guides__n {
-    font-size: var(--step--1);
-    font-weight: 800;
-    color: var(--crimson);
-  }
-  .guides__t {
-    font-family: var(--serif);
-    font-size: var(--step-2);
-    line-height: 1.2;
-  }
-  .guides a :global(.guides__arrow) {
-    align-self: center;
-    color: var(--muted);
-    transition: transform 0.18s var(--ease), color 0.18s var(--ease);
-  }
-  .guides a:hover .guides__t,
-  .guides a:hover :global(.guides__arrow) {
-    color: var(--crimson);
-  }
-  .guides a:hover :global(.guides__arrow) {
-    transform: translate(3px, -3px);
-  }
-
   /* ---------- Apply ---------- */
   .apply {
     position: relative;
@@ -2123,167 +1615,6 @@ const week = firstSemester.days.map((d) => ({
     .apply__grid {
       grid-template-columns: 7fr 4fr;
       gap: var(--s-9);
-    }
-  }
-
-  /* ---------- About BIA (red) ---------- */
-  .about {
-    position: relative;
-    overflow: hidden;
-    padding-block: var(--section);
-    background: var(--bia-red);
-    color: var(--on-red);
-  }
-  .about :global(.about__watermark) {
-    position: absolute;
-    right: -160px;
-    top: -60px;
-    width: 620px;
-    height: auto;
-    color: #fff;
-    opacity: 0.07;
-    pointer-events: none;
-  }
-  .about__grid {
-    position: relative;
-    display: grid;
-    gap: var(--s-8);
-  }
-  .about__intro {
-    display: grid;
-    gap: var(--s-5);
-    align-content: start;
-  }
-  .about__label {
-    display: flex;
-    gap: var(--s-3);
-    padding-top: var(--s-4);
-    border-top: 1px solid rgb(255 255 255 / 0.45);
-    font-size: var(--step--1);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--on-red-muted);
-  }
-  .about__title {
-    font-size: var(--step-4);
-    font-weight: 380;
-    line-height: 1;
-    letter-spacing: -0.025em;
-    color: #fff;
-  }
-  .about__title em {
-    display: block;
-  }
-  .about__lead {
-    max-width: 48ch;
-    font-size: var(--step-1);
-    line-height: 1.5;
-    color: var(--on-red-muted);
-  }
-  .about__ctas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--s-3);
-  }
-  .about__side {
-    display: grid;
-    gap: var(--s-6);
-    align-content: start;
-  }
-  .about__block {
-    padding: var(--s-5);
-    background: rgb(0 0 0 / 0.16);
-    border-radius: var(--radius);
-  }
-  .about__h {
-    margin-bottom: var(--s-3);
-    font-size: var(--step-1);
-    color: #fff;
-  }
-  .about__offers {
-    display: grid;
-    gap: var(--s-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .about__offers li {
-    display: flex;
-    gap: var(--s-2);
-  }
-  .about__offers :global(svg) {
-    flex: none;
-    margin-top: 0.2em;
-  }
-  .about__who {
-    display: grid;
-    gap: var(--s-4);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .about__who li {
-    display: grid;
-    grid-template-columns: 2.2rem 1fr;
-  }
-  .about__who strong {
-    display: block;
-    color: #fff;
-  }
-  .about__who li > span:last-child {
-    color: var(--on-red-muted);
-  }
-  .about__n {
-    font-weight: 800;
-    color: #fff;
-  }
-  @media (min-width: 960px) {
-    .about__grid {
-      grid-template-columns: 6fr 5fr;
-      gap: var(--s-9);
-    }
-  }
-
-  /* ---------- Requirements & documents ---------- */
-  .reqdocs {
-    display: grid;
-    gap: var(--s-7);
-    margin-top: var(--s-7);
-    padding-top: var(--s-7);
-    border-top: 1px solid var(--line-strong);
-  }
-  .req__title {
-    margin-bottom: var(--s-4);
-    font-size: var(--step-2);
-  }
-  .req__list {
-    display: grid;
-    gap: var(--s-2);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .req__list li {
-    display: flex;
-    gap: var(--s-2);
-    padding: var(--s-2) 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .req__list :global(svg) {
-    flex: none;
-    margin-top: 0.2em;
-    color: var(--bia-red);
-  }
-  .req__note {
-    margin-top: var(--s-4);
-    font-size: var(--step--1);
-    color: var(--ink-2);
-  }
-  @media (min-width: 960px) {
-    .reqdocs {
-      grid-template-columns: 4fr 7fr;
-      gap: var(--s-8);
     }
   }
 

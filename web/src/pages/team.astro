@@ -1,0 +1,287 @@
+---
+import Base from '../layouts/Base.astro';
+import Badge from '../components/Badge.astro';
+import Icon from '../components/Icon.astro';
+import { departments, initials, team } from '../data/team';
+import { primaryContact } from '../data/site';
+
+const groups = departments.map((d) => ({ ...d, people: team.filter((p) => p.department === d.id) })).filter((g) => g.people.length);
+---
+
+<Base
+  title="Meet Our Team — Staff & Management | BIA JUPEB, Boma's Intellectual Academy"
+  description="The people behind BIA JUPEB: management, administration, tutors, student affairs and the brand team at Boma's Intellectual Academy, with each role's responsibilities."
+>
+  <section class="th" aria-labelledby="th-title">
+    <Badge variant="mark" size={560} class="th__mark" />
+    <div class="wrap th__inner">
+      <p class="th__eyebrow">Our team · Boma’s Intellectual Academy</p>
+      <h1 id="th-title" class="th__title">Meet the people <em>behind BIA.</em></h1>
+      <p class="th__lead">Led by our founder, Hon. Boma, the BIA team runs admissions, teaching and student support. Open any profile to read that role’s responsibilities.</p>
+      <p class="th__count num">{team.length} team members · {groups.length} departments</p>
+    </div>
+  </section>
+
+  <nav class="tnav" aria-label="Departments">
+    <div class="wrap">
+      <ul class="tnav__list" role="list">
+        {groups.map((g) => <li><a href={`#${g.id}`}>{g.label}</a></li>)}
+      </ul>
+    </div>
+  </nav>
+
+  {groups.map((g) => (
+    <section class="tdept" id={g.id} aria-labelledby={`${g.id}-title`}>
+      <div class="wrap">
+        <h2 id={`${g.id}-title`} class="tdept__title">{g.label} <span class="num">{g.people.length}</span></h2>
+        <ul class="tgrid" role="list">
+          {g.people.map((p) => (
+            <li class="tcard" id={p.id} data-member={p.id}>
+              <div class="tcard__head">
+                <span class="tcard__avatar" aria-hidden="true">{initials(p.name)}</span>
+                <div>
+                  <h3 class="tcard__name">{p.name}</h3>
+                  <p class="tcard__title">{p.title}</p>
+                </div>
+              </div>
+              {p.summary && <p class="tcard__summary">{p.summary}</p>}
+              <details class="tcard__more">
+                <summary>Responsibilities <span class="tcard__n num">{p.sections.reduce((n, s) => n + s.items.length, 0)}</span></summary>
+                {p.sections.map((s) => (
+                  <div class="tcard__sec">
+                    <h4>{s.heading}</h4>
+                    <ul>{s.items.map((i) => <li>{i}</li>)}</ul>
+                  </div>
+                ))}
+              </details>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <section class="tcta" aria-labelledby="tcta-title" data-cta-zone>
+    <div class="wrap tcta__inner">
+      <h2 id="tcta-title" class="tcta__title">Need to reach us?</h2>
+      <div class="tcta__ctas">
+        <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="team-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+        <a class="btn btn--on-red" href="/contact" data-cta="team-contact">Contact &amp; offices<Icon name="arrow-right" size={18} /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .th {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--s-8) var(--s-7);
+    background: var(--bia-red);
+    color: var(--on-red);
+  }
+  .th :global(.th__mark) {
+    position: absolute;
+    right: -140px;
+    top: -80px;
+    width: 560px;
+    height: auto;
+    color: #fff;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .th__inner {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .th__eyebrow {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-red-muted);
+  }
+  .th__title {
+    font-size: var(--step-5);
+    font-weight: 380;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .th__lead {
+    max-width: 48ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--on-red-muted);
+  }
+  .th__count {
+    font-weight: 800;
+    color: #fff;
+  }
+  .tnav {
+    position: sticky;
+    top: var(--header-h, 64px);
+    z-index: 20;
+    transition: top 0.4s var(--ease);
+    background: color-mix(in srgb, var(--paper) 94%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  :global(body:has(.header[data-hidden]:not(:focus-within))) .tnav {
+    top: 0;
+  }
+  .tnav__list {
+    display: flex;
+    gap: var(--s-2);
+    margin: 0;
+    padding: var(--s-3) 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tnav__list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    white-space: nowrap;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .tnav__list a:hover,
+  .tnav__list a:focus-visible {
+    background: var(--ink);
+    color: #fff;
+  }
+  .tdept {
+    padding-block: var(--s-7);
+    scroll-margin-top: 84px;
+  }
+  .tdept:nth-of-type(even) {
+    background: var(--surface);
+  }
+  .tdept__title {
+    margin-bottom: var(--s-5);
+    font-size: var(--step-3);
+    font-weight: 400;
+  }
+  .tdept__title span {
+    font-family: var(--sans);
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--crimson);
+    vertical-align: middle;
+  }
+  .tgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+    gap: var(--s-4);
+    align-items: start;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .tcard {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--bia-red);
+    border-radius: var(--radius);
+    background: var(--paper);
+    scroll-margin-top: 92px;
+  }
+  .tcard__head {
+    display: flex;
+    gap: var(--s-4);
+    align-items: center;
+  }
+  .tcard__avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(150deg, var(--bia-red), var(--bia-red-deep));
+    box-shadow: inset 0 0 0 2px rgb(214 182 121 / 0.6);
+    color: #fff;
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+  }
+  .tcard__name {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    font-weight: 400;
+    line-height: 1.2;
+  }
+  .tcard__title {
+    margin-top: 2px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--crimson);
+  }
+  .tcard__summary {
+    color: var(--muted);
+  }
+  .tcard__more summary {
+    display: flex;
+    align-items: center;
+    gap: var(--s-2);
+    min-height: 44px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .tcard__n {
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--crimson-wash);
+    color: var(--crimson);
+    font-size: 0.8rem;
+  }
+  .tcard__sec {
+    margin-top: var(--s-3);
+  }
+  .tcard__sec h4 {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tcard__sec ul {
+    display: grid;
+    gap: 6px;
+    margin: var(--s-2) 0 0;
+    padding-left: 1.1em;
+  }
+  .tcta {
+    padding-block: var(--s-8);
+    background: var(--bia-red);
+    color: var(--on-red);
+  }
+  .tcta__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-5);
+  }
+  .tcta__title {
+    font-size: var(--step-3);
+    color: #fff;
+  }
+  .tcta__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .tcta__ctas .btn {
+    white-space: normal;
+  }
+</style>

@@ -1,0 +1,4 @@
+{
+  "$comment": "Student testimonials (their own words). Published ONLY when consent.status is 'granted' and consent.allow includes 'quote'. The name is shown only if 'name' is allowed, the photo only if 'photo' is allowed (file in src/assets/testimonials/). Never paste quotes from screenshots without the student's consent. See docs/content-updates.md.",
+  "records": []
+}

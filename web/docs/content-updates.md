@@ -39,6 +39,8 @@ the automated tests fail if any unconsented name reaches the website.
   "university": "University of Lagos",
   "level": "200 Level",
   "year": 2026,
+  "session": "2025/2026",
+  "points": null,
   "category": "law",
   "featured": false,
   "image": "originals/2026-unilag-law-firstname-lastname.jpg",
@@ -51,6 +53,8 @@ the automated tests fail if any unconsented name reaches the website.
 }
 ```
 
+`session` and `points` are optional — older records without them still work.
+
 Field notes:
 
 - `kind`: `student-portrait`, `group-portrait`, `award-ceremony-photo` or
@@ -60,6 +64,12 @@ Field notes:
 - `category`: `medicine`, `law`, `science`, `business` or `arts` (drives the
   filters on /success-stories).
 - `featured: true` puts the result in the featured panels.
+- `session`: the academic session exactly as Boma gives it, e.g. `"2025/2026"`.
+  **Every `AAA` record appears automatically in the BIA JUPEB Hall of Excellence**
+  (`/hall-of-excellence` and the homepage band), grouped by session, newest first.
+  Records without a session are listed under "Session being confirmed".
+- `points`: leave `null` unless BIA has confirmed the total for that student. The
+  card says "Straight As" until a confirmed number is entered.
 
 ## 2. When consent is received
 
@@ -67,8 +77,11 @@ Field notes:
 2. In the record set:
    ```json
    "consent": { "status": "granted", "confirmedBy": "Grace", "date": "2026-10-20",
-                "scope": "name, photo and grade on the website" }
+                "scope": "name, photo and grade on the website",
+                "allow": ["name", "photo", "result"] }
    ```
+   `allow` is what the site enforces: `name`, `photo`, `result`, `quote`. A student
+   who agrees to their name but not their photo gets `["name", "result"]`.
 3. Copy the image from `originals/` into
    `src/assets/achievements/published/` and set
    `"publishedImage": "<that file name>"`. The site resizes and compresses
@@ -106,3 +119,40 @@ site matches it. Do not add bank account numbers to the website. To replace the
 "view the official timetable" image, crop out any bank details first and save
 it in `src/assets/official/`. Open questions on the 2026/27 documents are listed
 in `docs/official-content-2026.md`.
+
+## 4. Add a testimonial (a student's own words)
+
+Testimonials live in `content/testimonials/testimonials.json`. Add one entry per quote:
+
+```json
+{
+  "id": "2026-unilag-mbbs-firstname",
+  "quote": "Short quote in the student's own words.",
+  "name": "Firstname Lastname",
+  "session": "2025/2026",
+  "course": "Medicine & Surgery (MBBS)",
+  "university": "University of Lagos",
+  "grade": "AAA",
+  "photo": null,
+  "source": "WhatsApp message to Boma, October 2026",
+  "featured": true,
+  "archive": false,
+  "consent": { "status": "granted", "confirmedBy": "Boma", "date": "2026-10-20",
+               "scope": "quote and name on the website", "allow": ["quote", "name"] }
+}
+```
+
+- It is shown only when `status` is `granted` **and** `allow` contains `quote`.
+  The name appears only with `name`; the photo (saved in
+  `src/assets/testimonials/`) only with `photo`.
+- Up to three testimonials (featured first) appear on the homepage right after the
+  Hall of Excellence; all of them appear on `/success-stories`.
+- Quotes transcribed from the old website's WhatsApp screenshots
+  (`docs/v1-testimonials-archive.md`) set `"archive": true` and appear under
+  "From the BIA archive". Never publish the screenshots themselves.
+
+## Preview placeholders
+
+Vercel preview builds (and local builds with `PUBLIC_SHOW_PLACEHOLDERS=true`) show
+clearly labelled placeholder cards where verified achievers and testimonials will go.
+Production builds never render them, and the tests fail if one slips through.

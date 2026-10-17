@@ -23,6 +23,10 @@ const consentedGraphics = publishedAchievements.filter((r) => r.kind === 'congra
 const anonymousPortraits = outcomes.filter((o) => o.grade && !o.consentVerified).slice(0, 8);
 const categoryLabel = Object.fromEntries(outcomeCategories.map((c) => [c.id, c.label]));
 const tel = `tel:${primaryContact.phone}`;
+import TestimonialCard from '../components/TestimonialCard.astro';
+import { testimonials } from '../data/testimonials';
+const currentVoices = testimonials.filter((t) => !t.archive);
+const archiveVoices = testimonials.filter((t) => t.archive);
 ---
 
 <Base
@@ -69,7 +73,9 @@ const tel = `tel:${primaryContact.phone}`;
   <!-- 01 FEATURED -->
   <section class="section section--ink" aria-labelledby="featured">
     <div class="wrap">
-      <SectionHead index="01" eyebrow="Featured achievements" title="Straight As, straight into university." id="featured" tone="ink" />
+      <SectionHead index="01" eyebrow="Featured achievements" title="Straight As, straight into university." id="featured" tone="ink">
+        <p><a class="link-arrow link-arrow--ink" href="/hall-of-excellence" data-cta="stories-hall">Hall of Excellence — every 16-point (AAA) achiever by session<Icon name="arrow-right" size={16} /></a></p>
+      </SectionHead>
       <ol class="plates">
         {featured.map((o, i) => (
           <li class:list={['plate', i === 0 && 'plate--lead']}>
@@ -196,13 +202,28 @@ const tel = `tel:${primaryContact.phone}`;
   <section class="section" aria-labelledby="voices">
     <div class="wrap voices">
       <SectionHead index="05" eyebrow="In their own words" title="Testimonials, published with consent." id="voices" />
+      {currentVoices.length > 0 && (
+        <ul class="voices__grid" role="list" data-voices>
+          {currentVoices.map((t) => <li><TestimonialCard t={t} /></li>)}
+        </ul>
+      )}
+      {archiveVoices.length > 0 && (
+        <div class="voices__archive" data-archive-voices>
+          <h3 class="voices__archive-title">From the BIA archive</h3>
+          <p class="voices__archive-lead">Messages students sent to Boma after their results, shared with each student’s permission.</p>
+          <ul class="voices__grid" role="list">
+            {archiveVoices.map((t) => <li><TestimonialCard t={t} /></li>)}
+          </ul>
+        </div>
+      )}
       <div class="voices__body">
         <svg class="voices__mark" viewBox="0 0 48 36" aria-hidden="true">
           <path d="M0 36V20C0 8 7 1 19 0v7c-6 1-10 5-10 12h10v17Zm29 0V20C29 8 36 1 48 0v7c-6 1-10 5-10 12h10v17Z" />
         </svg>
         <p class="voices__text">
-          Our alumni’s own words — and their photographs — will appear here only once each student has given written
-          permission. Until then, we celebrate their results without naming them.
+          {testimonials.length > 0
+            ? 'Every testimonial here is published with the student’s written permission.'
+            : 'Our alumni’s own words — and their photographs — will appear here only once each student has given written permission. Until then, we celebrate their results without naming them.'}
         </p>
         <div class="voices__alumni">
           <p><strong>Are you a BIA JUPEB alumnus?</strong> We would love to feature your story with your permission.</p>
@@ -236,6 +257,24 @@ const tel = `tel:${primaryContact.phone}`;
 <style>
   .section {
     padding-block: var(--section);
+  }
+  .link-arrow--ink {
+    color: var(--brass-light);
+  }
+  .voices__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+    gap: var(--s-4);
+    margin: 0 0 var(--s-7);
+    padding: 0;
+    list-style: none;
+  }
+  .voices__archive-title {
+    font-size: var(--step-2);
+  }
+  .voices__archive-lead {
+    margin: var(--s-2) 0 var(--s-5);
+    color: var(--muted);
   }
   .section--tint {
     background: var(--paper-2);
@@ -691,6 +730,15 @@ const tel = `tel:${primaryContact.phone}`;
       display: grid;
       grid-template-columns: 4fr 8fr;
       column-gap: var(--s-6);
+      align-items: start;
+    }
+    .voices > :global(.head) {
+      grid-row: 1 / span 3;
+    }
+    .voices > .voices__grid,
+    .voices > .voices__archive,
+    .voices > .voices__body {
+      grid-column: 2;
     }
     .voices :global(.head) {
       grid-template-columns: 1fr;

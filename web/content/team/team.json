@@ -1,0 +1,493 @@
+{
+  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Sir Holly and the COO are separate positions (Boma, 2026-10-17).",
+  "people": [
+    {
+      "name": "Caleb Aghedo",
+      "title": "Head of Operations",
+      "summary": "",
+      "sections": [
+        {
+          "heading": "Responsibilities",
+          "items": [
+            "Oversees academic operations, including classes and tutorials, ensuring delivery is coordinated and progress is monitored.",
+            "Monitors operational plans, targets, schedules, and follow-through across academic and programme activities.",
+            "Tracks progress, identifies issues or delays, and escalates matters requiring management attention.",
+            "Coordinates operational information and supports accurate, evidence-based reporting."
+          ]
+        }
+      ],
+      "source": "BIA Management Roles and Responsibilities",
+      "department": "management",
+      "id": "caleb-aghedo"
+    },
+    {
+      "name": "Elizabeth Oluwadamilola Ogunwale",
+      "title": "General Manager",
+      "summary": "",
+      "sections": [
+        {
+          "heading": "Responsibilities",
+          "items": [
+            "Oversees general administration, office services, and non-academic service delivery.",
+            "Coordinates front-office functions, enquiries, administrative records, and routine office procedures.",
+            "Monitors facilities and resource needs, and follows up on service or maintenance issues.",
+            "Coordinates assigned administrative staff and reports outstanding issues or decisions needed."
+          ]
+        }
+      ],
+      "source": "BIA Management Roles and Responsibilities",
+      "department": "management",
+      "id": "elizabeth-oluwadamilola-ogunwale"
+    },
+    {
+      "name": "Grace Damaris Igbani",
+      "title": "Acting Personal Assistant to the CEO / Public Relations Officer (PRO)",
+      "summary": "This position supports the CEO’s daily coordination needs while also helping BIA communicate clearly with students and its wider audience.",
+      "sections": [
+        {
+          "heading": "Acting Personal Assistant to the CEO",
+          "items": [
+            "Assist with coordinating the CEO’s activities and day-to-day work arrangements.",
+            "Communicate important information to the CEO and to relevant people when required for assigned work.",
+            "Follow up on tasks assigned by the CEO, check their progress, and bring pending items to the appropriate person’s attention.",
+            "Help keep daily operations organised by supporting coordination and timely communication.",
+            "Where a task, instruction, or deadline is unclear, seek clarification rather than making assumptions."
+          ]
+        },
+        {
+          "heading": "Public Relations Officer",
+          "items": [
+            "Share accurate information about BIA’s programmes, services, activities, and announcements with students and the wider audience.",
+            "Help publicise BIA programmes and services through the communication channels assigned to the role.",
+            "Support student engagement by responding to or directing questions and comments through the relevant channels.",
+            "Help maintain clear, timely, and professional communication between BIA and its students or audience.",
+            "Ensure that public-facing information is accurate and raise questions internally when confirmation is needed."
+          ]
+        },
+        {
+          "heading": "Practical expectations",
+          "items": [
+            "Keep track of assigned follow-ups and communicate progress or unresolved issues.",
+            "Coordinate the PA and PRO duties so that important messages and tasks are not overlooked.",
+            "Refer matters outside the role’s knowledge or authority to the CEO or the appropriate team member."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "administration",
+      "id": "grace-damaris-igbani"
+    },
+    {
+      "name": "Adenusi Gloria",
+      "title": "JUPEB Manager / Secretary",
+      "summary": "This role manages key JUPEB administrative processes, including registration, student records, payment records, enquiries, and coordination.",
+      "sections": [
+        {
+          "heading": "Student registration and onboarding",
+          "items": [
+            "Register new students and record their information accurately.",
+            "Guide newly admitted students through the registration and admission process.",
+            "Prepare and send students’ registration slips and biodata forms.",
+            "Monitor registration progress and follow up when a student’s registration is incomplete."
+          ]
+        },
+        {
+          "heading": "Student data and documentation",
+          "items": [
+            "Enter, update, organise, and maintain student information in the relevant database or records.",
+            "Keep registration records and related documents organised so that information can be located when needed.",
+            "Coordinate student records and support proper documentation and accessibility of information."
+          ]
+        },
+        {
+          "heading": "Payments and receipts",
+          "items": [
+            "Update and maintain students’ payment records.",
+            "Issue payment receipts where required and in line with BIA’s process.",
+            "Follow up with students regarding outstanding payments and communicate payment-record issues to the appropriate person."
+          ]
+        },
+        {
+          "heading": "Enquiries and student communication",
+          "items": [
+            "Attend to enquiries from prospective students, registered students, and parents.",
+            "Provide accurate information on admission procedures, tuition fees, payment plans, and academic activities.",
+            "Communicate important announcements, updates, and information to students."
+          ]
+        },
+        {
+          "heading": "Accommodation administration",
+          "items": [
+            "Prepare accommodation receipts.",
+            "Assist students with accommodation-related enquiries and direct unresolved matters to the appropriate person."
+          ]
+        },
+        {
+          "heading": "Reports and operational coordination",
+          "items": [
+            "Prepare and maintain records of registered students, payments, and other administrative activities.",
+            "Work with other staff members and departments to support effective communication and teamwork.",
+            "Support the smooth coordination of JUPEB administrative activities and day-to-day operations.",
+            "Ensure students receive timely assistance and administrative tasks are completed efficiently.",
+            "Carry out other related administrative duties assigned by management in support of the academy’s operations."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "administration",
+      "id": "adenusi-gloria"
+    },
+    {
+      "name": "Soretire Ibukunoluwa Aramide",
+      "title": "Secretary / JAMB Manager",
+      "summary": "This role coordinates JAMB classes, supports student verification towards the stated recruitment target, and manages the BIA TikTok page for JAMB candidates.",
+      "sections": [
+        {
+          "heading": "JAMB class planning and coordination",
+          "items": [
+            "Plan JAMB classes and prepare or coordinate the class timetable.",
+            "Message tutors about scheduled classes and confirm whether they are available.",
+            "Follow up on class arrangements to help ensure tutors are available as planned.",
+            "When a tutor is unavailable, take the class if needed and if able to do so, as described for this role.",
+            "Communicate changes or availability issues to the relevant people."
+          ]
+        },
+        {
+          "heading": "Student verification and target support",
+          "items": [
+            "Verify students as part of the work towards BIA’s stated target for the next JAMB cycle.",
+            "Keep the verification process organised and raise unclear or incomplete student information for follow-up.",
+            "Help maintain visibility of progress towards the target through the verification work assigned."
+          ]
+        },
+        {
+          "heading": "BIA JAMB TikTok page",
+          "items": [
+            "Manage the BIA TikTok page intended for JAMB candidates.",
+            "Respond to comments from JAMB candidates and prospective students.",
+            "Direct interested people to WhatsApp so they can be added to the appropriate groups.",
+            "Communicate information accurately and refer questions that require confirmation to the relevant team."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "administration",
+      "id": "soretire-ibukunoluwa-aramide"
+    },
+    {
+      "name": "Ibitoye Esther",
+      "title": "Accommodation Manager",
+      "summary": "This role publicises available accommodation, responds to accommodation enquiries, helps arrange inspections, and follows up with prospective clients.",
+      "sections": [
+        {
+          "heading": "Accommodation publicity",
+          "items": [
+            "Post details of available accommodation in the appropriate accommodation groups.",
+            "Prepare a write-up for each listing using the available and confirmed details.",
+            "Make sure the information shared reflects the listing details provided and seek clarification when information is missing."
+          ]
+        },
+        {
+          "heading": "Enquiries and customer service",
+          "items": [
+            "Respond to accommodation enquiries from students and parents.",
+            "Provide accurate information about available accommodation and assist with related questions.",
+            "Respond to enquiries received through the company website or other communication channels about BIA’s programmes and services, as described for this role."
+          ]
+        },
+        {
+          "heading": "Hostel inspections",
+          "items": [
+            "Arrange hostel inspections with interested parents or students.",
+            "Attend or assist with inspections personally, or coordinate support from another staff member when necessary.",
+            "Communicate inspection arrangements clearly to the people involved."
+          ]
+        },
+        {
+          "heading": "Client follow-up and conversion",
+          "items": [
+            "Provide prospective clients with the information they need about BIA’s programmes and services.",
+            "Explain payment procedures using confirmed information.",
+            "Follow up with people who have made enquiries and encourage interested prospects to proceed with registration and payment where appropriate.",
+            "Refer questions about details outside the role’s knowledge or authority to the appropriate team member."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "administration",
+      "id": "ibitoye-esther"
+    },
+    {
+      "name": "Williams Favour Ogunbayo",
+      "title": "Online Tutor for Commercial Subjects / Student Outreach Support",
+      "summary": "This role combines online teaching of commercial subjects with student engagement and outreach support.",
+      "sections": [
+        {
+          "heading": "Online tutoring",
+          "items": [
+            "Teach Economics and Business Studies (BUS) to students in the relevant online subject groups.",
+            "Support participation and active learning by engaging students during subject-group learning activities.",
+            "Help students understand the topics being taught and respond to subject-related questions within the tutor’s knowledge.",
+            "Use the relevant subject groups to keep teaching and student participation organised."
+          ]
+        },
+        {
+          "heading": "Outreach and student recruitment support",
+          "items": [
+            "When participating in outreach with other staff, speak with prospective students and explain what BIA is and what it offers.",
+            "Collect contact numbers from interested students in the course of outreach.",
+            "Ensure contact numbers collected are added to the specific groups intended for those students.",
+            "Help prospective students understand the available BIA offering accurately and avoid promising anything that has not been confirmed."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "academics",
+      "id": "williams-favour-ogunbayo"
+    },
+    {
+      "name": "Daniel John",
+      "title": "Physical Tutor for CRS, Government and Literature / Student Recruitment and Lecture Bank Support",
+      "summary": "This role provides physical teaching for specified art subjects and supports student recruitment and the organisation of the art class Lecture Bank.",
+      "sections": [
+        {
+          "heading": "Physical tutoring",
+          "items": [
+            "Teach Christian Religious Studies (CRS), Government, and Literature to students through physical classes.",
+            "Support students’ understanding of the subjects and respond to relevant academic questions within the tutor’s knowledge.",
+            "Assist with maintaining an effective learning environment during the classes assigned."
+          ]
+        },
+        {
+          "heading": "Student recruitment",
+          "items": [
+            "Identify and engage prospective JUPEB candidates.",
+            "Explain BIA’s available programmes and provide accurate information to interested candidates.",
+            "Encourage interested candidates to take the next appropriate step towards enrolment without making unconfirmed promises."
+          ]
+        },
+        {
+          "heading": "Lecture Bank collation",
+          "items": [
+            "Assist in collecting and collating lecture materials for the organisation’s art class Lecture Bank.",
+            "Organise materials so they can be located and used more easily by the relevant people.",
+            "Help maintain the Lecture Bank by keeping the materials organised and bringing gaps or missing items to the appropriate person’s attention."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "academics",
+      "id": "daniel-john"
+    },
+    {
+      "name": "Divine Igbokwe",
+      "title": "Assistant Academic Director / WhatsApp Channel Handler",
+      "summary": "This role supports class scheduling and tutor coordination and manages the BIA WhatsApp Channel’s JAMB-focused content and engagement.",
+      "sections": [
+        {
+          "heading": "Academic coordination support",
+          "items": [
+            "Assist with scheduling and coordinating classes.",
+            "Contact tutors about class arrangements, schedules, and academic activities.",
+            "Help confirm tutor availability for scheduled classes and communicate scheduling issues to the appropriate person."
+          ]
+        },
+        {
+          "heading": "WhatsApp Channel management",
+          "items": [
+            "Manage the BIA WhatsApp Channel and ensure content is updated regularly.",
+            "Post JAMB past questions, polls, and answers to support students preparing for their examinations.",
+            "Share relevant content across JAMB groups and encourage students to participate."
+          ]
+        },
+        {
+          "heading": "Content preparation and engagement",
+          "items": [
+            "Work with the editor to prepare JAMB-related content for posting.",
+            "Suggest ideas that may improve engagement and participation on the WhatsApp Channel.",
+            "Help keep posted educational content clear, relevant, and organised."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "academics",
+      "id": "divine-igbokwe"
+    },
+    {
+      "name": "Achief Halimat Anuoluwapo (Halima)",
+      "title": "Online Tutor for Art Subjects / Student Outreach Support / Personal Assistant to Sir Holly and the Chief Operating Officer (COO)",
+      "summary": "This role combines online teaching, student outreach and follow-up, and personal-assistant support to Sir Holly and the Chief Operating Officer (COO).",
+      "sections": [
+        {
+          "heading": "Online tutoring for art students",
+          "items": [
+            "Teach Government, Christian Religious Studies (CRS), and Literature to students in the relevant online subject groups.",
+            "Support participation and active learning in the subject groups.",
+            "Help students with questions relating to the subjects taught, within the tutor’s knowledge."
+          ]
+        },
+        {
+          "heading": "Outreach and student follow-up",
+          "items": [
+            "When participating in outreach with other staff, speak with prospective students and explain what BIA is and what it offers.",
+            "Collect contact numbers from interested students during outreach.",
+            "Ensure the numbers collected are added to the specific groups intended for those students.",
+            "Follow up with students after outreach as part of the assigned student-engagement process.",
+            "Provide accurate information and refer questions requiring confirmation to the appropriate team member."
+          ]
+        },
+        {
+          "heading": "Personal Assistant to Sir Holly",
+          "items": [
+            "Remind Sir Holly of BIA-related classes, meetings, and scheduled commitments.",
+            "Help keep Sir Holly’s schedule organised and bring upcoming or conflicting commitments to his attention.",
+            "Follow up on pending tasks and remind him of items that still require action.",
+            "Follow up with other staff members on tasks or matters that Sir Holly has asked to be monitored, and communicate the status back to him.",
+            "Keep relevant reminders and follow-up information organised so that commitments and pending tasks are not easily overlooked."
+          ]
+        },
+        {
+          "heading": "Personal Assistant to the Chief Operating Officer (COO)",
+          "items": [
+            "Support the COO with organising and tracking BIA-related appointments, meetings, and scheduled commitments communicated to the PA.",
+            "Remind the COO of upcoming meetings, deadlines, and pending tasks that have been brought to the PA’s attention.",
+            "Follow up on assigned action points with the COO or relevant staff members and report back on their status.",
+            "Help keep the COO’s schedule and task reminders organised, and promptly flag clashes, changes, or items requiring attention.",
+            "Communicate information and reminders accurately, maintain appropriate discretion with work-related information, and seek clarification when instructions are unclear."
+          ]
+        },
+        {
+          "heading": "Coordination and boundaries",
+          "items": [
+            "Keep teaching, outreach, and PA duties organised so that important responsibilities are not overlooked.",
+            "Clarify priorities with Sir Holly or the COO when tasks conflict or the expected deadline is unclear.",
+            "Provide reminders and follow-ups; responsibility for making the final decisions or completing another person’s task remains with the person assigned to it unless separately instructed."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "academics",
+      "id": "achief-halimat-anuoluwapo"
+    },
+    {
+      "name": "Ighofimoni Gabriel Oghenekevwe",
+      "title": "BIA DSA (Directorate of Student Affairs)",
+      "summary": "This role provides student consultation and support, especially through BIA and UNILAG groups and direct messages.",
+      "sections": [
+        {
+          "heading": "Student consultation and enquiries",
+          "items": [
+            "Attend to students’ questions and enquiries in BIA groups, UNILAG groups, and direct messages.",
+            "Review incoming questions and make reasonable efforts to ensure that students receive a response rather than being overlooked.",
+            "Provide answers only when the information is known and reliable.",
+            "When an answer is uncertain or unavailable, confirm the correct information with Mr. Boma or the relevant team before replying.",
+            "Where another staff member or department is better placed to answer, direct the enquiry to that person or seek their input."
+          ]
+        },
+        {
+          "heading": "Follow-up and communication",
+          "items": [
+            "Keep track of questions that require confirmation and return to the student with the confirmed answer.",
+            "Communicate with students respectfully and clearly, including when an answer is still being checked.",
+            "Help identify recurring student questions that may need a clearer announcement or explanation from BIA."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "student-affairs",
+      "id": "ighofimoni-gabriel-oghenekevwe"
+    },
+    {
+      "name": "Jomiloju Samuel Ayo-Yusuf",
+      "title": "Head of Content Creation / YEB Manager",
+      "summary": "This role coordinates YEB members and content creators and follows up with prospective partners and programme leads.",
+      "sections": [
+        {
+          "heading": "YEB member management",
+          "items": [
+            "Coordinate the activities of YEB members and keep track of work relating to their responsibilities.",
+            "Ensure members have the materials, resources, and support needed for their assigned work, raising resource gaps when necessary.",
+            "Support members in carrying out activities intended to generate profit for the company, within the work assigned to them."
+          ]
+        },
+        {
+          "heading": "Partner and stakeholder follow-up",
+          "items": [
+            "Maintain communication with prospective partners and stakeholders.",
+            "Follow up on previous conversations, keep relationships active, and explore potential collaboration opportunities that may benefit the company.",
+            "Share relevant updates with the appropriate team members and seek guidance where an offer or commitment requires approval."
+          ]
+        },
+        {
+          "heading": "Content creator management",
+          "items": [
+            "Coordinate content creators and monitor the development, delivery, and quality of assigned content.",
+            "Provide creative ideas and support where needed to help creators complete content effectively.",
+            "Identify when creators need additional support or incentives and raise or coordinate those needs through the appropriate process."
+          ]
+        },
+        {
+          "heading": "BIA JUPEB registration leads",
+          "items": [
+            "Monitor prospective JUPEB applicants who have been identified as leads.",
+            "Follow up with those applicants and maintain consistent communication to encourage them to proceed with registration where interested.",
+            "Keep relevant lead follow-up information organised and communicate progress or unresolved questions to the appropriate team."
+          ]
+        },
+        {
+          "heading": "Lecture Bank leads",
+          "items": [
+            "Monitor and follow up with prospective Lecture Bank leads.",
+            "Maintain communication with potential collaborators and explore opportunities to expand the network supporting BIA JUPEB programmes.",
+            "Share the status of relevant conversations with the appropriate team members."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "brand",
+      "id": "jomiloju-samuel-ayo-yusuf"
+    },
+    {
+      "name": "Nwokwe Onyedikachi (Dominique)",
+      "title": "Assistant Brand Manager / Content Creator",
+      "summary": "This role creates and supports digital content for BIA Academy, with a focus on JUPEB admissions and preparation, online visibility, and prospective-student engagement.",
+      "sections": [
+        {
+          "heading": "Content development and production",
+          "items": [
+            "Create content for BIA Academy’s social media platforms to promote the brand and increase awareness.",
+            "Develop content ideas, scripts, captions, hooks, and video concepts focused on JUPEB admissions and preparation.",
+            "Shoot and edit videos for BIA Academy.",
+            "Contribute content ideas that support BIA’s online growth."
+          ]
+        },
+        {
+          "heading": "Brand and creative coordination",
+          "items": [
+            "Work with the Brand Manager to develop creative ideas and strategies that strengthen BIA’s online presence and visibility across digital platforms.",
+            "Suggest approaches for promoting BIA and reaching more prospective students.",
+            "Coordinate creative work with the Brand Manager so content aligns with the direction agreed for the brand."
+          ]
+        },
+        {
+          "heading": "Prospective-student enquiries and follow-up",
+          "items": [
+            "Respond to prospective students’ enquiries and provide information about BIA’s JUPEB programmes.",
+            "Follow up with prospective students to encourage continued engagement and registration.",
+            "Ensure information shared with prospective students is accurate and refer unconfirmed questions to the appropriate team member."
+          ]
+        },
+        {
+          "heading": "Reporting",
+          "items": [
+            "Prepare daily work reports covering relevant activities and progress.",
+            "Share content ideas and relevant updates that support the team’s online growth."
+          ]
+        }
+      ],
+      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
+      "department": "brand",
+      "id": "nwokwe-onyedikachi"
+    }
+  ]
+}

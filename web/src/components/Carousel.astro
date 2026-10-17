@@ -12,7 +12,7 @@ import Icon from './Icon.astro';
 
 interface Props {
   label: string;
-  variant?: 'hero' | 'showcase' | 'strip' | 'pair';
+  variant?: 'hero' | 'showcase' | 'strip' | 'pair' | 'cards';
   tone?: 'paper' | 'ink';
   autoplay?: boolean;
   interval?: number;
@@ -250,6 +250,12 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
   .carousel--pair .carousel__track {
     grid-auto-columns: 80%;
   }
+  /* Portrait cards (Hall of Excellence): one card and a peek of the next on phones */
+  .carousel--cards .carousel__track {
+    --_gap: var(--s-3);
+    grid-auto-columns: 74%;
+    padding-bottom: var(--s-2);
+  }
   @media (min-width: 720px) {
     .carousel--showcase .carousel__track {
       grid-auto-columns: calc((100% - var(--s-4)) / 2);
@@ -260,6 +266,10 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
     .carousel--pair .carousel__track {
       grid-auto-columns: calc((100% - var(--s-4)) / 2);
     }
+    .carousel--cards .carousel__track {
+      --_gap: var(--s-4);
+      grid-auto-columns: calc((100% - 2 * var(--s-4)) / 3);
+    }
   }
   @media (min-width: 1040px) {
     .carousel--showcase .carousel__track {
@@ -267,6 +277,10 @@ const { label, variant = 'strip', tone = 'paper', autoplay = false, interval = 6
     }
     .carousel--strip .carousel__track {
       grid-auto-columns: 42%;
+    }
+    .carousel--cards .carousel__track {
+      --_gap: var(--s-5);
+      grid-auto-columns: calc((100% - 3 * var(--s-5)) / 4);
     }
   }
 

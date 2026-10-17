@@ -45,7 +45,7 @@ await page.goto(BASE, { waitUntil: 'networkidle' });
 await page.waitForTimeout(2600); // let the hero entrance finish
 const carousels = page.locator('[data-carousel]');
 const count = await carousels.count();
-check(count === 2, `found ${count} carousels (hero, results)`);
+check(count === 2, `found ${count} carousels (hero, Hall of Excellence)`);
 for (let i = 0; i < count; i++) {
   const c = carousels.nth(i);
   const label = await c.getAttribute('aria-label');
@@ -138,7 +138,7 @@ for (const [label, opts] of [
   await scrollThrough(page);
   const stuck = await hiddenContent(page);
   check(stuck.length === 0, `${label}: all content visible after scrolling ${stuck.join(' | ')}`);
-  check(await page.locator('.route__end').evaluate((el) => el.classList.contains('is-active')), `${label}: journey reaches the 200 Level destination`);
+  check((await page.locator('#success [data-achiever]').count()) >= 1 && (await opacity(page, '#success .hall__title')) === 1, `${label}: Hall of Excellence band is visible after the hero`);
   const { sw, vw } = await page.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
   check(sw <= vw, `${label}: no horizontal overflow after animations`);
   check(errors.length === 0, `${label}: no script errors ${errors.join(' | ')}`);
@@ -158,7 +158,7 @@ const ctx = await browser.newContext({ javaScriptEnabled: false, viewport: { wid
 const nojs = await ctx.newPage();
 await nojs.goto(BASE, { waitUntil: 'networkidle' });
 check((await hiddenContent(nojs)).length === 0, 'no JavaScript: all content visible');
-check((await nojs.locator('.route > li').count()) === 4 && (await opacity(nojs, '.route__end h3')) === 1, 'no JavaScript: journey steps readable');
+check((await nojs.locator('.ess__steps > li').count()) === 4 && (await nojs.locator('#success [data-achiever]').count()) >= 1, 'no JavaScript: achievers and admission steps readable');
 await ctx.close();
 
 // 6. Success-stories page, accessibility and privacy
@@ -241,12 +241,16 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const names = [...legacy.matchAll(/Congratulations to you!\s*(.+?)\s*BIA JUPEB Alumn/g)]
     .map((m) => m[1].trim())
     .filter((n) => n.length > 3);
+  // Students whose records are consent-granted (name allowed) may be named; every other legacy name must stay out.
+  const granted = JSON.parse(readFileSync(new URL('../content/achievements/records.json', import.meta.url), 'utf8')).records
+    .filter((r) => r.consent.status === 'granted' && (r.consent.allow ?? ['name']).includes('name'))
+    .flatMap((r) => [r.name, (r.review ?? '').match(/V1 caption name: ([^.]+)\./)?.[1]].filter(Boolean).map((n) => n.toLowerCase()));
   const page = await browser.newPage();
   let leaked = [];
   for (const url of [BASE, STORIES]) {
     await page.goto(url, { waitUntil: 'networkidle' });
     const html = (await page.content()).toLowerCase();
-    leaked.push(...names.filter((n) => html.includes(n.toLowerCase())));
+    leaked.push(...names.filter((n) => !granted.includes(n.toLowerCase()) && html.includes(n.toLowerCase())));
   }
   check(names.length > 10 && leaked.length === 0, `privacy: none of ${names.length} legacy student names published ${leaked.join(', ')}`);
   await page.close();
@@ -259,7 +263,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const dist = new URL('../dist/', import.meta.url).pathname;
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
-  for (const path of ['', 'success-stories', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+  for (const path of ['', 'success-stories', 'hall-of-excellence', 'team', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
     const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
     const robots = await page.locator('meta[name="robots"]').count();
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -302,11 +306,11 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const builtText = files.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(join(dist, f), 'utf8')).join('\n');
   check(!/AIzaSy|firebaseapp|apiKey/.test(builtText), 'build output contains no Firebase keys or config');
   // Only the contacts in Boma's October 2026 staff list are published
-  const official = ['7012388184', '8164329204', '9134190829', '8021047735', '8103113275', '9045616337', '7049733518', '9022684754', '7073551210'];
+  const official = ['7012388184', '8164329204', '9134190829', '8021047735', '8103113275', '9045616337', '9022684754', '7073551210'];
   const phones = [...new Set([...builtText.matchAll(/tel:\+234(\d{10})/g)].map((m) => m[1]))];
   check(phones.length === official.length && phones.every((p) => official.includes(p)), `only Boma's confirmed staff numbers are published (${phones.length})`);
   const wa = [...new Set([...builtText.matchAll(/wa\.me\/234(\d{10})/g)].map((m) => m[1]))].sort();
-  check(JSON.stringify(wa) === JSON.stringify(['7012388184', '7048065326']), `WhatsApp links go only to numbers identified as WhatsApp (${wa.join(', ')})`);
+  check(JSON.stringify(wa) === JSON.stringify(['7012388184']), `WhatsApp links go only to numbers identified as WhatsApp (${wa.join(', ')})`);
   await page.close();
 }
 
@@ -326,14 +330,19 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : all.push(join(d, f))));
   walk(dist);
   const text = all.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(f, 'utf8')).join('\n').toLowerCase();
-  const leaked = [...new Set(pendingNames.filter((n) => text.includes(n.toLowerCase())))];
-  check(recs.length === 43 && leaked.length === 0, `privacy: no unconsented student name (${pendingNames.length} name tokens) appears anywhere in the build ${leaked.slice(0, 5).join(', ')}`);
+  // Words that are also part of a consented name (e.g. a shared first name) are not evidence of a leak.
+  const consentedWords = recs.filter((r) => r.consent.status === 'granted' && r.name).flatMap((r) => r.name.toLowerCase().replace(/[()]/g, '').split(/\s+/));
+  // Staff names approved for /team (some staff are also alumni; their unconsented results stay unpublished).
+  const staffNames = JSON.parse(readFileSync(new URL('../content/team/team.json', import.meta.url), 'utf8')).people.map((x) => x.name);
+  consentedWords.push(...staffNames.flatMap((n) => n.toLowerCase().replace(/[()]/g, '').split(/\s+/)));
+  const leaked = [...new Set(pendingNames.filter((n) => !n.toLowerCase().split(/\s+/).every((w) => consentedWords.includes(w)) && text.includes(n.toLowerCase())))];
+  check(recs.length >= 43 && leaked.length === 0, `privacy: no unconsented student name (${pendingNames.length} name tokens) appears anywhere in the build ${leaked.slice(0, 5).join(', ')}`);
   check(!all.some((f) => /testii|originals|achievements/i.test(f)), 'privacy: no archived achievement image is emitted into the build');
   const publishedDir = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
   const publishedFiles = readdirSync(publishedDir).filter((f) => !f.startsWith('.'));
   const granted = recs.filter((r) => r.consent.status === 'granted' && r.publishedImage).map((r) => r.publishedImage);
   check(publishedFiles.length === granted.length && publishedFiles.every((f) => granted.includes(f)), `consent: published images (${publishedFiles.length}) match consent-granted records (${granted.length})`);
-  check(recs.every((r) => !('points' in r) && !('recordedPoints' in r)), 'records carry no unverified V1 point totals');
+  check(recs.every((r) => r.points == null && !('recordedPoints' in r)), 'records carry no unverified point totals (points stay null until BIA confirms the scale)');
 
   // Image performance on first load (mobile)
   for (const path of ['', 'success-stories']) {
@@ -430,6 +439,12 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const where = url === BASE ? 'home' : '/fees';
     const reg = await page.locator('[data-registration]').first().textContent();
     check(reg === '₦45,000', `${where}: registration fee shows ₦45,000`);
+    if (url === BASE) {
+      const ess = await page.locator('#programme').innerText();
+      check(/₦686,700/.test(ess) && /Non-Science: ask admissions/.test(ess) && /₦25,000/.test(ess) && !/₦671,000|₦687,000|₦287,000/.test(ess) && (await page.locator('#programme a[href="/fees"]').count()) >= 1,
+        'home: admissions essentials summarise fees (Science total, Non-Science pending, tutorials) and link to /fees');
+      continue;
+    }
     const sci = await page.locator('[data-stream="science"]').first().innerText();
     const non = await page.locator('[data-stream="non-science"]').first().innerText();
     check(
@@ -581,9 +596,9 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check((await p.locator('a[href="https://wa.me/2347012388184"]').count()) >= 1, 'WhatsApp link uses the official number');
 
   // Homepage sections an applicant needs, in one page
-  const ids = await p.evaluate(() => ['about', 'success', 'programme', 'tutorials', 'study-modes', 'calendar', 'founder', 'location', 'faq', 'apply'].filter((id) => !document.getElementById(id) && !document.querySelector(`[aria-labelledby="${id}"]`)));
-  check(ids.length === 0, `homepage covers about, results, fees, tutorials, ways to study, timetable, founder, location, FAQ and enquiry ${ids.join(', ')}`);
-  for (const href of ['/fees', '/timetable', '/#location', '/success-stories']) {
+  const ids = await p.evaluate(() => ['success', 'programme', 'tutorials', 'calendar', 'founder', 'location', 'faq', 'apply'].filter((id) => !document.getElementById(id) && !document.querySelector(`[aria-labelledby="${id}"]`)));
+  check(ids.length === 0, `homepage covers achievers, admissions essentials (fees, tutorials, dates), founder, location, FAQ and enquiry ${ids.join(', ')}`);
+  for (const href of ['/hall-of-excellence', '/fees', '/timetable', '/success-stories', '/contact']) {
     check((await p.locator(`header a[href="${href}"], #mobile-menu a[href="${href}"]`).count()) >= 1, `navigation links to ${href}`);
   }
 
@@ -602,14 +617,14 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const poster = await p.request.get(new URL(v.poster, BASE).href);
   check(vid.ok() && (await vid.body()).length > 5e6 && poster.ok(), 'directions video file and poster are served');
   check(vtt.startsWith('WEBVTT') && (vtt.match(/-->/g) ?? []).length >= 15 && vtt.includes('Seventh Day Adventist'), 'directions video has a WebVTT caption track');
-  check(!/Igbobi|Main Gate|turn left/i.test(await p.locator('.routes').innerText()), 'written directions only use steps stated in the video');
+  check(!/Igbobi|Main Gate|turn left/i.test(await p.locator('.routes').textContent()), 'written directions only use steps stated in the video');
 
   // Brand: official badge in header, hero, footer; BIA red sections
   const brand = await p.evaluate(() => ({
     headerLogo: !!document.querySelector('header .logo'),
     heroSeal: document.querySelector('.hero__seal [role="img"]')?.getAttribute('aria-label') ?? '',
     footerSeal: !!document.querySelector('footer .badge-seal'),
-    aboutBg: getComputedStyle(document.querySelector('.about')).backgroundColor,
+    aboutBg: getComputedStyle(document.querySelector('.ess__card--red')).backgroundColor,
     noticeBg: getComputedStyle(document.querySelector('.notice')).backgroundColor,
   }));
   check(brand.headerLogo && /Boma’s Intellectual Academy/.test(brand.heroSeal) && brand.footerSeal, 'official BIA badge appears in header, hero and footer');
@@ -697,17 +712,6 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   m.on('request', (r) => requested.push(r.url()));
   await m.goto(BASE, { waitUntil: 'networkidle' });
 
-  // Ribbon
-  const rb = await m.evaluate(() => {
-    const r = document.querySelector('.ribbon');
-    return { items: r.querySelectorAll('ul:not([aria-hidden]) li').length, label: r.querySelector('ul').getAttribute('aria-label'), anim: getComputedStyle(r.querySelector('.ribbon__track')).animationName };
-  });
-  check(rb.items >= 6 && rb.label && rb.anim === 'none', `ribbon: ${rb.items} facts, labelled list, static under reduced motion`);
-  const anim = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await anim.goto(BASE, { waitUntil: 'domcontentloaded' });
-  check((await anim.evaluate(() => getComputedStyle(document.querySelector('.ribbon__track')).animationName)) !== 'none', 'ribbon: rolls when motion is allowed (CSS only)');
-  await anim.close();
-
   // Gallery: lazy tiles, lightbox loads the large image only when opened
   const tiles = m.locator('[data-life-open]');
   const n = await tiles.count();
@@ -726,17 +730,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(!(await dlg.isVisible()) && (await m.evaluate(() => document.activeElement?.hasAttribute('data-life-open'))), 'gallery: Escape closes and returns focus');
   const vreq = requested.filter((u) => /\.(mp4|mov)(\?|$)/.test(u));
   check(vreq.length === 0, `no video is downloaded before a visitor presses play ${vreq.join(', ')}`);
-  // Lesson videos: three click-to-play cards with lazy posters
-  const lv = await m.evaluate(() => [...document.querySelectorAll('.lv__frame')].map((f) => ({ src: f.dataset.src, poster: f.querySelector('img')?.loading, label: f.querySelector('[data-lv-play]')?.getAttribute('aria-label') })));
-  check(lv.length === 3 && lv.every((v) => v.poster === 'lazy' && /^Play video: /.test(v.label ?? '')), 'lesson videos: 3 cards, lazy posters, labelled play buttons');
-  const sizes = await Promise.all(lv.map(async (v) => { const r = await m.request.get(new URL(v.src, BASE).href); return r.ok() && (r.headers()['content-type'] ?? '').startsWith('video/mp4') ? (await r.body()).length : 0; }));
-  check(sizes.every((b) => b > 5e5 && b < 8e6), `lesson video files served as MP4 (${sizes.map((b) => (b / 1e6).toFixed(1) + ' MB').join(', ')})`);
-  const play = m.locator('[data-lv-play]').first();
-  await play.scrollIntoViewIfNeeded();
-  await play.click();
-  await m.waitForTimeout(600);
-  const vid = await m.evaluate(() => { const v = document.querySelector('.lv video'); return v && { controls: v.controls, inline: v.playsInline, focused: document.activeElement === v, src: v.getAttribute('src') }; });
-  check(vid && vid.controls && vid.inline && vid.focused && requested.some((u) => u.endsWith(vid.src)), 'lesson video: pressing play loads that video only, with native controls and focus');
+  // Lesson videos now live in /gallery (section 12 covers playback).
   await m.close();
 
   // 320px: gallery, band and ribbon fit
@@ -877,11 +871,10 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const CON = new URL('contact', BASE).href;
   const STAFF = [
     ['Chief Executive', 'Hon. Boma', ['+2347012388184']],
-    ['Chief Operating Officer', 'Sir Holly', ['+2348164329204']],
+    ['Admissions', 'Sir Holly', ['+2348164329204']],
     ['Personal Assistant', 'Miss Damaris', ['+2349134190829']],
     ['JUPEB Secretary', 'Miss Gloria', ['+2348021047735']],
     ['Office Manager', 'Mr. Great', ['+2348103113275', '+2349045616337']],
-    ['Office Receptionist', 'Miss Temiloluwa', ['+2347049733518']],
     ['JUPEB Academic Officer', 'Mr. Victor', ['+2349022684754', '+2347073551210']],
   ];
   for (const width of [320, 390, 1440]) {
@@ -894,10 +887,10 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
       const ok = cards.length === STAFF.length && STAFF.every(([role, name, tels], i) => cards[i].text.includes(role) && (!name || cards[i].text.includes(name)) && JSON.stringify(cards[i].tels) === JSON.stringify(tels));
       check(ok, `/contact: ${cards.length} staff entries with the exact roles, names and tap-to-call numbers Boma supplied`);
       const was = cards.flatMap((c) => c.wa);
-      check(was.length === 1 && was[0] === 'https://wa.me/2347048065326' && cards[5].wa.length === 1, '/contact: only the number identified as WhatsApp (Miss Temiloluwa, 0704 806 5326) has a WhatsApp link');
+      check(was.length === 0, '/contact: no WhatsApp links in the staff directory (the only staff WhatsApp number belonged to the former receptionist)');
       const text = await p.locator('main').innerText();
       check(!/Esther/i.test(text), '/contact: Miss Esther is not listed as Personal Assistant');
-      check(!/Alice|9167505810|0916 750 5810/i.test(text), '/contact: the former receptionist (Alice) and her number are removed');
+      check(!/Alice|Temiloluwa|9167505810|0916 750 5810|7049733518|7048065326/i.test(text), '/contact: former receptionists and their numbers are removed');
       check(
         /12 Ameen Street/.test(text) && /Abule-Oja, Akoka/.test(text) && /near UNILAG/.test(text) && /56 Igi Olugbin Street/.test(text) && /Shomolu\/Bariga, Lagos/.test(text) &&
           /official meetings, business enquiries, partnerships and consultations/.test(text) && /JUPEB physical tutorials, academic activities and student learning/.test(text) && /Directly opposite AP Petrol Station/.test(text),
@@ -924,6 +917,132 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const homeText = await h.locator('body').innerText();
   check(!/Esther/i.test(homeText), 'homepage: no outdated staff names');
   await h.close();
+}
+
+// 14. Homepage redesign: achievements first; Hall of Excellence; testimonials; V1 archive catalogue
+{
+  const { readdirSync, statSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const HALL = new URL('hall-of-excellence', BASE).href;
+  const recs = JSON.parse(readFileSync(new URL('../content/achievements/records.json', import.meta.url), 'utf8')).records;
+  const aaa = recs.filter((r) => r.grade === 'AAA' && r.kind === 'student-portrait');
+
+  // Homepage: compact, achievers immediately after the hero
+  const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  await m.goto(BASE, { waitUntil: 'networkidle' });
+  const pos = await m.evaluate(() => {
+    const top = (sel) => document.querySelector(sel).getBoundingClientRect().top + scrollY;
+    const main = [...document.querySelectorAll('main > section')].map((x) => x.id || x.className.split(' ')[0]);
+    return { hall: top('#success'), h: document.documentElement.scrollHeight, order: main };
+  });
+  check(pos.order[0] === 'hero' && pos.order[1] === 'success', `homepage: Hall of Excellence follows the hero (${pos.order.slice(0, 4).join(' → ')})`);
+  check(pos.hall < 844 * 1.3, `homepage: achievers start within ~1 phone screen (${Math.round(pos.hall)}px)`);
+  check(pos.h < 844 * 18, `homepage: reduced scrolling on phones (${(pos.h / 844).toFixed(1)} screens, was 33)`);
+  check((await m.locator('#success [data-achiever]').count()) === aaa.length, 'homepage: AAA achiever cards come from records.json');
+  check((await m.locator('#success a[href="/hall-of-excellence"]').count()) >= 1 && (await m.locator('header a[href="/hall-of-excellence"], #mobile-menu a[href="/hall-of-excellence"]').count()) >= 1, 'Hall of Excellence linked from the homepage band and the navigation');
+  const hc = m.locator('.hall__carousel');
+  const hcInfo = await hc.evaluate((c) => {
+    const t = c.querySelector('[data-track]');
+    const first = t.querySelector('[data-slide]').getBoundingClientRect();
+    return { scroll: t.scrollWidth > t.clientWidth, tab: t.tabIndex, role: c.getAttribute('aria-roledescription'), peek: first.width < t.clientWidth * 0.9, btns: c.querySelectorAll('[data-prev], [data-next]').length, total: c.querySelector('[data-total]').textContent };
+  });
+  check(hcInfo.role === 'carousel' && hcInfo.scroll && hcInfo.tab === 0 && hcInfo.btns === 2 && hcInfo.peek && Number(hcInfo.total) === aaa.length,
+    `homepage: Hall carousel (V2 carousel) swipes, peeks the next card, has arrows, a counter (${hcInfo.total}) and a focusable track`);
+  const smallBtns = await hc.locator('[data-prev], [data-next]').evaluateAll((b) => b.filter((x) => x.getBoundingClientRect().height < 44 || x.getBoundingClientRect().width < 44).length);
+  check(smallBtns === 0, 'homepage: Hall carousel arrows are at least 44px');
+  await m.close();
+
+  // Hall page
+  const h = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const res = await h.goto(HALL, { waitUntil: 'networkidle' });
+  check(res.status() === 200 && /16 Points/.test(await h.locator('h1').innerText()), '/hall-of-excellence: 200, titled "16 Points (AAA) Achievers"');
+  const cards = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, text: e.textContent })));
+  check(cards.length === aaa.length && cards.every((c) => /AAA/.test(c.text)), `/hall-of-excellence: one card per recorded AAA result (${cards.length})`);
+  const sessions = await h.locator('[data-session]').evaluateAll((els) => els.map((e) => e.dataset.session));
+  const known = [...new Set(aaa.map((r) => r.session).filter(Boolean))].sort().reverse();
+  check(JSON.stringify(sessions.filter((x) => x !== 'unconfirmed')) === JSON.stringify(known) && (aaa.some((r) => !r.session) ? sessions.at(-1) === 'unconfirmed' : true), `/hall-of-excellence: grouped by session, newest first, unconfirmed last (${sessions.join(', ')})`);
+  check(!(await h.content()).match(/20XX|Placeholder|data-placeholder-section/), '/hall-of-excellence: no placeholder content in a production build');
+  const r = await h.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
+  check(r.sw <= r.vw, '/hall-of-excellence 390px: no horizontal overflow');
+  await h.addScriptTag({ content: axeSource });
+  const v = await h.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
+  check(v.length === 0, `/hall-of-excellence: no serious/critical accessibility violations ${v.join(', ')}`);
+  await h.close();
+
+  // Privacy: no unconsented name or photo anywhere; no placeholders in production
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const all = [];
+  const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : all.push(join(d, f))));
+  walk(dist);
+  const html = all.filter((f) => f.endsWith('.html')).map((f) => readFileSync(f, 'utf8')).join('\n');
+  const pendingNames = aaa.filter((x) => x.consent.status !== 'granted').map((x) => x.name).filter(Boolean);
+  check(!pendingNames.some((n) => html.includes(n)), `privacy: no unconsented AAA achiever is named (${pendingNames.length} withheld)`);
+  check(!/data-placeholder-section|ach--placeholder|tst--placeholder|Awaiting a verified record/.test(html), 'production build contains no layout placeholders');
+  const pageSrc = ['index.astro', 'hall-of-excellence.astro', 'success-stories.astro'].map((f) => readFileSync(new URL(`../src/pages/${f}`, import.meta.url), 'utf8')).join('\n');
+  check(!/<(AchieverCard|TestimonialCard)[^>]*placeholder/.test(pageSrc), 'Hall and testimonials render only genuine records — no placeholder cards, even on preview');
+  const tst = JSON.parse(readFileSync(new URL('../content/testimonials/testimonials.json', import.meta.url), 'utf8')).records;
+  const shown = tst.filter((t) => t.consent.status === 'granted' && (t.consent.allow ?? ['name', 'photo', 'result']).includes('quote'));
+  check((await (async () => { const p = await browser.newPage(); await p.goto(BASE); const n = await p.locator('[data-testimonial]').count(); await p.close(); return n; })()) === Math.min(3, shown.length), `homepage: shows only consented testimonials (${shown.length} of ${tst.length})`);
+
+  // V1 archive catalogue: every testii/slider/scroll file recorded and recoverable
+  const cat = JSON.parse(readFileSync(new URL('../content/v1-archive/catalogue.json', import.meta.url), 'utf8'));
+  check(cat.count.testii === 43 && cat.count.slider === 16 && cat.count.scroll === 32 && cat.items.every((i) => /^[0-9a-f]{64}$/.test(i.sha256)), 'V1 archive: 91 testimonial assets catalogued with SHA-256');
+  check(cat.items.filter((i) => i.folder === 'testii').every((i) => recs.some((r) => r.id === i.recordId)), 'V1 archive: every testii file is linked to an achievement record');
+  check(!all.some((f) => /testii|scroll\/|slider\/|v1-archive/.test(f)), 'V1 archive images are not published in the build');
+}
+
+// 15. /team — staff directory from BIA's official role documents
+{
+  const team = JSON.parse(readFileSync(new URL('../content/team/team.json', import.meta.url), 'utf8')).people;
+  const t = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const res = await t.goto(new URL('team', BASE).href, { waitUntil: 'networkidle' });
+  const cards = await t.locator('[data-member]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.member, text: e.textContent, open: e.querySelector('details').open, imgs: e.querySelectorAll('img').length, tel: e.querySelectorAll('a[href^="tel:"], a[href^="mailto:"]').length, items: e.querySelectorAll('details li').length })));
+  check(res.status() === 200 && team.length === 13 && cards.length === 13, `/team: all ${cards.length} staff profiles shown`);
+  {
+    const { readdirSync, statSync } = await import('node:fs');
+    const { join } = await import('node:path');
+    const all = [];
+    const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : all.push(join(d, f))));
+    walk(new URL('../dist/', import.meta.url).pathname);
+    const html = all.filter((f) => f.endsWith('.html')).map((f) => readFileSync(f, 'utf8')).join('\n').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    check(!/Temiloluwa/i.test(html), 'site: the former receptionist is not listed anywhere');
+    check(!/Sir Holly\s*(·|,|-|–)?\s*(Chief Operating Officer|COO)\b/.test(html) && !/(Chief Operating Officer|COO)\s*(·|:|,|-|–)\s*Sir Holly/.test(html) && /Sir Holly and the Chief Operating Officer \(COO\)/.test(html), 'site: Sir Holly is not described as COO; Achief Halimat remains PA to Sir Holly and the COO');
+  }
+  check(team.every((p) => { const c = cards.find((x) => x.id === p.id); return c && c.text.includes(p.name) && c.text.includes(p.title) && c.items === p.sections.reduce((n, s) => n + s.items.length, 0); }), '/team: every profile shows its full name, official position and every documented responsibility');
+  check(cards.every((c) => !c.open && c.imgs === 0 && c.tel === 0), '/team: responsibilities start collapsed; initials avatars only; no invented photos or contact details');
+  await t.locator('[data-member] summary').first().click();
+  check(await t.locator('[data-member] details').first().evaluate((d) => d.open), '/team: a profile expands to show its responsibilities');
+  const r = await t.evaluate(() => ({ sw: document.documentElement.scrollWidth, vw: document.documentElement.clientWidth }));
+  check(r.sw <= r.vw, '/team 390px: no horizontal overflow');
+  await t.addScriptTag({ content: axeSource });
+  const v = await t.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
+  check(v.length === 0, `/team: no serious/critical accessibility violations ${v.join(', ')}`);
+  // Sticky department bar: follows the auto-hiding header (no gap above it) and never hides a heading after a tap
+  for (const path of ['team', 'hall-of-excellence']) {
+    const q = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 });
+    await q.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
+    const bar = path === 'team' ? '.tnav' : '.hnav';
+    if (!(await q.locator(bar).count())) { await q.close(); continue; }
+    const geo = () => q.evaluate((sel) => { const h = document.querySelector('header.header').getBoundingClientRect(); const n = document.querySelector(sel).getBoundingClientRect(); return { hBottom: Math.round(h.bottom), nTop: Math.round(n.top), nBottom: Math.round(n.bottom) }; }, bar);
+    await q.mouse.wheel(0, 1600); await q.waitForTimeout(900);
+    const down = await geo();
+    await q.mouse.wheel(0, -200); await q.waitForTimeout(900);
+    const up = await geo();
+    check(down.hBottom <= 0 && Math.abs(down.nTop) <= 1 && Math.abs(up.nTop - up.hBottom) <= 1, `/${path} mobile: department bar sits flush under the header, and at the top when the header hides (down ${down.nTop}px, up ${up.nTop}px vs header ${up.hBottom}px)`);
+    const links = await q.locator(`${bar} a`).evaluateAll((a) => a.map((x) => x.getAttribute('href')));
+    const hidden = [];
+    for (const href of links) {
+      await q.evaluate(() => scrollTo({ top: 0, behavior: 'instant' })); await q.waitForTimeout(300);
+      await q.locator(`${bar} a[href="${href}"]`).click(); await q.waitForTimeout(1600);
+      const r = await q.evaluate(([sel, id]) => { const h = document.querySelector(`${id} h2`).getBoundingClientRect(); const n = document.querySelector(sel).getBoundingClientRect(); const hd = document.querySelector('header.header').getBoundingClientRect(); return { headTop: h.top, covered: h.top < Math.max(n.bottom, hd.bottom) - 1, visible: h.bottom < innerHeight }; }, [bar, href]);
+      if (r.covered || !r.visible) hidden.push(`${href}@${Math.round(r.headTop)}`);
+    }
+    check(hidden.length === 0, `/${path} mobile: tapping each section link shows its heading below the bar (${links.length} links) ${hidden.join(' ')}`);
+    await q.close();
+  }
+  await t.goto(BASE, { waitUntil: 'domcontentloaded' });
+  check((await t.locator('header a[href="/team"], #mobile-menu a[href="/team"]').count()) >= 1 && (await t.locator('footer a[href="/team"]').count()) >= 1 && (await t.locator('#founder a[href="/team"], main a[href="/team"]').count()) >= 1, '/team linked from navigation, footer and the homepage founder section');
+  await t.close();
 }
 
 await browser.close();
