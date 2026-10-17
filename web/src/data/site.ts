@@ -34,10 +34,11 @@ export const site = {
 };
 
 /** Main contacts, in Boma's order of priority (October 2026). Boma's line is always first;
- * it and the COO line appear beside the WhatsApp icon on BIA's 2026/27 flyers. */
+ * it and Sir Holly's line appear beside the WhatsApp icon on BIA's 2026/27 flyers.
+ * Sir Holly is not the COO (Boma, Oct 2026); his line is listed as an admissions line, as on the flyers. */
 export const contacts: Contact[] = [
   { role: 'Chief Executive', name: 'Hon. Boma', phone: '+2347012388184', display: '0701 238 8184' },
-  { role: 'Chief Operating Officer', name: 'Sir Holly', phone: '+2348164329204', display: '0816 432 9204' },
+  { role: 'Admissions', name: 'Sir Holly', phone: '+2348164329204', display: '0816 432 9204' },
   { role: 'Personal Assistant', name: 'Miss Damaris', phone: '+2349134190829', display: '0913 419 0829' },
 ];
 
@@ -55,15 +56,14 @@ export type StaffMember = {
 const tel = (local: string) => ({ phone: `+234${local.slice(1)}`, display: `${local.slice(0, 4)} ${local.slice(4, 7)} ${local.slice(7)}` });
 
 /** Staff directory supplied by Boma (October 2026), shown on /contact.
- * Miss Esther is not listed until Boma confirms her new role; the former
+ * Miss Temiloluwa (receptionist) removed Oct 2026: no longer employed. Miss Esther is not listed until Boma confirms her new role; the former
  * receptionist's line was removed at Boma's request (October 2026). */
 export const staff: StaffMember[] = [
   { role: 'Chief Executive', name: 'Hon. Boma', phones: [tel('07012388184')] },
-  { role: 'Chief Operating Officer', name: 'Sir Holly', phones: [tel('08164329204')] },
+  { role: 'Admissions', name: 'Sir Holly', phones: [tel('08164329204')] },
   { role: 'Personal Assistant', name: 'Miss Damaris', phones: [tel('09134190829')] },
   { role: 'JUPEB Secretary', name: 'Miss Gloria', phones: [tel('08021047735')] },
   { role: 'Office Manager', name: 'Mr. Great', phones: [tel('08103113275'), tel('09045616337')] },
-  { role: 'Office Receptionist', name: 'Miss Temiloluwa', phones: [tel('07049733518')], whatsapp: tel('07048065326') },
   { role: 'JUPEB Academic Officer', name: 'Mr. Victor', phones: [tel('09022684754'), tel('07073551210')] },
 ];
 

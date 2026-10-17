@@ -306,11 +306,11 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const builtText = files.filter((f) => /\.(html|js|css|json|xml|txt)$/.test(f)).map((f) => readFileSync(join(dist, f), 'utf8')).join('\n');
   check(!/AIzaSy|firebaseapp|apiKey/.test(builtText), 'build output contains no Firebase keys or config');
   // Only the contacts in Boma's October 2026 staff list are published
-  const official = ['7012388184', '8164329204', '9134190829', '8021047735', '8103113275', '9045616337', '7049733518', '9022684754', '7073551210'];
+  const official = ['7012388184', '8164329204', '9134190829', '8021047735', '8103113275', '9045616337', '9022684754', '7073551210'];
   const phones = [...new Set([...builtText.matchAll(/tel:\+234(\d{10})/g)].map((m) => m[1]))];
   check(phones.length === official.length && phones.every((p) => official.includes(p)), `only Boma's confirmed staff numbers are published (${phones.length})`);
   const wa = [...new Set([...builtText.matchAll(/wa\.me\/234(\d{10})/g)].map((m) => m[1]))].sort();
-  check(JSON.stringify(wa) === JSON.stringify(['7012388184', '7048065326']), `WhatsApp links go only to numbers identified as WhatsApp (${wa.join(', ')})`);
+  check(JSON.stringify(wa) === JSON.stringify(['7012388184']), `WhatsApp links go only to numbers identified as WhatsApp (${wa.join(', ')})`);
   await page.close();
 }
 
@@ -871,11 +871,10 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const CON = new URL('contact', BASE).href;
   const STAFF = [
     ['Chief Executive', 'Hon. Boma', ['+2347012388184']],
-    ['Chief Operating Officer', 'Sir Holly', ['+2348164329204']],
+    ['Admissions', 'Sir Holly', ['+2348164329204']],
     ['Personal Assistant', 'Miss Damaris', ['+2349134190829']],
     ['JUPEB Secretary', 'Miss Gloria', ['+2348021047735']],
     ['Office Manager', 'Mr. Great', ['+2348103113275', '+2349045616337']],
-    ['Office Receptionist', 'Miss Temiloluwa', ['+2347049733518']],
     ['JUPEB Academic Officer', 'Mr. Victor', ['+2349022684754', '+2347073551210']],
   ];
   for (const width of [320, 390, 1440]) {
@@ -888,10 +887,10 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
       const ok = cards.length === STAFF.length && STAFF.every(([role, name, tels], i) => cards[i].text.includes(role) && (!name || cards[i].text.includes(name)) && JSON.stringify(cards[i].tels) === JSON.stringify(tels));
       check(ok, `/contact: ${cards.length} staff entries with the exact roles, names and tap-to-call numbers Boma supplied`);
       const was = cards.flatMap((c) => c.wa);
-      check(was.length === 1 && was[0] === 'https://wa.me/2347048065326' && cards[5].wa.length === 1, '/contact: only the number identified as WhatsApp (Miss Temiloluwa, 0704 806 5326) has a WhatsApp link');
+      check(was.length === 0, '/contact: no WhatsApp links in the staff directory (the only staff WhatsApp number belonged to the former receptionist)');
       const text = await p.locator('main').innerText();
       check(!/Esther/i.test(text), '/contact: Miss Esther is not listed as Personal Assistant');
-      check(!/Alice|9167505810|0916 750 5810/i.test(text), '/contact: the former receptionist (Alice) and her number are removed');
+      check(!/Alice|Temiloluwa|9167505810|0916 750 5810|7049733518|7048065326/i.test(text), '/contact: former receptionists and their numbers are removed');
       check(
         /12 Ameen Street/.test(text) && /Abule-Oja, Akoka/.test(text) && /near UNILAG/.test(text) && /56 Igi Olugbin Street/.test(text) && /Shomolu\/Bariga, Lagos/.test(text) &&
           /official meetings, business enquiries, partnerships and consultations/.test(text) && /JUPEB physical tutorials, academic activities and student learning/.test(text) && /Directly opposite AP Petrol Station/.test(text),
@@ -998,7 +997,17 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const t = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
   const res = await t.goto(new URL('team', BASE).href, { waitUntil: 'networkidle' });
   const cards = await t.locator('[data-member]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.member, text: e.textContent, open: e.querySelector('details').open, imgs: e.querySelectorAll('img').length, tel: e.querySelectorAll('a[href^="tel:"], a[href^="mailto:"]').length, items: e.querySelectorAll('details li').length })));
-  check(res.status() === 200 && team.length === 14 && cards.length === 14, `/team: all ${cards.length} staff profiles shown`);
+  check(res.status() === 200 && team.length === 13 && cards.length === 13, `/team: all ${cards.length} staff profiles shown`);
+  {
+    const { readdirSync, statSync } = await import('node:fs');
+    const { join } = await import('node:path');
+    const all = [];
+    const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : all.push(join(d, f))));
+    walk(new URL('../dist/', import.meta.url).pathname);
+    const html = all.filter((f) => f.endsWith('.html')).map((f) => readFileSync(f, 'utf8')).join('\n').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+    check(!/Temiloluwa/i.test(html), 'site: the former receptionist is not listed anywhere');
+    check(!/Sir Holly\s*(·|,|-|–)?\s*(Chief Operating Officer|COO)\b/.test(html) && !/(Chief Operating Officer|COO)\s*(·|:|,|-|–)\s*Sir Holly/.test(html) && /Sir Holly and the Chief Operating Officer \(COO\)/.test(html), 'site: Sir Holly is not described as COO; Achief Halimat remains PA to Sir Holly and the COO');
+  }
   check(team.every((p) => { const c = cards.find((x) => x.id === p.id); return c && c.text.includes(p.name) && c.text.includes(p.title) && c.items === p.sections.reduce((n, s) => n + s.items.length, 0); }), '/team: every profile shows its full name, official position and every documented responsibility');
   check(cards.every((c) => !c.open && c.imgs === 0 && c.tel === 0), '/team: responsibilities start collapsed; initials avatars only; no invented photos or contact details');
   await t.locator('[data-member] summary').first().click();

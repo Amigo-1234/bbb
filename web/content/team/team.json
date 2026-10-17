@@ -1,5 +1,5 @@
 {
-  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here.",
+  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Sir Holly and the COO are separate positions (Boma, 2026-10-17).",
   "people": [
     {
       "name": "Caleb Aghedo",
@@ -76,40 +76,6 @@
       "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
       "department": "administration",
       "id": "grace-damaris-igbani"
-    },
-    {
-      "name": "Samuel Alice Temiloluwa",
-      "title": "Receptionist",
-      "summary": "The receptionist welcomes visitors, attends to enquiries, supports programme registration, and follows up on registration-related matters.",
-      "sections": [
-        {
-          "heading": "Reception and enquiries",
-          "items": [
-            "Welcome visitors and attend to questions from prospective students, parents, and existing students.",
-            "Provide clear information about registration, admission, payment procedures, and available programmes to the extent confirmed by BIA.",
-            "Refer questions that require confirmation to the appropriate staff member rather than guessing."
-          ]
-        },
-        {
-          "heading": "Registration support",
-          "items": [
-            "Register students for JUPEB and other available programmes using the required process.",
-            "Check that the information supplied for registration is recorded carefully and that any missing details are identified for follow-up.",
-            "Contact prospective students and parents to explain registration, admission, and payment procedures."
-          ]
-        },
-        {
-          "heading": "Follow-up and reporting",
-          "items": [
-            "Follow up with students and parents regarding registration fees, outstanding payments, and required documentation.",
-            "Prepare daily and weekly reports on work activities, achievements, challenges, and progress.",
-            "Ensure that reports communicate the status of work clearly and flag items that need attention."
-          ]
-        }
-      ],
-      "source": "BIA Staff Job Descriptions and Responsibilities (prepared by the Head of Operations)",
-      "department": "administration",
-      "id": "samuel-alice-temiloluwa"
     },
     {
       "name": "Adenusi Gloria",
