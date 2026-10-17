@@ -26,7 +26,18 @@ export type TeamMember = z.infer<typeof Person>;
 
 const parsed = z.object({ people: z.array(Person) }).safeParse(raw);
 if (!parsed.success) throw new Error(`content/team/team.json is invalid:\n${parsed.error.message}`);
-export const team = parsed.data.people;
+
+/**
+ * Staff portraits: src/assets/team/<profile id>.jpg (square, EXIF stripped).
+ * A photo must match an existing profile id; people without one keep their initials.
+ */
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/team/*.{jpg,jpeg,png,webp}', { eager: true });
+const photoById = new Map(Object.entries(photos).map(([path, m]) => [path.split('/').pop()!.replace(/\.\w+$/, ''), m.default]));
+const ids = new Set(parsed.data.people.map((p) => p.id));
+const orphans = [...photoById.keys()].filter((id) => !ids.has(id));
+if (orphans.length) throw new Error(`Staff photos without a matching profile in team.json: ${orphans.join(', ')}`);
+
+export const team = parsed.data.people.map((p) => ({ ...p, photo: photoById.get(p.id) }));
 
 /** Two initials from the name, ignoring bracketed nicknames and initials like "O.S". */
 export const initials = (name: string) =>

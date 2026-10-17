@@ -1,4 +1,5 @@
 ---
+import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
@@ -38,7 +39,13 @@ const groups = departments.map((d) => ({ ...d, people: team.filter((p) => p.depa
           {g.people.map((p) => (
             <li class="tcard" id={p.id} data-member={p.id}>
               <div class="tcard__head">
-                <span class="tcard__avatar" aria-hidden="true">{initials(p.name)}</span>
+                {p.photo ? (
+                  <span class="tcard__avatar tcard__avatar--photo">
+                    <Picture src={p.photo} formats={['avif', 'webp']} widths={[96, 192]} sizes="96px" alt={`Portrait of ${p.name}`} loading="lazy" />
+                  </span>
+                ) : (
+                  <span class="tcard__avatar" aria-hidden="true">{initials(p.name)}</span>
+                )}
                 <div>
                   <h3 class="tcard__name">{p.name}</h3>
                   <p class="tcard__title">{p.title}</p>
@@ -204,15 +211,30 @@ const groups = departments.map((d) => ({ ...d, people: team.filter((p) => p.depa
     flex: none;
     display: grid;
     place-items: center;
-    width: 60px;
-    height: 60px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     background: linear-gradient(150deg, var(--bia-red), var(--bia-red-deep));
     box-shadow: inset 0 0 0 2px rgb(214 182 121 / 0.6);
     color: #fff;
     font-family: var(--serif);
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     letter-spacing: 0.02em;
+  }
+  .tcard__avatar--photo {
+    padding: 2px;
+    overflow: hidden;
+    background: rgb(214 182 121 / 0.6);
+    box-shadow: none;
+  }
+  .tcard__avatar--photo :global(picture),
+  .tcard__avatar--photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: center 30%;
   }
   .tcard__name {
     font-family: var(--serif);
