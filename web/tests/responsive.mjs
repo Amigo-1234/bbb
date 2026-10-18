@@ -1013,9 +1013,9 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     check(!/Sir Holly\s*(·|,|-|–)?\s*(Chief Operating Officer|COO)\b/.test(html) && !/(Chief Operating Officer|COO)\s*(·|:|,|-|–)\s*Sir Holly/.test(html) && /Sir Holly and the Chief Operating Officer \(COO\)/.test(html), 'site: Sir Holly is not described as COO; Achief Halimat remains PA to Sir Holly and the COO');
   }
   check(team.every((p) => { const c = cards.find((x) => x.id === p.id); return c && c.text.includes(p.name) && c.text.includes(p.title) && c.items === p.sections.reduce((n, s) => n + s.items.length, 0); }), '/team: every profile shows its full name, official position and every documented responsibility');
-  const withPhoto = ['abolade-victor', 'caleb-aghedo', 'adenusi-gloria', 'williams-favour-ogunbayo', 'achief-halimat-anuoluwapo', 'ighofimoni-gabriel-oghenekevwe', 'nwokwe-onyedikachi'];
+  const withPhoto = ['abolade-victor', 'divine-igbokwe', 'grace-damaris-igbani', 'jomiloju-samuel-ayo-yusuf', 'caleb-aghedo', 'adenusi-gloria', 'williams-favour-ogunbayo', 'achief-halimat-anuoluwapo', 'ighofimoni-gabriel-oghenekevwe', 'nwokwe-onyedikachi'];
   check(cards.every((c) => !c.open && c.tel === 0), '/team: responsibilities start collapsed; no invented contact details');
-  check(cards.every((c) => (withPhoto.includes(c.id) ? c.imgs === 1 && !c.initials : c.imgs === 0 && /^[A-Z]{2}$/.test(c.initials ?? ''))), '/team: portraits only on the seven matched profiles; initials for everyone else');
+  check(cards.every((c) => (withPhoto.includes(c.id) ? c.imgs === 1 && !c.initials : c.imgs === 0 && /^[A-Z]{2}$/.test(c.initials ?? ''))), '/team: portraits only on the ten matched profiles; initials for everyone else');
   { const av = cards.find((c) => c.id === 'abolade-victor'); check(av && av.text.includes('Academic Director') && av.items === 20 && av.imgs === 1, '/team: Academic Director profile shows his photo, title and all 20 official responsibilities'); }
   check(cards.every((c) => c.photoOk), '/team: every portrait loads, is a 68px circle crop and has its name as alt text');
   await t.locator('[data-member] summary').first().click();
