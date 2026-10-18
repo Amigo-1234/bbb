@@ -38,11 +38,13 @@ export const mission =
   'To help every student gain admission into their dream university through structured learning, discipline, and modern teaching methods.';
 
 export const founder = {
-  // "Hon. Boma" is used on /contact, as in Boma's own staff list (Oct 2026). "Dr." from V1 stays omitted.
-  name: 'Boma',
+  /** Boma's professional brand identity (BIA, Oct 2026); `nameNote` explains it wherever it is shown. */
+  name: 'Hon. Dr. Boma',
   fullName: 'Busari Muideen Oyebamiji',
-  /** As published on V1 and consistent with BIA's documents. */
-  role: "Founder of Boma Academy Limited (BAL), Boma's Intellectual Academy (BIA) and BIA JUPEB",
+  role: "Founder and Chief Executive Officer of Boma Academy Limited (BAL), Boma's Intellectual Academy (BIA) and BIA JUPEB",
+  /** Biography as supplied by BIA (18 Oct 2026). */
+  bio: 'He is a Biomedical Engineering graduate of the University of Lagos (UNILAG), a Computer Engineering graduate of the Federal Polytechnic, Ilaro, and an alumnus of the University of Ibadan. He holds honorary membership of the 149 Battalion Warrant Officers’ and Sergeants’ Mess, Nigerian Army Cantonment, Ojo, Lagos.',
+  nameNote: '“Hon. Dr. Boma” is the professional brand identity of Busari Muideen Oyebamiji. It does not refer to an earned doctorate or a public office.',
 };
 
 /** Captions burned into BIA's directions video, transcribed (seconds). */

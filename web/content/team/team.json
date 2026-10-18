@@ -1,6 +1,36 @@
 {
-  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Sir Holly and the COO are separate positions (Boma, 2026-10-17). Added 2026-10-17 on Boma's confirmation: Abolade Victor, Academic Director, with his official responsibilities.",
+  "$comment": "Staff directory from two official BIA documents approved by Boma (Oct 2026): \"BIA Staff Job Descriptions and Responsibilities\" and \"BIA Management Roles and Responsibilities\". Text is reproduced from the documents; departments are a grouping for the website only and do not describe reporting lines. No photos, qualifications or contact details are recorded here. Removed 2026-10-17 at Boma's instruction: Samuel Alice Temiloluwa (Receptionist), no longer employed at BIA. Added 2026-10-17 on Boma's confirmation: Abolade Victor, Academic Director, with his official responsibilities. Updated 2026-10-18: Sir Holly (Olukoga Sunday Oluwemimo) confirmed as Co-Founder and COO, replacing the earlier note that these were separate positions; Hon. Dr. Boma (Busari Muideen Oyebamiji) added as Founder and CEO with his supplied biography.",
   "people": [
+    {
+      "id": "busari-muideen-oyebamiji",
+      "name": "Busari Muideen Oyebamiji (Hon. Dr. Boma)",
+      "title": "Founder and Chief Executive Officer (CEO)",
+      "summary": "Founder of Boma Academy Limited (BAL), Boma’s Intellectual Academy (BIA) and BIA JUPEB. He is a Biomedical Engineering graduate of the University of Lagos (UNILAG), a Computer Engineering graduate of the Federal Polytechnic, Ilaro, and an alumnus of the University of Ibadan. He holds honorary membership of the 149 Battalion Warrant Officers’ and Sergeants’ Mess, Nigerian Army Cantonment, Ojo, Lagos. “Hon. Dr. Boma” is the professional brand identity of Busari Muideen Oyebamiji. It does not refer to an earned doctorate or a public office.",
+      "department": "management",
+      "sections": [],
+      "source": "Biography and title supplied by BIA, 18 Oct 2026"
+    },
+    {
+      "id": "olukoga-sunday-oluwemimo",
+      "name": "Olukoga Sunday Oluwemimo (Sir Holly)",
+      "title": "Co-Founder and Chief Operating Officer (COO)",
+      "summary": "",
+      "department": "management",
+      "sections": [
+        {
+          "heading": "Responsibilities",
+          "items": [
+            "Oversee daily operations.",
+            "Coordinate departments, staff, tasks and targets.",
+            "Supervise academics and student affairs.",
+            "Monitor performance, progress and accountability.",
+            "Support business development, outreach and partnerships.",
+            "Work with the CEO on strategic planning, institutional growth and expansion."
+          ]
+        }
+      ],
+      "source": "Title and responsibilities confirmed by BIA, 18 Oct 2026"
+    },
     {
       "name": "Caleb Aghedo",
       "title": "Head of Operations",
@@ -350,8 +380,8 @@
     },
     {
       "name": "Achief Halimat Anuoluwapo (Halima)",
-      "title": "Online Tutor for Art Subjects / Student Outreach Support / Personal Assistant to Sir Holly and the Chief Operating Officer (COO)",
-      "summary": "This role combines online teaching, student outreach and follow-up, and personal-assistant support to Sir Holly and the Chief Operating Officer (COO).",
+      "title": "Online Tutor for Art Subjects / Student Outreach Support / Personal Assistant to Sir Holly, Co-Founder and Chief Operating Officer (COO)",
+      "summary": "This role combines online teaching, student outreach and follow-up, and personal-assistant support to Sir Holly, Co-Founder and Chief Operating Officer (COO).",
       "sections": [
         {
           "heading": "Online tutoring for art students",
