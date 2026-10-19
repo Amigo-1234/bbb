@@ -1035,7 +1035,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const pub = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
     const withGallery = recs.filter((x) => (x.gallery ?? []).length);
     check(withGallery.every((x) => x.publishedImage && x.gallery.every((g) => readdirSync(pub).includes(g.file) && g.file !== x.publishedImage)), `records: gallery photos sit beside each student's original portrait (${withGallery.map((x) => x.id).join(', ')})`);
-    const kept = { 'v1-019': ['v1-019-boma-2026-10.jpg', 'Eka Emmanuel'], 'v1-026': ['v1-026-boma-2026-10.jpg', 'Amodu Rofiat Oluwabusayomi'], 'v1-037': ['v1-037-boma-2026-10.jpg', 'O.S Ayo Yusuf Jomiloju'] };
+    const kept = { 'v1-019': ['v1-019-boma-2026-10.jpg', 'Eka Emmanuel'], 'v1-026': ['v1-026-boma-2026-10.jpg', 'Amodu Rofiat Oluwabusayomi'], 'v1-037': ['v1-037-boma-2026-10.jpg', 'O.S Ayo Yusuf Jomiloju'], 'boma-2026-ayeni-tenioluwa': ['boma-2026-ayeni-tenioluwa-boma-2026-10.jpg', 'Ayeni Tenioluwa Oluwasekemi'] };
     check(Object.entries(kept).every(([id, [img, name]]) => { const x = recs.find((y) => y.id === id); return x && x.publishedImage === img && x.name === name && x.grade === 'AAA' && x.points == null; }) && new Set(recs.map((x) => x.name).filter(Boolean)).size === recs.filter((x) => x.name).length,
       'records: original portraits, names and grades kept; points still unconfirmed; no duplicate student records');
   }

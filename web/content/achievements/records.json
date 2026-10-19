@@ -1230,7 +1230,16 @@
         ]
       },
       "publishedImage": "boma-2026-ayeni-tenioluwa-boma-2026-10.jpg",
-      "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). Not in the V1 archive. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null)."
+      "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). Not in the V1 archive. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null). 2026-10-19: award photo added from BIA's Hall of Excellence caption, which spells her name 'Ayeni Oluwateniola Oluwasekemi'; the prize board in the photo reads 'Ayeni Oluwatimilehin'. Record name left unchanged pending Boma's confirmation. Caption also states 16 points (AAA); points stay null until the scale is confirmed.",
+      "gallery": [
+        {
+          "file": "boma-2026-ayeni-tenioluwa-award-2026-10.jpg",
+          "caption": "Ayeni Tenioluwa Oluwasekemi at the 2026 BIA JAMB Mock Examination, where she was named Overall Best Student",
+          "source": "Photo and caption from BIA via chat, 19 Oct 2026",
+          "sha256": "8df83822589e4ffbd2c0ab6dbedb338f63b98d863a55680beb64881fa0e184d0",
+          "added": "2026-10-19"
+        }
+      ]
     }
   ]
 }
