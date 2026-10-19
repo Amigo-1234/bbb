@@ -1240,6 +1240,38 @@
           "added": "2026-10-19"
         }
       ]
+    },
+    {
+      "id": "boma-2026-nkuma-daniel",
+      "kind": "student-portrait",
+      "name": "Nkuma Daniel Chukwuemeka",
+      "names": null,
+      "grade": "AAA",
+      "course": "Medicine & Surgery (MBBS)",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-nkuma-daniel-boma-2026-10.jpg",
+      "sourceAsset": "Photo and Hall of Excellence caption from BIA's WhatsApp business account, shared 19 Oct 2026 (sha256 92997dca9ea242a48bf93aa40a917eb22204ef97337f8bc73faf18290fb4f4bd)",
+      "sourceSha256": "92997dca9ea242a48bf93aa40a917eb22204ef97337f8bc73faf18290fb4f4bd",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-19",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-nkuma-daniel-boma-2026-10.jpg",
+      "review": "Name, AAA, MBBS and University of Lagos from BIA's Hall of Excellence post (19 Oct 2026), which also says he was 2nd Overall Best Student in the 2026 BIA JAMB Mock Examination and states 16 points (AAA). Not in the V1 archive. Session and points unconfirmed (left null)."
     }
   ]
 }
