@@ -340,7 +340,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(!all.some((f) => /testii|originals|achievements/i.test(f)), 'privacy: no archived achievement image is emitted into the build');
   const publishedDir = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
   const publishedFiles = readdirSync(publishedDir).filter((f) => !f.startsWith('.'));
-  const granted = recs.filter((r) => r.consent.status === 'granted' && r.publishedImage).map((r) => r.publishedImage);
+  const granted = recs.filter((r) => r.consent.status === 'granted' && r.publishedImage).flatMap((r) => [r.publishedImage, ...(r.gallery ?? []).map((g) => g.file)]);
   check(publishedFiles.length === granted.length && publishedFiles.every((f) => granted.includes(f)), `consent: published images (${publishedFiles.length}) match consent-granted records (${granted.length})`);
   check(recs.every((r) => r.points == null && !('recordedPoints' in r)), 'records carry no unverified point totals (points stay null until BIA confirms the scale)');
 
@@ -950,6 +950,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     `homepage: Hall carousel (V2 carousel) swipes, peeks the next card, has arrows, a counter (${hcInfo.total}) and a focusable track`);
   const smallBtns = await hc.locator('[data-prev], [data-next]').evaluateAll((b) => b.filter((x) => x.getBoundingClientRect().height < 44 || x.getBoundingClientRect().width < 44).length);
   check(smallBtns === 0, 'homepage: Hall carousel arrows are at least 44px');
+  check((await m.locator('#success [data-ach-track], #success [data-ach-viewer]').count()) === 0, 'homepage: Hall cards keep their single-photo design (gallery only on the Hall page)');
   await m.close();
 
   // Hall page
@@ -967,7 +968,59 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await h.addScriptTag({ content: axeSource });
   const v = await h.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
   check(v.length === 0, `/hall-of-excellence: no serious/critical accessibility violations ${v.join(', ')}`);
+
+  // Photo galleries: every consented photograph, primary first; swipe, counter and full-screen viewer
+  const expected = aaa.filter((x) => x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
+  const galleries = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, slides: e.querySelectorAll('[data-ach-track] [data-ach-open]').length, viewer: e.querySelectorAll('[data-ach-viewer] img').length, count: e.querySelector('.ach__count')?.textContent.trim() ?? null })));
+  check(expected.every((x) => { const g = galleries.find((c) => c.id === x.id); return g && g.slides === x.n && g.viewer === x.n && (x.n > 1 ? g.count === `1 / ${x.n}` : g.count === null); }) && galleries.filter((g) => g.slides).length === expected.length,
+    `/hall-of-excellence: each named achiever shows all of their photographs (${expected.filter((x) => x.n > 1).map((x) => `${x.id}: ${x.n}`).join(', ')})`);
+  const multi = expected.find((x) => x.n > 1);
+  if (multi) {
+    const card = h.locator(`[data-achiever="${multi.id}"]`);
+    await card.scrollIntoViewIfNeeded();
+    const track = card.locator('[data-ach-track]');
+    await track.evaluate((t) => t.scrollTo({ left: t.clientWidth, behavior: 'instant' }));
+    await h.waitForTimeout(200);
+    const swiped = await card.evaluate((c) => ({ count: c.querySelector('[data-ach-index]').textContent, img: (() => { const i = c.querySelectorAll('[data-ach-track] img')[1]; return i.complete && i.naturalWidth > 0; })() }));
+    await h.waitForFunction((id) => { const i = document.querySelectorAll(`[data-achiever="${id}"] [data-ach-track] img`)[1]; return i.complete && i.naturalWidth > 0; }, multi.id, { timeout: 10000 }).catch(() => {});
+    check(swiped.count === '2', `/hall-of-excellence mobile: swiping a card moves its counter to 2 / ${multi.n}`);
+    await track.evaluate((t) => t.scrollTo({ left: 0, behavior: 'instant' }));
+    await card.locator('[data-ach-open]').first().click();
+    const dlg = card.locator('[data-ach-viewer]');
+    await h.waitForFunction((id) => { const i = document.querySelector(`[data-achiever="${id}"] [data-ach-viewer] img`); return i.complete && i.naturalWidth > 0; }, multi.id, { timeout: 10000 }).catch(() => {});
+    const opened = await dlg.evaluate((d) => { const r = d.getBoundingClientRect(); const i = d.querySelector('img'); return { open: d.open, full: r.width >= innerWidth - 1 && r.height >= innerHeight - 1, loaded: i.complete && i.naturalWidth > 0, count: d.querySelector('[data-achv-count]').textContent, sw: document.documentElement.scrollWidth <= innerWidth }; });
+    check(opened.open && opened.full && opened.loaded && opened.count === `1 / ${multi.n}` && opened.sw, '/hall-of-excellence mobile: tapping a photo opens it full screen with a counter');
+    await h.addScriptTag({ content: axeSource });
+    const vd = await h.evaluate(async () => (await window.axe.run(document.querySelector('[data-ach-viewer][open]'), { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
+    check(vd.length === 0, `/hall-of-excellence: full-screen viewer has no serious/critical accessibility violations ${vd.join(', ')}`);
+    await h.keyboard.press('ArrowRight');
+    await h.waitForTimeout(300);
+    await h.waitForFunction((id) => { const i = document.querySelectorAll(`[data-achiever="${id}"] [data-ach-viewer] img`)[1]; return i.complete && i.naturalWidth > 0; }, multi.id, { timeout: 10000 }).catch(() => {});
+    const next = await dlg.evaluate((d) => ({ count: d.querySelector('[data-achv-count]').textContent, img: (() => { const i = d.querySelectorAll('img')[1]; return i.complete && i.naturalWidth > 0; })() }));
+    check(next.count === `2 / ${multi.n}` && next.img, '/hall-of-excellence: arrow keys move through photographs in the viewer');
+    await h.keyboard.press('Escape');
+    await h.waitForTimeout(300);
+    check(!(await dlg.evaluate((d) => d.open)) && (await card.evaluate((c) => c.querySelector('[data-ach-index]').textContent)) === '2', '/hall-of-excellence: Escape closes the viewer and the card shows the last photo viewed');
+  }
   await h.close();
+
+  // Desktop: hover arrows step through a card's photographs
+  if (multi) {
+    const dsk = await browser.newPage({ viewport: { width: 1440, height: 900 }, reducedMotion: 'reduce' });
+    await dsk.goto(HALL, { waitUntil: 'networkidle' });
+    const card = dsk.locator(`[data-achiever="${multi.id}"]`);
+    await card.scrollIntoViewIfNeeded();
+    await card.locator('.ach__photo').hover();
+    await card.locator('.ach__nav--next').click();
+    await dsk.waitForTimeout(300);
+    check((await card.evaluate((c) => c.querySelector('[data-ach-index]').textContent)) === '2', '/hall-of-excellence desktop: the next arrow shows the second photograph');
+    await card.locator('[data-ach-open]').nth(1).click();
+    const d = await card.locator('[data-ach-viewer]').evaluate((x) => ({ open: x.open, count: x.querySelector('[data-achv-count]').textContent }));
+    check(d.open && d.count === `2 / ${multi.n}`, '/hall-of-excellence desktop: the viewer opens on the photograph that was clicked');
+    const ov = await dsk.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
+    check(ov, '/hall-of-excellence 1440px: no horizontal overflow');
+    await dsk.close();
+  }
 
   // Privacy: no unconsented name or photo anywhere; no placeholders in production
   const dist = new URL('../dist/', import.meta.url).pathname;
@@ -977,6 +1030,15 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const html = all.filter((f) => f.endsWith('.html')).map((f) => readFileSync(f, 'utf8')).join('\n');
   const pendingNames = aaa.filter((x) => x.consent.status !== 'granted').map((x) => x.name).filter(Boolean);
   check(!pendingNames.some((n) => html.includes(n)), `privacy: no unconsented AAA achiever is named (${pendingNames.length} withheld)`);
+  {
+    // Extra photographs are appended to the student's existing record: never a second record, never a replaced portrait
+    const pub = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
+    const withGallery = recs.filter((x) => (x.gallery ?? []).length);
+    check(withGallery.every((x) => x.publishedImage && x.gallery.every((g) => readdirSync(pub).includes(g.file) && g.file !== x.publishedImage)), `records: gallery photos sit beside each student's original portrait (${withGallery.map((x) => x.id).join(', ')})`);
+    const kept = { 'v1-019': ['v1-019-boma-2026-10.jpg', 'Eka Emmanuel'], 'v1-026': ['v1-026-boma-2026-10.jpg', 'Amodu Rofiat Oluwabusayomi'], 'v1-037': ['v1-037-boma-2026-10.jpg', 'O.S Ayo Yusuf Jomiloju'] };
+    check(Object.entries(kept).every(([id, [img, name]]) => { const x = recs.find((y) => y.id === id); return x && x.publishedImage === img && x.name === name && x.grade === 'AAA' && x.points == null; }) && new Set(recs.map((x) => x.name).filter(Boolean)).size === recs.filter((x) => x.name).length,
+      'records: original portraits, names and grades kept; points still unconfirmed; no duplicate student records');
+  }
   check(!/data-placeholder-section|ach--placeholder|tst--placeholder|Awaiting a verified record/.test(html), 'production build contains no layout placeholders');
   const pageSrc = ['index.astro', 'hall-of-excellence.astro', 'success-stories.astro'].map((f) => readFileSync(new URL(`../src/pages/${f}`, import.meta.url), 'utf8')).join('\n');
   check(!/<(AchieverCard|TestimonialCard)[^>]*placeholder/.test(pageSrc), 'Hall and testimonials render only genuine records — no placeholder cards, even on preview');

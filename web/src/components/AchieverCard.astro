@@ -4,10 +4,14 @@
  * - Name and photograph appear only when the student's consent covers them
  *   (resolved in data/achievements.ts — this component never sees unconsented data).
  * - `placeholder` renders a clearly labelled layout sample (preview builds only).
+ * - `gallery` (Hall of Excellence page) shows every photograph of the student: swipe or arrow
+ *   through them on the card, and tap to open a full-screen viewer. Without it (homepage) the
+ *   card shows the primary photograph only.
  */
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import Badge from './Badge.astro';
 import Laurel from './Laurel.astro';
+import Icon from './Icon.astro';
 import type { Achiever } from '../data/achievements';
 
 interface Props {
@@ -16,16 +20,29 @@ interface Props {
   /** Heading level for the name, so cards nest correctly under section headings. */
   level?: 3 | 4;
   eager?: boolean;
+  gallery?: boolean;
 }
-const { achiever: a, placeholder = false, level = 3, eager = false } = Astro.props;
+const { achiever: a, placeholder = false, level = 3, eager = false, gallery = false } = Astro.props;
 const H = `h${level}` as 'h3' | 'h4';
 const grade = a?.grade ?? 'AAA';
 const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
+const photos = gallery && a ? a.photos : [];
+const n = photos.length;
+const full = await Promise.all(photos.map((p) => getImage({ src: p.src, format: 'webp', width: Math.min(p.src.width, 1600) })));
+const alt = (i: number) => (photos[i].caption ?? `${label}, ${grade}`) + (n > 1 ? ` (photograph ${i + 1} of ${n})` : '');
 ---
 
 <article class:list={['ach', { 'ach--placeholder': placeholder, 'ach--named': !!a?.name, 'ach--nophoto': !a?.photo }]} data-achiever={a?.id ?? 'placeholder'}>
-  <div class="ach__photo">
-    {a?.photo ? (
+  <div class="ach__photo" data-ach-photos={n > 0 ? '' : undefined}>
+    {n > 0 ? (
+      <div class="ach__track" data-ach-track>
+        {photos.map((p, i) => (
+          <button type="button" class="ach__slide" data-ach-open={i} aria-label={`View ${n > 1 ? `photograph ${i + 1} of ${n}` : 'photograph'} of ${label} full screen`}>
+            <Picture src={p.src} formats={['avif', 'webp']} widths={[280, 480]} sizes="(min-width: 960px) 260px, 70vw" alt={alt(i)} loading={eager && i === 0 ? 'eager' : 'lazy'} />
+          </button>
+        ))}
+      </div>
+    ) : a?.photo ? (
       <Picture src={a.photo} formats={['avif', 'webp']} widths={[280, 480]} sizes="(min-width: 960px) 260px, 70vw" alt={`${a.name ?? 'BIA JUPEB achiever'}, ${grade}`} loading={eager ? 'eager' : 'lazy'} />
     ) : (
       <div class="ach__portrait" aria-hidden="true">
@@ -34,6 +51,13 @@ const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
       </div>
     )}
     <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : 'Straight As'}</span>
+    {n > 1 && (
+      <>
+        <span class="ach__count num" aria-hidden="true"><span data-ach-index>1</span> / {n}</span>
+        <button type="button" class="ach__nav ach__nav--prev" data-ach-step="-1" aria-label={`Previous photograph of ${label}`}><Icon name="chevron-left" size={18} /></button>
+        <button type="button" class="ach__nav ach__nav--next" data-ach-step="1" aria-label={`Next photograph of ${label}`}><Icon name="chevron-right" size={18} /></button>
+      </>
+    )}
     {placeholder && <span class="ach__tag">Placeholder</span>}
   </div>
 
@@ -51,7 +75,86 @@ const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
     {!a?.name && !placeholder && <p class="ach__note">Name and photo shown once the student consents.</p>}
     {placeholder && <p class="ach__note">Awaiting a verified record from Boma.</p>}
   </div>
+
+  {n > 0 && (
+    <dialog class="achv" aria-label={`Photographs of ${label}`} data-ach-viewer>
+      <div class="achv__track" tabindex="0" aria-label={`Photographs of ${label}; swipe or use the arrow keys`} data-achv-track>
+        {photos.map((p, i) => (
+          <figure class="achv__slide">
+            <img src={full[i].src} width={full[i].attributes.width} height={full[i].attributes.height} alt={alt(i)} loading="lazy" decoding="async" />
+            <figcaption>{p.caption ?? `${label} · ${grade}`}</figcaption>
+          </figure>
+        ))}
+      </div>
+      {n > 1 && <p class="achv__count num" aria-live="polite" data-achv-count>1 / {n}</p>}
+      <button type="button" class="achv__btn achv__close" data-achv-close aria-label="Close photographs">×</button>
+      {n > 1 && (
+        <>
+          <button type="button" class="achv__btn achv__prev" data-achv-step="-1" aria-label="Previous photograph"><Icon name="chevron-left" size={22} /></button>
+          <button type="button" class="achv__btn achv__next" data-achv-step="1" aria-label="Next photograph"><Icon name="chevron-right" size={22} /></button>
+        </>
+      )}
+    </dialog>
+  )}
 </article>
+
+<script>
+  const smooth = () => (matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
+  const indexOf = (t: HTMLElement) => Math.round(t.scrollLeft / Math.max(1, t.clientWidth));
+  const go = (t: HTMLElement, i: number, behavior: ScrollBehavior = smooth()) => {
+    const n = t.children.length;
+    t.scrollTo({ left: ((i + n) % n) * t.clientWidth, behavior });
+  };
+
+  for (const card of [...document.querySelectorAll('[data-ach-photos]')].map((p) => p.closest<HTMLElement>('.ach')!)) {
+    const track = card.querySelector<HTMLElement>('[data-ach-track]')!;
+    const counter = card.querySelector<HTMLElement>('[data-ach-index]');
+    const dialog = card.querySelector<HTMLDialogElement>('[data-ach-viewer]');
+    const vtrack = dialog?.querySelector<HTMLElement>('[data-achv-track]');
+    const vcount = dialog?.querySelector<HTMLElement>('[data-achv-count]');
+    const n = track.children.length;
+
+    track.addEventListener('scroll', () => counter && (counter.textContent = String(indexOf(track) + 1)), { passive: true });
+    card.querySelectorAll<HTMLButtonElement>('[data-ach-step]').forEach((b) =>
+      b.addEventListener('click', () => go(track, indexOf(track) + Number(b.dataset.achStep))),
+    );
+
+    if (!dialog || !vtrack || typeof dialog.showModal !== 'function') continue;
+    // Index in the viewer, kept here because a closed dialog has no width to measure.
+    let vi = 0;
+    vtrack.addEventListener(
+      'scroll',
+      () => {
+        vi = indexOf(vtrack);
+        if (vcount) vcount.textContent = `${vi + 1} / ${n}`;
+      },
+      { passive: true },
+    );
+    card.querySelectorAll<HTMLButtonElement>('[data-ach-open]').forEach((b) =>
+      b.addEventListener('click', () => {
+        vi = Number(b.dataset.achOpen);
+        dialog.showModal();
+        go(vtrack, vi, 'instant');
+        if (vcount) vcount.textContent = `${vi + 1} / ${n}`;
+      }),
+    );
+    dialog.querySelectorAll<HTMLButtonElement>('[data-achv-step]').forEach((b) =>
+      b.addEventListener('click', () => go(vtrack, indexOf(vtrack) + Number(b.dataset.achvStep))),
+    );
+    dialog.querySelector('[data-achv-close]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') go(vtrack, indexOf(vtrack) - 1);
+      if (e.key === 'ArrowRight') go(vtrack, indexOf(vtrack) + 1);
+    });
+    // Tapping the dark area around a photograph closes the viewer.
+    dialog.addEventListener('click', (e) => (e.target === dialog || e.target === vtrack || (e.target as HTMLElement).classList.contains('achv__slide')) && dialog.close());
+    // The card shows the photograph that was last viewed full screen.
+    dialog.addEventListener('close', () => {
+      go(track, vi, 'instant');
+      if (counter) counter.textContent = String(vi + 1);
+    });
+  }
+</script>
 
 <style>
   .ach {
@@ -84,6 +187,76 @@ const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
     height: 100%;
     object-fit: cover;
     object-position: center 25%;
+  }
+  .ach__track {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .ach__track::-webkit-scrollbar {
+    display: none;
+  }
+  .ach__slide {
+    flex: 0 0 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    scroll-snap-align: start;
+    cursor: zoom-in;
+  }
+  .ach__slide:focus-visible {
+    outline: 3px solid var(--brass-light);
+    outline-offset: -3px;
+  }
+  .ach__count {
+    position: absolute;
+    top: var(--s-3);
+    right: var(--s-3);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgb(17 19 24 / 0.78);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+  }
+  .ach__nav {
+    position: absolute;
+    top: 50%;
+    display: none;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin-top: -18px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.9);
+    color: var(--ink);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s var(--ease);
+  }
+  .ach__nav--prev {
+    left: var(--s-2);
+  }
+  .ach__nav--next {
+    right: var(--s-2);
+  }
+  @media (hover: hover) {
+    .ach__nav {
+      display: grid;
+    }
+    .ach__photo:hover .ach__nav,
+    .ach__nav:focus-visible {
+      opacity: 1;
+    }
   }
   .ach--nophoto .ach__photo {
     aspect-ratio: 16 / 10;
@@ -237,6 +410,107 @@ const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
     }
     .ach__note {
       font-size: 0.72rem;
+    }
+  }
+  /* Full-screen viewer */
+  .achv {
+    width: 100vw;
+    max-width: none;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgb(10 11 14 / 0.97);
+    color: #fff;
+  }
+  .achv::backdrop {
+    background: rgb(0 0 0 / 0.85);
+  }
+  .achv__track {
+    display: flex;
+    height: 100%;
+    overflow-x: auto;
+    overscroll-behavior: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .achv__track::-webkit-scrollbar {
+    display: none;
+  }
+  .achv__slide {
+    flex: 0 0 100%;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 64px var(--s-4) var(--s-6);
+    scroll-snap-align: center;
+  }
+  .achv__slide img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    max-height: calc(100dvh - 160px);
+    border-radius: 8px;
+    object-fit: contain;
+  }
+  .achv__slide figcaption {
+    max-width: 60ch;
+    text-align: center;
+    font-size: 0.9rem;
+    color: rgb(255 255 255 / 0.8);
+  }
+  .achv__count {
+    position: absolute;
+    top: 18px;
+    left: var(--s-4);
+    margin: 0;
+    font-weight: 800;
+    color: #fff;
+  }
+  .achv__btn {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.14);
+    color: #fff;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .achv__btn:hover,
+  .achv__btn:focus-visible {
+    background: rgb(255 255 255 / 0.28);
+  }
+  .achv__close {
+    top: 8px;
+    right: var(--s-3);
+  }
+  .achv__prev,
+  .achv__next {
+    top: 50%;
+    margin-top: -22px;
+  }
+  .achv__prev {
+    left: var(--s-3);
+  }
+  .achv__next {
+    right: var(--s-3);
+  }
+  @media (max-width: 599px) {
+    /* Swipe on phones; the arrows move out of the photograph's way. */
+    .achv__prev,
+    .achv__next {
+      top: auto;
+      bottom: 12px;
+      margin: 0;
     }
   }
   @media (prefers-reduced-motion: reduce) {

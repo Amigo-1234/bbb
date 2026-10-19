@@ -55,7 +55,7 @@ const sessions = hallSessions.filter((g) => g.session).length;
             )}
           </header>
           <div class="hgrid">
-            {g.achievers.map((a, j) => <AchieverCard achiever={a} eager={i === 0 && j < 2} />)}
+            {g.achievers.map((a, j) => <AchieverCard achiever={a} eager={i === 0 && j < 2} gallery />)}
           </div>
         </div>
       </section>

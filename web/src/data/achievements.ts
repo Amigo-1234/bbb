@@ -75,10 +75,30 @@ const Record = z
     consent: Consent,
     /** File name inside src/assets/achievements/published/ (consented records only). */
     publishedImage: z.string().nullable(),
+    /** Further photographs of the same student, oldest first. Append new ones; never replace or
+     * remove earlier entries, and never create a second record for the same student. */
+    gallery: z
+      .array(
+        z.object({
+          file: z.string(),
+          caption: z.string().nullable(),
+          source: z.string(),
+          sha256: z.string().regex(/^[0-9a-f]{64}$/),
+          added: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        }),
+      )
+      .optional()
+      .default([]),
     review: z.string().nullable(),
   })
   .refine((r) => r.publishedImage === null || r.consent.status === 'granted', {
     message: 'publishedImage is only allowed when consent.status is "granted"',
+  })
+  .refine((r) => r.gallery.length === 0 || (allows(r.consent, 'photo') && r.publishedImage !== null), {
+    message: 'gallery photos need granted photo consent and a primary publishedImage',
+  })
+  .refine((r) => new Set([r.publishedImage, ...r.gallery.map((g) => g.file)]).size === r.gallery.length + 1, {
+    message: 'gallery photos must not repeat the primary image or each other',
   });
 
 export type AchievementRecord = z.infer<typeof Record>;
@@ -102,7 +122,12 @@ export const publishedAchievements = records
     const key = r.publishedImage ? `../assets/achievements/published/${r.publishedImage}` : null;
     const image = key ? publishedImages[key]?.default : undefined;
     if (key && !image) throw new Error(`Published image not found for ${r.id}: ${r.publishedImage}`);
-    return { ...r, image };
+    const more = r.gallery.map((g) => {
+      const src = publishedImages[`../assets/achievements/published/${g.file}`]?.default;
+      if (!src) throw new Error(`Gallery image not found for ${r.id}: ${g.file}`);
+      return { src, caption: g.caption };
+    });
+    return { ...r, image, more };
   });
 
 /** Anonymous outcome shown on the site (identifiable fields only when consented). */
@@ -162,6 +187,8 @@ export type Achiever = {
   /** Present only when the student's consent covers it. */
   name?: string;
   photo?: ImageMetadata;
+  /** Every photograph, primary first; empty unless photo consent is granted. */
+  photos: { src: ImageMetadata; caption: string | null }[];
 };
 
 const toAchiever = (r: AchievementRecord): Achiever => {
@@ -177,6 +204,7 @@ const toAchiever = (r: AchievementRecord): Achiever => {
     featured: r.featured,
     name: allows(r.consent, 'name') ? (r.name ?? undefined) : undefined,
     photo: allows(r.consent, 'photo') ? published?.image : undefined,
+    photos: allows(r.consent, 'photo') && published?.image ? [{ src: published.image, caption: null }, ...published.more] : [],
   };
 };
 

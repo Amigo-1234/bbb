@@ -479,7 +479,16 @@
       },
       "publishedImage": "v1-019-boma-2026-10.jpg",
       "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: EMMANUEL EKA. Photo received and matched to the V1 portrait. Published 2026-10-14 with the user's explicit approval, on Boma's academy attestation. Still unconfirmed: session; points (left null).",
-      "names": null
+      "names": null,
+      "gallery": [
+        {
+          "file": "v1-019-award-2026-10.jpg",
+          "caption": "Eka Emmanuel at a BIA awards ceremony",
+          "source": "Photo from BIA via WhatsApp, Oct 2026 (BIA_Hall_of_Excellence_New_Photos.zip/Eka_Emmanuel_Boma.jpeg)",
+          "sha256": "ef0e6e7b631aa3a981ae27e444e1c78ba0c32167127e9cf474938d8eccece12d",
+          "added": "2026-10-19"
+        }
+      ]
     },
     {
       "id": "v1-020",
@@ -659,7 +668,16 @@
       },
       "publishedImage": "v1-026-boma-2026-10.jpg",
       "review": "Name, AAA, course and university as supplied by Boma (Oct 2026); V1 caption name: AMODU RAFIAT BUSAYOMI. Photo received and matched to the V1 portrait. Published 2026-10-14 with the user's explicit approval, on Boma's academy attestation. Still unconfirmed: session; points (left null); name spelling (Boma's spelling used).",
-      "names": null
+      "names": null,
+      "gallery": [
+        {
+          "file": "v1-026-award-2026-10.jpg",
+          "caption": "Amodu Rofiat Oluwabusayomi at a BIA awards ceremony",
+          "source": "Photo from BIA via WhatsApp, Oct 2026 (BIA_Hall_of_Excellence_New_Photos.zip/Amodu_Rofiat_Oluwabusayo_Boma.jpeg)",
+          "sha256": "9279460f76b774f985a1a0cdd7fd2e3ecb14dc43adf465d49e3a5aecbd13c628",
+          "added": "2026-10-19"
+        }
+      ]
     },
     {
       "id": "v1-027",
@@ -946,7 +964,16 @@
       "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). V1 caption: 'O.S Ayo -Yusuf Jomiloju Samuel', Medicine and Surgery, Federal University of Oye-Ekiti (FUOYE), 16 points. Boma (Oct 2026) gives University of Lagos — discrepancy to confirm. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null).",
       "names": null,
       "session": null,
-      "points": null
+      "points": null,
+      "gallery": [
+        {
+          "file": "v1-037-award-2026-10.jpg",
+          "caption": "O.S Ayo Yusuf Jomiloju at a BIA awards ceremony",
+          "source": "Photo from BIA via WhatsApp, Oct 2026 (BIA_Hall_of_Excellence_New_Photos.zip/OS_Jomiloju_Ayo_Yusuf_Award.jpeg)",
+          "sha256": "2d0352f58c42f3f5a9a89246375ae6da322443b7b3ecd71f1df7f36fe992f17b",
+          "added": "2026-10-19"
+        }
+      ]
     },
     {
       "id": "v1-038",

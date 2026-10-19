@@ -91,6 +91,24 @@ If a student declines, set `"status": "declined"` — the record stays anonymous
 To withdraw consent later, set the status back to `"declined"` and delete the
 file from `published/`.
 
+## 2a. Add another photograph of a student already in the Hall
+
+Never create a second record or replace the existing `publishedImage`. Copy the new image (EXIF
+stripped, longest side 1600px) into `src/assets/achievements/published/` and **append** an entry to
+that student's `gallery` list in `records.json`, oldest first:
+
+```json
+"gallery": [
+  { "file": "v1-019-award-2026-10.jpg", "caption": "Eka Emmanuel at a BIA awards ceremony",
+    "source": "Photo from BIA via WhatsApp, Oct 2026 (…zip/…jpeg)", "sha256": "<sha256 of the file BIA sent>",
+    "added": "2026-10-19" }
+]
+```
+
+The build rejects gallery photos on records without granted photo consent, and any file that
+repeats the primary image. The Hall of Excellence page then shows every photograph on the card
+(swipe, counter, full-screen viewer); the homepage keeps showing the primary photograph.
+
 ## 3. Check and publish
 
 ```bash
