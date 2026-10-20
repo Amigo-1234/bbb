@@ -215,6 +215,12 @@ export const achievers: Achiever[] = records
   // Students who agreed to be named come first, then Boma's featured achievers.
   .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
 
+/** 15-point (AAB) achievers, shown in their own section of the Hall page (not on the homepage). */
+export const aabAchievers: Achiever[] = records
+  .filter((r) => r.grade === 'AAB' && r.kind === 'student-portrait')
+  .map(toAchiever)
+  .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
+
 /** Achievers grouped by session, newest session first. Records without a confirmed
  * session are collected under `null` and shown last. */
 export const hallSessions: { session: string | null; achievers: Achiever[] }[] = [

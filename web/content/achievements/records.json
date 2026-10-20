@@ -518,26 +518,31 @@
     {
       "id": "v1-021",
       "kind": "student-portrait",
-      "name": "ABORODE FEYISARA",
+      "name": "Aborode Feyisara Emmanuella",
       "grade": "AAB",
-      "course": "Philosophy",
-      "university": null,
+      "course": "Law",
+      "university": "University of Lagos",
       "level": null,
       "year": null,
-      "category": "arts",
+      "category": "law",
       "featured": false,
       "image": "originals/v1-testii-021.png",
       "sourceAsset": "BOMA JUPEB PROJECT/assets/images/testii/021.png",
       "sourceSha256": "5d4db2a3b51d58f94179b05947e53f2a0e76595bc51c2a3723bb35fe6f219378",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-20",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": null,
+      "publishedImage": "v1-021-boma-2026-10.jpg",
+      "review": "V1 caption name: ABORODE FEYISARA. V1 caption result: AAB, Philosophy. BIA (Oct 2026) gives Law, University of Lagos — BIA's current details used; Philosophy kept here for Boma to confirm. Photo: BIA_15_Point_AAB_Achievers_Photos.zip (BIA WhatsApp Hall of Excellence posts supplied by the site owner, 20 Oct 2026)/Aborode_Feyisara_Emmanuella.jpeg (sha256 ea95cba225899500176b09a11d6aca749dff4298a71ca588c04f225c197aedb1). BIA reports 15 points (AAB); points left null until the scale is confirmed (the site's AAA heading uses 16). Session not confirmed.",
       "names": null
     },
     {
@@ -1272,6 +1277,134 @@
       },
       "publishedImage": "boma-2026-nkuma-daniel-boma-2026-10.jpg",
       "review": "Name, AAA, MBBS and University of Lagos from BIA's Hall of Excellence post (19 Oct 2026), which also says he was 2nd Overall Best Student in the 2026 BIA JAMB Mock Examination and states 16 points (AAA). Not in the V1 archive. Session and points unconfirmed (left null)."
+    },
+    {
+      "id": "boma-2026-david-peniel",
+      "kind": "student-portrait",
+      "name": "David Peniel Osaseme",
+      "names": null,
+      "grade": "AAB",
+      "course": "Dentistry",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-david-peniel-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_15_Point_AAB_Achievers_Photos.zip (BIA WhatsApp Hall of Excellence posts supplied by the site owner, 20 Oct 2026)/David_Peniel_Osaseme.jpeg; sha256 c1451aed431b696aa4cd70a894e7395efa83180fea8d406c1d43b8402174c2bc",
+      "sourceSha256": "c1451aed431b696aa4cd70a894e7395efa83180fea8d406c1d43b8402174c2bc",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-20",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-david-peniel-boma-2026-10.jpg",
+      "review": "Name, AAB, course and University of Lagos from BIA's Hall of Excellence post (manifest supplied 20 Oct 2026). Not in the V1 archive. BIA reports 15 points (AAB); points left null until the scale is confirmed (the site's AAA heading uses 16). Session not confirmed."
+    },
+    {
+      "id": "boma-2026-otugalu-oluwaseun",
+      "kind": "student-portrait",
+      "name": "Otugalu Oluwaseun Victoria",
+      "names": null,
+      "grade": "AAB",
+      "course": "Law",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "law",
+      "featured": false,
+      "image": "originals/boma-2026-otugalu-oluwaseun-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_15_Point_AAB_Achievers_Photos.zip (BIA WhatsApp Hall of Excellence posts supplied by the site owner, 20 Oct 2026)/Otugalu_Oluwaseun_Victoria.jpeg; sha256 3bca2ae3e62d2ae2bb965c2f226db532122387178178ae306dd6b268829d6728",
+      "sourceSha256": "3bca2ae3e62d2ae2bb965c2f226db532122387178178ae306dd6b268829d6728",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-20",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-otugalu-oluwaseun-boma-2026-10.jpg",
+      "review": "Name, AAB, course and University of Lagos from BIA's Hall of Excellence post (manifest supplied 20 Oct 2026). Not in the V1 archive. BIA reports 15 points (AAB); points left null until the scale is confirmed (the site's AAA heading uses 16). Session not confirmed."
+    },
+    {
+      "id": "boma-2026-adielechi-victor",
+      "kind": "student-portrait",
+      "name": "Adielechi Victor Chiedozie",
+      "names": null,
+      "grade": "AAB",
+      "course": "Business Administration",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "business",
+      "featured": false,
+      "image": "originals/boma-2026-adielechi-victor-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_15_Point_AAB_Achievers_Photos.zip (BIA WhatsApp Hall of Excellence posts supplied by the site owner, 20 Oct 2026)/Adielechi_Victor_Chiedozie.jpeg; sha256 e411bb34840353b7e6dd45b2a10326bd36c569262cad2315e10498faca24e5a0",
+      "sourceSha256": "e411bb34840353b7e6dd45b2a10326bd36c569262cad2315e10498faca24e5a0",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-20",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-adielechi-victor-boma-2026-10.jpg",
+      "review": "Name, AAB, course and University of Lagos from BIA's Hall of Excellence post (manifest supplied 20 Oct 2026). Not in the V1 archive. BIA reports 15 points (AAB); points left null until the scale is confirmed (the site's AAA heading uses 16). Session not confirmed."
+    },
+    {
+      "id": "boma-2026-vincent-aimuamwenosa",
+      "kind": "student-portrait",
+      "name": "Vincent Aimuamwenosa",
+      "names": null,
+      "grade": "AAB",
+      "course": "Nursing",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-vincent-aimuamwenosa-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_15_Point_AAB_Achievers_Photos.zip (BIA WhatsApp Hall of Excellence posts supplied by the site owner, 20 Oct 2026)/Vincent_Aimuamwenosa.jpeg; sha256 67e8f4229e3479802a293c5b2d6c5994a045a22096f194b0a8b11ff101927469",
+      "sourceSha256": "67e8f4229e3479802a293c5b2d6c5994a045a22096f194b0a8b11ff101927469",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-20",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-vincent-aimuamwenosa-boma-2026-10.jpg",
+      "review": "Name, AAB, course and University of Lagos from BIA's Hall of Excellence post (manifest supplied 20 Oct 2026). Not in the V1 archive. BIA reports 15 points (AAB); points left null until the scale is confirmed (the site's AAA heading uses 16). Session not confirmed."
     }
   ]
 }

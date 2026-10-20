@@ -957,8 +957,21 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const h = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
   const res = await h.goto(HALL, { waitUntil: 'networkidle' });
   check(res.status() === 200 && /16 Points/.test(await h.locator('h1').innerText()), '/hall-of-excellence: 200, titled "16 Points (AAA) Achievers"');
-  const cards = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, text: e.textContent })));
+  const cards = await h.locator('[data-session] [data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, text: e.textContent })));
   check(cards.length === aaa.length && cards.every((c) => /AAA/.test(c.text)), `/hall-of-excellence: one card per recorded AAA result (${cards.length})`);
+  // 15-point (AAB) achievers: their own section after the AAA sessions; never mixed into AAA or the homepage
+  const aab = recs.filter((x) => x.grade === 'AAB' && x.kind === 'student-portrait');
+  const aabInfo = await h.evaluate(() => {
+    const sec = document.querySelector('[data-grade-section="AAB"]');
+    if (!sec) return null;
+    const sessions = [...document.querySelectorAll('[data-session]')];
+    const after = sessions.every((x) => x.compareDocumentPosition(sec) & Node.DOCUMENT_POSITION_FOLLOWING);
+    const before = !!(sec.compareDocumentPosition(document.querySelector('.hhow')) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return { title: sec.querySelector('h2').textContent.replace(/\s+/g, ' ').trim(), after, before, cards: [...sec.querySelectorAll('[data-achiever]')].map((e) => ({ id: e.dataset.achiever, text: e.textContent, ribbon: e.querySelector('.ach__ribbon').textContent.trim() })) };
+  });
+  check(aabInfo && aabInfo.title === '15 Points (AAB) Achievers' && aabInfo.after && aabInfo.before, '/hall-of-excellence: "15 Points (AAB) Achievers" section sits beneath the AAA achievers');
+  check(aabInfo && aabInfo.cards.length === aab.length && aabInfo.cards.every((c) => /AAB/.test(c.text) && c.ribbon === 'Two As, one B' && !/Straight As/.test(c.text)), `/hall-of-excellence: one card per AAB result, labelled AAB, never "Straight As" (${aabInfo?.cards.length})`);
+  check(aab.filter((x) => x.consent.status === 'granted').every((x) => aabInfo?.cards.some((c) => c.id === x.id && c.text.includes(x.name) && c.text.includes(x.course))), '/hall-of-excellence: consented AAB achievers are named with their course');
   const sessions = await h.locator('[data-session]').evaluateAll((els) => els.map((e) => e.dataset.session));
   const known = [...new Set(aaa.map((r) => r.session).filter(Boolean))].sort().reverse();
   check(JSON.stringify(sessions.filter((x) => x !== 'unconfirmed')) === JSON.stringify(known) && (aaa.some((r) => !r.session) ? sessions.at(-1) === 'unconfirmed' : true), `/hall-of-excellence: grouped by session, newest first, unconfirmed last (${sessions.join(', ')})`);
@@ -970,7 +983,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(v.length === 0, `/hall-of-excellence: no serious/critical accessibility violations ${v.join(', ')}`);
 
   // Photo galleries: every consented photograph, primary first; swipe, counter and full-screen viewer
-  const expected = aaa.filter((x) => x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
+  const expected = recs.filter((x) => ['AAA', 'AAB'].includes(x.grade) && x.kind === 'student-portrait' && x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
   const galleries = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, slides: e.querySelectorAll('[data-ach-track] [data-ach-open]').length, viewer: e.querySelectorAll('[data-ach-viewer] img').length, count: e.querySelector('.ach__count')?.textContent.trim() ?? null })));
   check(expected.every((x) => { const g = galleries.find((c) => c.id === x.id); return g && g.slides === x.n && g.viewer === x.n && (x.n > 1 ? g.count === `1 / ${x.n}` : g.count === null); }) && galleries.filter((g) => g.slides).length === expected.length,
     `/hall-of-excellence: each named achiever shows all of their photographs (${expected.filter((x) => x.n > 1).map((x) => `${x.id}: ${x.n}`).join(', ')})`);

@@ -4,11 +4,11 @@ import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
 import Laurel from '../components/Laurel.astro';
 import AchieverCard from '../components/AchieverCard.astro';
-import { achievers, hallSessions } from '../data/achievements';
+import { aabAchievers, achievers, hallSessions } from '../data/achievements';
 import { primaryContact } from '../data/site';
 
 const slug = (s: string | null) => (s ? `session-${s.replace('/', '-')}` : 'session-being-confirmed');
-const named = achievers.filter((a) => a.name).length;
+const named = [...achievers, ...aabAchievers].filter((a) => a.name).length;
 const sessions = hallSessions.filter((g) => g.session).length;
 ---
 
@@ -26,6 +26,7 @@ const sessions = hallSessions.filter((g) => g.session).length;
       <ul class="hh__stats" role="list">
         <li><strong class="num">{achievers.length}</strong> AAA results recorded</li>
         {sessions > 0 && <li><strong class="num">{sessions}</strong> {sessions === 1 ? 'session' : 'sessions'}</li>}
+        {aabAchievers.length > 0 && <li><a href="#aab"><strong class="num">{aabAchievers.length}</strong> AAB results</a></li>}
         {named > 0 && <li><strong class="num">{named}</strong> named with consent</li>}
       </ul>
     </div>
@@ -64,6 +65,22 @@ const sessions = hallSessions.filter((g) => g.session).length;
     {hallSessions.length === 0 && (
       <section class="hsess">
         <div class="wrap"><p class="hsess__note">Verified achievers will be listed here soon.</p></div>
+      </section>
+    )}
+
+    {aabAchievers.length > 0 && (
+      <section class="hsess hsess--aab" id="aab" aria-labelledby="aab-title" data-grade-section="AAB">
+        <div class="wrap">
+          <header class="hsess__head">
+            <p class="hsess__eyebrow"><Laurel size={20} class="hsess__laurel" />Also in the Hall</p>
+            <h2 id="aab-title" class="hsess__title">15 Points <span>(AAB) Achievers</span></h2>
+            <p class="hsess__count num">{aabAchievers.length} AAB {aabAchievers.length === 1 ? 'achiever' : 'achievers'}</p>
+            <p class="hsess__note">Students who earned two As and a B in JUPEB with Boma’s Intellectual Academy.</p>
+          </header>
+          <div class="hgrid">
+            {aabAchievers.map((a) => <AchieverCard achiever={a} gallery />)}
+          </div>
+        </div>
       </section>
     )}
 
@@ -224,6 +241,31 @@ const sessions = hallSessions.filter((g) => g.session).length;
   .hsess__title span {
     color: var(--muted);
     font-style: italic;
+  }
+  .hsess--aab {
+    border-top: 1px solid var(--line);
+    background: linear-gradient(180deg, var(--surface) 0, transparent 220px);
+  }
+  .hsess__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  .hsess__eyebrow :global(.hsess__laurel) {
+    color: var(--brass);
+  }
+  .hh__stats a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .hh__stats a:hover,
+  .hh__stats a:focus-visible {
+    text-decoration: underline;
   }
   .hsess__count {
     font-weight: 800;

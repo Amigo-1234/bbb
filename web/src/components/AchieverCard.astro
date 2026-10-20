@@ -50,7 +50,7 @@ const alt = (i: number) => (photos[i].caption ?? `${label}, ${grade}`) + (n > 1 
         <Badge variant="mark" size={44} class="ach__mark" />
       </div>
     )}
-    <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : 'Straight As'}</span>
+    <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : grade === 'AAA' ? 'Straight As' : grade === 'AAB' ? 'Two As, one B' : grade}</span>
     {n > 1 && (
       <>
         <span class="ach__count num" aria-hidden="true"><span data-ach-index>1</span> / {n}</span>
