@@ -195,7 +195,7 @@ for (const [label, opts] of [
   check(visibleLaw === lawRows && lawRows > 0 && lawRows < total, `stories ${label}: Law filter shows only law results (${visibleLaw}/${total})`);
   check((await page.locator('[data-filter="law"]').getAttribute('aria-pressed')) === 'true', `stories ${label}: active filter announced via aria-pressed`);
   await page.locator('[data-filter="all"]').click();
-  await page.waitForTimeout(900);
+  await page.waitForFunction((n) => [...document.querySelectorAll('.ledger__row')].filter((r) => r.checkVisibility({ visibilityProperty: true })).length === n, total, { timeout: 3000 }).catch(() => {});
   check((await page.locator('.ledger__row:visible').count()) === total, `stories ${label}: All restores every result`);
   check(errors.length === 0, `stories ${label}: no script errors ${errors.join(' | ')}`);
   await page.close();

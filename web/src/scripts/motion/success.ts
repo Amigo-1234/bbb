@@ -34,7 +34,8 @@ function initFilters() {
         ease: 'power2.inOut',
         absolute: true,
         nested: true,
-        onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.45, delay: 0.15, stagger: 0.03 }),
+        // The whole stagger is capped so restoring a long list stays quick as results are added.
+        onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.45, delay: 0.15, stagger: { amount: Math.min(0.3, 0.03 * els.length) } }),
         onLeave: (els) => gsap.to(els, { autoAlpha: 0, duration: 0.25 }),
       });
     }
