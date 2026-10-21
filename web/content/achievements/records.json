@@ -1437,6 +1437,38 @@
       },
       "publishedImage": "boma-2026-sodolamu-comfort-boma-2026-10.jpg",
       "review": "Name, AAB, Dentistry and University of Lagos from BIA's Hall of Excellence post (20 Oct 2026). Not in the V1 archive. BIA reports 15 points (AAB); points left null until the scale is confirmed. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-omotubi-moyinoluwa",
+      "kind": "student-portrait",
+      "name": "Omotubi Moyinoluwa",
+      "names": null,
+      "grade": "AAB",
+      "course": "Dentistry",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-omotubi-moyinoluwa-boma-2026-10.jpeg",
+      "sourceAsset": "Photo and Hall of Excellence caption from BIA's WhatsApp business account, shared 21 Oct 2026; sha256 80a51c7075f1cd594540f9088313c6a0d2e475f6c89c5b726ae8be73b2f39408",
+      "sourceSha256": "80a51c7075f1cd594540f9088313c6a0d2e475f6c89c5b726ae8be73b2f39408",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-21",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-omotubi-moyinoluwa-boma-2026-10.jpg",
+      "review": "Name, AAB, Dentistry and University of Lagos from BIA's Hall of Excellence post (21 Oct 2026). Not in the V1 archive. BIA reports 15 points (AAB); points left null until the scale is confirmed. Session not confirmed."
     }
   ]
 }
