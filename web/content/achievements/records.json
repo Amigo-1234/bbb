@@ -1064,7 +1064,17 @@
       "review": "Name, AAA, course and University of Lagos as supplied by Boma (Oct 2026). V1 caption: 'Masha David', MBBS (Medicine and Surgery), 16 points. Boma (Oct 2026) gives Dental Surgery (BDS) — discrepancy to confirm. Published on Boma's academy attestation (2026-10-15). Session and points unconfirmed (left null).",
       "names": null,
       "session": null,
-      "points": null
+      "points": null,
+      "gallery": [
+        {
+          "file": "v1-040-whitecoat-boma-2026-10.jpg",
+          "original": "v1-040-whitecoat-boma-2026-10-full.jpg",
+          "caption": "Masha David at a white-coat ceremony",
+          "source": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/David_Masha.jpg (sha256 bc36fa2d13c8dba12d76760db2a9aafa85d2bb46b5ab226641cf341f77a20afc); card crop web_4x5/David_Masha.jpg (sha256 ea2d54c9dc2620a843f0f3bb7ad509e28d021418f48fc4abe9aebef17621106d). BIA post: David Masha, 16 Points, Dentistry, University of Lagos (UNILAG).",
+          "sha256": "bc36fa2d13c8dba12d76760db2a9aafa85d2bb46b5ab226641cf341f77a20afc",
+          "added": "2026-10-26"
+        }
+      ]
     },
     {
       "id": "v1-041",
@@ -1501,6 +1511,278 @@
       },
       "publishedImage": "boma-2026-ipaye-rhodiat-boma-2026-10.jpg",
       "review": "Name, AAB, Nursing Science and University of Lagos from BIA's Hall of Excellence post (21 Oct 2026). Not in the V1 archive. BIA reports 15 points (AAB); points left null until the scale is confirmed. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-williams-favour",
+      "kind": "student-portrait",
+      "name": "Williams Favour",
+      "names": null,
+      "grade": "AAB",
+      "course": "Accounting",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "business",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Williams_Favour.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Williams_Favour.jpg; card crop web_4x5/Williams_Favour.jpg (sha256 83a0fa2ce9f3af3659f635cf5115b0f8f1b5acbdd295d787a2ea0ef264290b4e)",
+      "sourceSha256": "9f95dfef8a12e93b538cbb27a9ae8d397111aabe35af940e71aa3c38ea59a533",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-williams-favour-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-williams-favour-boma-2026-10-full.jpg",
+      "reportedResult": "15 Points (AAB)",
+      "review": "Name, result ('15 Points (AAB)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-chibuike-godslove",
+      "kind": "student-portrait",
+      "name": "Chibuike Godslove Iheakachi",
+      "names": null,
+      "grade": "AAB",
+      "course": "Medical Laboratory Science (MLS)",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Chibuike_Godslove_Iheakachi.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Chibuike_Godslove_Iheakachi.jpg; card crop web_4x5/Chibuike_Godslove_Iheakachi.jpg (sha256 1d634275f7d25c50c4cdb45d1790931759a0556988d87c6ee799737cf3d7c7d6)",
+      "sourceSha256": "d4fec036c6f5f59d96cfea60ddd4b4307a685a3dde500b3e3a4c431cedbecece",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-chibuike-godslove-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-chibuike-godslove-boma-2026-10-full.jpg",
+      "reportedResult": "15 Points (AAB)",
+      "review": "Name, result ('15 Points (AAB)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-duruji-sharon",
+      "kind": "student-portrait",
+      "name": "Duruji Sharon Uchechi",
+      "names": null,
+      "grade": null,
+      "course": "Physiotherapy",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Duruji_Sharon_Uchechi.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Duruji_Sharon_Uchechi.jpg; card crop web_4x5/Duruji_Sharon_Uchechi.jpg (sha256 8c40fd680caa382c9ded7366bd4eca7b09ab51b76f1b813826aa3d8fb14a9c48)",
+      "sourceSha256": "a084e138346dd980fe948e79e6e12c9d85176af464d60a171a323a3ac263f4e5",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-duruji-sharon-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-duruji-sharon-boma-2026-10-full.jpg",
+      "reportedResult": "14/16 Points (87.5%)",
+      "review": "Name, result ('14/16 Points (87.5%)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. No grade letters were supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-nwodomba-jephthah",
+      "kind": "student-portrait",
+      "name": "Nwodomba Jephthah Abide",
+      "names": null,
+      "grade": null,
+      "course": "Political Science",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Nwodomba_Jephthah_Abide.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Nwodomba_Jephthah_Abide.jpg; card crop web_4x5/Nwodomba_Jephthah_Abide.jpg (sha256 b0945f847862e58ad7e3d787bf08aa4b15b06da1ee403503ed71d171be6c8820)",
+      "sourceSha256": "080b4dcd7804d81a906922761ececfa5c6d761108088bf99154718cb48452f06",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-nwodomba-jephthah-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-nwodomba-jephthah-boma-2026-10-full.jpg",
+      "reportedResult": "14/16 Points (87.5%)",
+      "review": "Name, result ('14/16 Points (87.5%)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. No grade letters were supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-ighofimoni-gabriel",
+      "kind": "student-portrait",
+      "name": "Ighofimoni Gabriel",
+      "names": null,
+      "grade": null,
+      "course": "Creative Arts (Theatre Arts & Film)",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Ighofimoni_Gabriel.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Ighofimoni_Gabriel.jpg; card crop web_4x5/Ighofimoni_Gabriel.jpg (sha256 68cbb96c0c2628ca896c8d2a09e6babd15c80e63455de1c1977dc19945847407)",
+      "sourceSha256": "d8e04fe3079969047e7ec52beadbfed8bb2246e30d32dec9133bb61665ed8d33",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-ighofimoni-gabriel-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-ighofimoni-gabriel-boma-2026-10-full.jpg",
+      "reportedResult": "14/16 Points (87.5%)",
+      "review": "Name, result ('14/16 Points (87.5%)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. No grade letters were supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-okosa-omotivie",
+      "kind": "student-portrait",
+      "name": "Okosa Omotivie Mitchell",
+      "names": null,
+      "grade": null,
+      "course": "Political Science",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Okosa_Omotivie_Mitchell.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Okosa_Omotivie_Mitchell.jpg; card crop web_4x5/Okosa_Omotivie_Mitchell.jpg (sha256 aebd1908e2c66e18c2126950653815ecab822e8770da2d1e2cdb76dc18900fd5)",
+      "sourceSha256": "29ff88c8c666ba724a2ef85dd514c2fb050016e0a57a42986855000d3c8e867b",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-okosa-omotivie-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-okosa-omotivie-boma-2026-10-full.jpg",
+      "reportedResult": "14/16 Points (87.5%)",
+      "review": "Name, result ('14/16 Points (87.5%)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. No grade letters were supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-okonedo-tiffany",
+      "kind": "student-portrait",
+      "name": "Okonedo Tiffany Ogheneruno",
+      "names": null,
+      "grade": null,
+      "course": "Mass Communication",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Okonedo_Tiffany_Ogheneruno.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Okonedo_Tiffany_Ogheneruno.jpg; card crop web_4x5/Okonedo_Tiffany_Ogheneruno.jpg (sha256 5ed72162c9d8b0bdb1810d40f5e8b1580ba61360b9018783262657d62f2dd596)",
+      "sourceSha256": "924ac2c331ce969bd7a887f159cfc452de6a3f26d28826c7c1cc01450fc3f1e0",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-okonedo-tiffany-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-okonedo-tiffany-boma-2026-10-full.jpg",
+      "reportedResult": "14/16 Points (87.5%)",
+      "review": "Name, result ('14/16 Points (87.5%)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. No grade letters were supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-ajuogu-chioma",
+      "kind": "student-portrait",
+      "name": "Ajuogu Chioma Emmanuella",
+      "names": null,
+      "grade": null,
+      "course": "Mass Communication",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Ajuogu_Chioma_Emmanuella.jpg",
+      "sourceAsset": "BIA_Hall_Of_Excellence_Photos_Batch2.zip/originals/Ajuogu_Chioma_Emmanuella.jpg; card crop web_4x5/Ajuogu_Chioma_Emmanuella.jpg (sha256 ae8ac736668475d7b1050fa8dc1fcab8c2bbb5166bdcbb5a1dab8a20224b1a55)",
+      "sourceSha256": "3afd5cf6722e921025b1fae05cee2ff0302369962eee08ee9b1ab45fe60a6b26",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-26",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts (batch 2). The batch README asks for BIA's publication permission to be confirmed before going live; not deployed until the site owner approves. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-ajuogu-chioma-boma-2026-10.jpg",
+      "publishedOriginal": "boma-2026-ajuogu-chioma-boma-2026-10-full.jpg",
+      "reportedResult": "14/16 Points (87.5%)",
+      "review": "Name, result ('14/16 Points (87.5%)'), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (manifest, batch 2, 26 Oct 2026). Not in the V1 archive. No grade letters were supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
     }
   ]
 }

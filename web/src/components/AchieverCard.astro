@@ -24,12 +24,15 @@ interface Props {
 }
 const { achiever: a, placeholder = false, level = 3, eager = false, gallery = false } = Astro.props;
 const H = `h${level}` as 'h3' | 'h4';
-const grade = a?.grade ?? 'AAA';
+const grade = a?.grade ?? (a?.result ? null : 'AAA');
+// Points-only results (no grade letters), shown as announced: "14/16 Points (87.5%)" → "14/16".
+const score = !grade && a?.result ? (a.result.match(/^(\d+)\s*\/\s*(\d+)/) ?? null) : null;
+const resultLabel = grade ?? a?.result ?? '';
 const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
 const photos = gallery && a ? a.photos : [];
 const n = photos.length;
-const full = await Promise.all(photos.map((p) => getImage({ src: p.src, format: 'webp', width: Math.min(p.src.width, 1600) })));
-const alt = (i: number) => (photos[i].caption ?? `${label}, ${grade}`) + (n > 1 ? ` (photograph ${i + 1} of ${n})` : '');
+const full = await Promise.all(photos.map((p) => { const src = p.full ?? p.src; return getImage({ src, format: 'webp', width: Math.min(src.width, 1600) }); }));
+const alt = (i: number) => (photos[i].caption ?? `${label}, ${resultLabel}`) + (n > 1 ? ` (photograph ${i + 1} of ${n})` : '');
 ---
 
 <article class:list={['ach', { 'ach--placeholder': placeholder, 'ach--named': !!a?.name, 'ach--nophoto': !a?.photo }]} data-achiever={a?.id ?? 'placeholder'}>
@@ -43,14 +46,14 @@ const alt = (i: number) => (photos[i].caption ?? `${label}, ${grade}`) + (n > 1 
         ))}
       </div>
     ) : a?.photo ? (
-      <Picture src={a.photo} formats={['avif', 'webp']} widths={[280, 480]} sizes="(min-width: 960px) 260px, 70vw" alt={`${a.name ?? 'BIA JUPEB achiever'}, ${grade}`} loading={eager ? 'eager' : 'lazy'} />
+      <Picture src={a.photo} formats={['avif', 'webp']} widths={[280, 480]} sizes="(min-width: 960px) 260px, 70vw" alt={`${a.name ?? 'BIA JUPEB achiever'}, ${resultLabel}`} loading={eager ? 'eager' : 'lazy'} />
     ) : (
       <div class="ach__portrait" aria-hidden="true">
         <Laurel size={120} class="ach__medal" />
         <Badge variant="mark" size={44} class="ach__mark" />
       </div>
     )}
-    <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : grade === 'AAA' ? 'Straight As' : grade === 'AAB' ? 'Two As, one B' : grade}</span>
+    <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : grade === 'AAA' ? 'Straight As' : grade === 'AAB' ? 'Two As, one B' : score ? `${score[1]} of ${score[2]} points` : grade}</span>
     {n > 1 && (
       <>
         <span class="ach__count num" aria-hidden="true"><span data-ach-index>1</span> / {n}</span>
@@ -62,9 +65,18 @@ const alt = (i: number) => (photos[i].caption ?? `${label}, ${grade}`) + (n > 1 
   </div>
 
   <div class="ach__body">
-    <p class="ach__grade">
-      <span class="sr-only">Grades {grade.split('').join(', ')}</span>
-      {grade.split('').map((g) => <span aria-hidden="true">{g}</span>)}
+    <p class:list={['ach__grade', { 'ach__grade--score': !grade }]}>
+      {grade ? (
+        <>
+          <span class="sr-only">Grades {grade.split('').join(', ')}</span>
+          {grade.split('').map((g) => <span aria-hidden="true">{g}</span>)}
+        </>
+      ) : (
+        <>
+          <span class="sr-only">{a?.result}</span>
+          <span aria-hidden="true">{score ? `${score[1]}/${score[2]}` : a?.result}</span>
+        </>
+      )}
     </p>
     <H class:list={['ach__name', { 'ach__name--muted': !a?.name }]}>{label}</H>
     <dl class="ach__meta">
@@ -82,7 +94,7 @@ const alt = (i: number) => (photos[i].caption ?? `${label}, ${grade}`) + (n > 1 
         {photos.map((p, i) => (
           <figure class="achv__slide">
             <img src={full[i].src} width={full[i].attributes.width} height={full[i].attributes.height} alt={alt(i)} loading="lazy" decoding="async" />
-            <figcaption>{p.caption ?? `${label} · ${grade}`}</figcaption>
+            <figcaption>{p.caption ?? `${label} · ${resultLabel}`}</figcaption>
           </figure>
         ))}
       </div>
@@ -318,6 +330,9 @@ const alt = (i: number) => (photos[i].caption ?? `${label}, ${grade}`) + (n > 1 
     gap: var(--s-2);
     padding: var(--s-4) var(--s-5) var(--s-5);
     border-top: 2px solid var(--brass-light);
+  }
+  .ach__grade--score {
+    letter-spacing: -0.02em;
   }
   .ach__grade {
     display: flex;

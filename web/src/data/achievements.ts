@@ -75,12 +75,18 @@ const Record = z
     consent: Consent,
     /** File name inside src/assets/achievements/published/ (consented records only). */
     publishedImage: z.string().nullable(),
+    /** Optional larger version of publishedImage for the full-screen viewer (the card uses publishedImage). */
+    publishedOriginal: z.string().nullable().optional().default(null),
+    /** BIA's result exactly as announced, for records without grade letters (e.g. "14/16 Points (87.5%)"). */
+    reportedResult: z.string().nullable().optional().default(null),
     /** Further photographs of the same student, oldest first. Append new ones; never replace or
      * remove earlier entries, and never create a second record for the same student. */
     gallery: z
       .array(
         z.object({
           file: z.string(),
+          /** Optional larger version for the full-screen viewer. */
+          original: z.string().optional(),
           caption: z.string().nullable(),
           source: z.string(),
           sha256: z.string().regex(/^[0-9a-f]{64}$/),
@@ -96,6 +102,9 @@ const Record = z
   })
   .refine((r) => r.gallery.length === 0 || (allows(r.consent, 'photo') && r.publishedImage !== null), {
     message: 'gallery photos need granted photo consent and a primary publishedImage',
+  })
+  .refine((r) => r.publishedOriginal === null || r.publishedImage !== null, {
+    message: 'publishedOriginal needs a publishedImage',
   })
   .refine((r) => new Set([r.publishedImage, ...r.gallery.map((g) => g.file)]).size === r.gallery.length + 1, {
     message: 'gallery photos must not repeat the primary image or each other',
@@ -122,12 +131,14 @@ export const publishedAchievements = records
     const key = r.publishedImage ? `../assets/achievements/published/${r.publishedImage}` : null;
     const image = key ? publishedImages[key]?.default : undefined;
     if (key && !image) throw new Error(`Published image not found for ${r.id}: ${r.publishedImage}`);
-    const more = r.gallery.map((g) => {
-      const src = publishedImages[`../assets/achievements/published/${g.file}`]?.default;
-      if (!src) throw new Error(`Gallery image not found for ${r.id}: ${g.file}`);
-      return { src, caption: g.caption };
-    });
-    return { ...r, image, more };
+    const load = (file: string) => {
+      const src = publishedImages[`../assets/achievements/published/${file}`]?.default;
+      if (!src) throw new Error(`Image not found for ${r.id}: ${file}`);
+      return src;
+    };
+    const full = r.publishedOriginal ? load(r.publishedOriginal) : undefined;
+    const more = r.gallery.map((g) => ({ src: load(g.file), full: g.original ? load(g.original) : undefined, caption: g.caption }));
+    return { ...r, image, full, more };
   });
 
 /** Anonymous outcome shown on the site (identifiable fields only when consented). */
@@ -178,7 +189,9 @@ export const pendingConsent = records.filter((r) => r.consent.status === 'pendin
 export type Achiever = {
   id: string;
   session: string | null;
-  grade: string;
+  /** Grade letters, or null when BIA announced the result as points only (see `result`). */
+  grade: string | null;
+  result: string | null;
   points: number | null;
   course: string | null;
   university: string | null;
@@ -188,7 +201,7 @@ export type Achiever = {
   name?: string;
   photo?: ImageMetadata;
   /** Every photograph, primary first; empty unless photo consent is granted. */
-  photos: { src: ImageMetadata; caption: string | null }[];
+  photos: { src: ImageMetadata; full?: ImageMetadata; caption: string | null }[];
 };
 
 const toAchiever = (r: AchievementRecord): Achiever => {
@@ -196,7 +209,8 @@ const toAchiever = (r: AchievementRecord): Achiever => {
   return {
     id: r.id,
     session: r.session,
-    grade: r.grade!,
+    grade: r.grade,
+    result: r.reportedResult,
     points: r.points,
     course: r.course,
     university: r.university,
@@ -204,7 +218,7 @@ const toAchiever = (r: AchievementRecord): Achiever => {
     featured: r.featured,
     name: allows(r.consent, 'name') ? (r.name ?? undefined) : undefined,
     photo: allows(r.consent, 'photo') ? published?.image : undefined,
-    photos: allows(r.consent, 'photo') && published?.image ? [{ src: published.image, caption: null }, ...published.more] : [],
+    photos: allows(r.consent, 'photo') && published?.image ? [{ src: published.image, full: published.full, caption: null }, ...published.more] : [],
   };
 };
 
@@ -218,6 +232,12 @@ export const achievers: Achiever[] = records
 /** 15-point (AAB) achievers, shown in their own section of the Hall page (not on the homepage). */
 export const aabAchievers: Achiever[] = records
   .filter((r) => r.grade === 'AAB' && r.kind === 'student-portrait')
+  .map(toAchiever)
+  .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
+
+/** 14-point achievers: BIA announced these as "14/16 Points" without grade letters. */
+export const fourteenPointAchievers: Achiever[] = records
+  .filter((r) => r.grade === null && r.kind === 'student-portrait' && /^14\/16 Points\b/.test(r.reportedResult ?? ''))
   .map(toAchiever)
   .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
 

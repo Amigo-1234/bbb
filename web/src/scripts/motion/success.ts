@@ -104,7 +104,8 @@ function portraits() {
   const cards = $$('.portrait');
   gsap.set(cards, { autoAlpha: 0 });
   onEnter($('.portrait')!.closest('[data-carousel]')!, () =>
-    gsap.fromTo(cards, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out', stagger: 0.08 }),
+    // Capped so a long carousel never leaves off-screen cards invisible for seconds.
+    gsap.fromTo(cards, { y: 40, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.9, ease: 'expo.out', stagger: { amount: Math.min(0.6, 0.08 * cards.length) } }),
   'top 80%');
   const items = $$('.band__item');
   gsap.set(items, { autoAlpha: 0 });

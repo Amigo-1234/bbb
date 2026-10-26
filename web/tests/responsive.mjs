@@ -340,7 +340,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(!all.some((f) => /testii|originals|achievements/i.test(f)), 'privacy: no archived achievement image is emitted into the build');
   const publishedDir = new URL('../src/assets/achievements/published/', import.meta.url).pathname;
   const publishedFiles = readdirSync(publishedDir).filter((f) => !f.startsWith('.'));
-  const granted = recs.filter((r) => r.consent.status === 'granted' && r.publishedImage).flatMap((r) => [r.publishedImage, ...(r.gallery ?? []).map((g) => g.file)]);
+  const granted = recs.filter((r) => r.consent.status === 'granted' && r.publishedImage).flatMap((r) => [r.publishedImage, r.publishedOriginal, ...(r.gallery ?? []).flatMap((g) => [g.file, g.original])].filter(Boolean));
   check(publishedFiles.length === granted.length && publishedFiles.every((f) => granted.includes(f)), `consent: published images (${publishedFiles.length}) match consent-granted records (${granted.length})`);
   check(recs.every((r) => r.points == null && !('recordedPoints' in r)), 'records carry no unverified point totals (points stay null until BIA confirms the scale)');
 
@@ -972,6 +972,22 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(aabInfo && aabInfo.title === '15 Points (AAB) Achievers' && aabInfo.after && aabInfo.before, '/hall-of-excellence: "15 Points (AAB) Achievers" section sits beneath the AAA achievers');
   check(aabInfo && aabInfo.cards.length === aab.length && aabInfo.cards.every((c) => /AAB/.test(c.text) && c.ribbon === 'Two As, one B' && !/Straight As/.test(c.text)), `/hall-of-excellence: one card per AAB result, labelled AAB, never "Straight As" (${aabInfo?.cards.length})`);
   check(aab.filter((x) => x.consent.status === 'granted').every((x) => aabInfo?.cards.some((c) => c.id === x.id && c.text.includes(x.name) && c.text.includes(x.course))), '/hall-of-excellence: consented AAB achievers are named with their course');
+  // 14-point achievers: announced as "14/16 Points" without grade letters; shown as announced, never with invented letters
+  const fourteen = recs.filter((x) => x.kind === 'student-portrait' && !x.grade && /^14\/16 Points/.test(x.reportedResult ?? ''));
+  const f14 = await h.evaluate(() => {
+    const sec = document.querySelector('[data-grade-section="14"]');
+    if (!sec) return null;
+    const aabSec = document.querySelector('[data-grade-section="AAB"]');
+    return { title: sec.querySelector('h2').textContent.replace(/\s+/g, ' ').trim(), afterAab: !aabSec || !!(aabSec.compareDocumentPosition(sec) & Node.DOCUMENT_POSITION_FOLLOWING), cards: [...sec.querySelectorAll('[data-achiever]')].map((e) => ({ id: e.dataset.achiever, text: e.textContent, big: e.querySelector('.ach__grade [aria-hidden]')?.textContent.trim(), sr: e.querySelector('.ach__grade .sr-only')?.textContent.trim(), ribbon: e.querySelector('.ach__ribbon').textContent.trim() })) };
+  });
+  check(fourteen.length === 0 || (f14 && f14.title === '14 Points Achievers' && f14.afterAab), '/hall-of-excellence: "14 Points Achievers" section sits beneath the AAB achievers');
+  check(fourteen.length === 0 || (f14.cards.length === fourteen.length && f14.cards.every((c) => { const x = fourteen.find((y) => y.id === c.id); return x && c.big === '14/16' && c.sr === x.reportedResult && c.ribbon === '14 of 16 points' && c.text.includes(x.name) && c.text.includes(x.course) && !/\b[A-E]{3}\b/.test(c.text); })),
+    `/hall-of-excellence: 14-point cards show "14/16" as announced, with name and course, and no grade letters (${f14?.cards.length ?? 0})`);
+  const withOriginal = recs.find((x) => x.consent.status === 'granted' && x.publishedOriginal);
+  if (withOriginal) {
+    const srcs = await h.locator(`[data-achiever="${withOriginal.id}"]`).evaluate((e) => ({ card: e.querySelector('[data-ach-track] img').getAttribute('src'), viewer: e.querySelector('[data-ach-viewer] img').getAttribute('src') }));
+    check(srcs.card.includes(withOriginal.publishedImage.replace(/\.jpg$/, '')) && srcs.viewer.includes(withOriginal.publishedOriginal.replace(/\.jpg$/, '')), '/hall-of-excellence: cards use the web-ready crop; the full-screen viewer uses the original photograph');
+  }
   const sessions = await h.locator('[data-session]').evaluateAll((els) => els.map((e) => e.dataset.session));
   const known = [...new Set(aaa.map((r) => r.session).filter(Boolean))].sort().reverse();
   check(JSON.stringify(sessions.filter((x) => x !== 'unconfirmed')) === JSON.stringify(known) && (aaa.some((r) => !r.session) ? sessions.at(-1) === 'unconfirmed' : true), `/hall-of-excellence: grouped by session, newest first, unconfirmed last (${sessions.join(', ')})`);
@@ -983,7 +999,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(v.length === 0, `/hall-of-excellence: no serious/critical accessibility violations ${v.join(', ')}`);
 
   // Photo galleries: every consented photograph, primary first; swipe, counter and full-screen viewer
-  const expected = recs.filter((x) => ['AAA', 'AAB'].includes(x.grade) && x.kind === 'student-portrait' && x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
+  const expected = recs.filter((x) => (['AAA', 'AAB'].includes(x.grade) || (!x.grade && /^14\/16 Points/.test(x.reportedResult ?? ''))) && x.kind === 'student-portrait' && x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
   const galleries = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, slides: e.querySelectorAll('[data-ach-track] [data-ach-open]').length, viewer: e.querySelectorAll('[data-ach-viewer] img').length, count: e.querySelector('.ach__count')?.textContent.trim() ?? null })));
   check(expected.every((x) => { const g = galleries.find((c) => c.id === x.id); return g && g.slides === x.n && g.viewer === x.n && (x.n > 1 ? g.count === `1 / ${x.n}` : g.count === null); }) && galleries.filter((g) => g.slides).length === expected.length,
     `/hall-of-excellence: each named achiever shows all of their photographs (${expected.filter((x) => x.n > 1).map((x) => `${x.id}: ${x.n}`).join(', ')})`);
