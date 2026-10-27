@@ -1815,6 +1815,40 @@
       },
       "publishedImage": "boma-2026-james-princegolden-boma-2026-10.jpg",
       "review": "Name, AAA, Law, University of Lagos and 200L (Direct Entry) from BIA's Hall of Excellence post (27 Oct 2026). Not in the V1 archive. BIA reports 16/16 points (100%); points left null until the scale is confirmed. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-obiajulu-peace",
+      "kind": "student-portrait",
+      "name": "Obiajulu Peace Chidiebere",
+      "names": null,
+      "grade": null,
+      "course": "Psychology",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-obiajulu-peace-boma-2026-10.jpeg",
+      "sourceAsset": "Photo and Hall of Excellence caption from BIA's WhatsApp business account, shared 27 Oct 2026; sha256 d8cc4e1e864ecc863441a16faf12f7961129813f9a7fffb0ff37e2b49aed3e62",
+      "sourceSha256": "d8cc4e1e864ecc863441a16faf12f7961129813f9a7fffb0ff37e2b49aed3e62",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-27",
+        "scope": "Published by BIA on its WhatsApp business account as a Hall of Excellence entry with name, photograph and result; added to the website at the site owner's request. Not an individual written consent document; any individual records are held by BIA.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-obiajulu-peace-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "14/16 Points (87.5%)",
+      "review": "Name, result ('14/16 Points', 87.5%), Psychology and University of Lagos from BIA's Hall of Excellence post (27 Oct 2026). Not in the V1 archive. No grade letters supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
     }
   ]
 }
