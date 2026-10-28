@@ -81,6 +81,7 @@ import { address, contacts, guides, office, primaryContact, site, whatsapp } fro
       <a class="with-icon" href={site.facebook} rel="noopener" target="_blank"><Icon name="facebook" size={16} />Facebook</a>
       <a href={site.tiktok} rel="noopener" target="_blank">TikTok @bomaacademylimited</a>
     </p>
+    <p class="footer__credit">Website developed by <a href="https://amigodev.com.ng" rel="noopener" target="_blank" data-credit>AmigoDev</a></p>
   </div>
 </footer>
 
@@ -159,6 +160,20 @@ import { address, contacts, guides, office, primaryContact, site, whatsapp } fro
   }
   .footer a {
     text-decoration-color: rgb(255 255 255 / 0.3);
+  }
+  /* Developer credit: last item of the base row, deliberately quieter than BIA's own links. */
+  .footer__credit {
+    flex-basis: 100%;
+    font-size: 0.8rem;
+  }
+  .footer__credit a {
+    color: inherit;
+  }
+  @media (min-width: 960px) {
+    .footer__credit {
+      flex-basis: auto;
+      margin-left: auto;
+    }
   }
   .footer a:hover {
     text-decoration-color: currentColor;
