@@ -25,9 +25,9 @@ interface Props {
 const { achiever: a, placeholder = false, level = 3, eager = false, gallery = false } = Astro.props;
 const H = `h${level}` as 'h3' | 'h4';
 const grade = a?.grade ?? (a?.result ? null : 'AAA');
-// Points-only results (no grade letters), shown as announced: "14/16 Points (87.5%)" → "14/16".
-const score = !grade && a?.result ? (a.result.match(/^(\d+)\s*\/\s*(\d+)/) ?? null) : null;
-const resultLabel = grade ?? a?.result ?? '';
+// Results BIA announced as points ("14/16 Points (87.5%)") are shown as "14/16", with any grade letters as a secondary label.
+const score = a?.result ? (a.result.match(/^(\d+)\s*\/\s*(\d+)/) ?? null) : null;
+const resultLabel = a?.result ?? grade ?? '';
 const label = a?.name ?? (placeholder ? 'Student name' : 'BIA JUPEB achiever');
 const photos = gallery && a ? a.photos : [];
 const n = photos.length;
@@ -53,7 +53,7 @@ const alt = (i: number) => (photos[i].caption ?? `${label}, ${resultLabel}`) + (
         <Badge variant="mark" size={44} class="ach__mark" />
       </div>
     )}
-    <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : grade === 'AAA' ? 'Straight As' : grade === 'AAB' ? 'Two As, one B' : score ? `${score[1]} of ${score[2]} points` : grade}</span>
+    <span class="ach__ribbon"><Laurel size={18} class="ach__laurel" />{a?.points ? `${a.points} points` : score ? (grade ? `Grades ${grade}` : `${score[1]} of ${score[2]} points`) : grade === 'AAA' ? 'Straight As' : grade === 'AAB' ? 'Two As, one B' : grade}</span>
     {n > 1 && (
       <>
         <span class="ach__count num" aria-hidden="true"><span data-ach-index>1</span> / {n}</span>
@@ -65,15 +65,15 @@ const alt = (i: number) => (photos[i].caption ?? `${label}, ${resultLabel}`) + (
   </div>
 
   <div class="ach__body">
-    <p class:list={['ach__grade', { 'ach__grade--score': !grade }]}>
-      {grade ? (
+    <p class:list={['ach__grade', { 'ach__grade--score': !!score || !grade }]}>
+      {grade && !score ? (
         <>
           <span class="sr-only">Grades {grade.split('').join(', ')}</span>
           {grade.split('').map((g) => <span aria-hidden="true">{g}</span>)}
         </>
       ) : (
         <>
-          <span class="sr-only">{a?.result}</span>
+          <span class="sr-only">{a?.result}{grade ? `, grades ${grade.split('').join(', ')}` : ''}</span>
           <span aria-hidden="true">{score ? `${score[1]}/${score[2]}` : a?.result}</span>
         </>
       )}

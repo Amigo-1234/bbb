@@ -905,6 +905,8 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
       // Footer: both addresses, contact link
       const foot = await p.locator('footer.footer').innerText();
       check(/12 Ameen Street/.test(foot) && /56 Igi Olugbin Street, Shomolu\/Bariga/.test(foot) && /official meetings/.test(foot) && /JUPEB physical tutorials/.test(foot) && (await p.locator('footer a[href="/contact"]').count()) >= 1, 'footer: both addresses and a link to /contact');
+      const credit = await p.locator('footer.footer [data-credit]').evaluateAll((a) => a.map((x) => ({ href: x.getAttribute('href'), target: x.target, rel: x.rel, line: x.parentElement.textContent.replace(/\s+/g, ' ').trim(), inBase: !!x.closest('.footer__base'), w: x.getBoundingClientRect().width })));
+      check(credit.length === 1 && credit[0].href === 'https://amigodev.com.ng' && credit[0].target === '_blank' && /noopener/.test(credit[0].rel) && credit[0].line === 'Website developed by AmigoDev' && credit[0].inBase && credit[0].w > 0, 'footer: one discreet "Website developed by AmigoDev" credit in the base row, linking to amigodev.com.ng');
     }
     await p.close();
   }
@@ -973,7 +975,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(aabInfo && aabInfo.cards.length === aab.length && aabInfo.cards.every((c) => /AAB/.test(c.text) && c.ribbon === 'Two As, one B' && !/Straight As/.test(c.text)), `/hall-of-excellence: one card per AAB result, labelled AAB, never "Straight As" (${aabInfo?.cards.length})`);
   check(aab.filter((x) => x.consent.status === 'granted').every((x) => aabInfo?.cards.some((c) => c.id === x.id && c.text.includes(x.name) && c.text.includes(x.course))), '/hall-of-excellence: consented AAB achievers are named with their course');
   // 14-point achievers: announced as "14/16 Points" without grade letters; shown as announced, never with invented letters
-  const fourteen = recs.filter((x) => x.kind === 'student-portrait' && !x.grade && /^14\/16 Points/.test(x.reportedResult ?? ''));
+  const fourteen = recs.filter((x) => x.kind === 'student-portrait' && /^14\s*\/\s*16\b/.test(x.reportedResult ?? ''));
   const f14 = await h.evaluate(() => {
     const sec = document.querySelector('[data-grade-section="14"]');
     if (!sec) return null;
@@ -981,8 +983,8 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     return { title: sec.querySelector('h2').textContent.replace(/\s+/g, ' ').trim(), afterAab: !aabSec || !!(aabSec.compareDocumentPosition(sec) & Node.DOCUMENT_POSITION_FOLLOWING), cards: [...sec.querySelectorAll('[data-achiever]')].map((e) => ({ id: e.dataset.achiever, text: e.textContent, big: e.querySelector('.ach__grade [aria-hidden]')?.textContent.trim(), sr: e.querySelector('.ach__grade .sr-only')?.textContent.trim(), ribbon: e.querySelector('.ach__ribbon').textContent.trim() })) };
   });
   check(fourteen.length === 0 || (f14 && f14.title === '14 Points Achievers' && f14.afterAab), '/hall-of-excellence: "14 Points Achievers" section sits beneath the AAB achievers');
-  check(fourteen.length === 0 || (f14.cards.length === fourteen.length && f14.cards.every((c) => { const x = fourteen.find((y) => y.id === c.id); return x && c.big === '14/16' && c.sr === x.reportedResult && c.ribbon === '14 of 16 points' && c.text.includes(x.name) && c.text.includes(x.course) && !/\b[A-E]{3}\b/.test(c.text); })),
-    `/hall-of-excellence: 14-point cards show "14/16" as announced, with name and course, and no grade letters (${f14?.cards.length ?? 0})`);
+  check(fourteen.length === 0 || (f14.cards.length === fourteen.length && f14.cards.every((c) => { const x = fourteen.find((y) => y.id === c.id); return x && c.big === '14/16' && c.sr.startsWith(x.reportedResult) && c.text.includes(x.name) && c.text.includes(x.course) && (x.grade ? c.ribbon === `Grades ${x.grade}` : c.ribbon === '14 of 16 points' && !/\b[A-E]{3}\b/.test(c.text)); })),
+    `/hall-of-excellence: 14-point cards all show "14/16" as announced, with name, course and BIA's grade letters only where supplied (${f14?.cards.length ?? 0})`);
   const withOriginal = recs.find((x) => x.consent.status === 'granted' && x.publishedOriginal);
   if (withOriginal) {
     const srcs = await h.locator(`[data-achiever="${withOriginal.id}"]`).evaluate((e) => ({ card: e.querySelector('[data-ach-track] img').getAttribute('src'), viewer: e.querySelector('[data-ach-viewer] img').getAttribute('src') }));
@@ -999,7 +1001,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(v.length === 0, `/hall-of-excellence: no serious/critical accessibility violations ${v.join(', ')}`);
 
   // Photo galleries: every consented photograph, primary first; swipe, counter and full-screen viewer
-  const expected = recs.filter((x) => (['AAA', 'AAB'].includes(x.grade) || (!x.grade && /^14\/16 Points/.test(x.reportedResult ?? ''))) && x.kind === 'student-portrait' && x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
+  const expected = recs.filter((x) => (['AAA', 'AAB'].includes(x.grade) || /^14\s*\/\s*16\b/.test(x.reportedResult ?? '')) && x.kind === 'student-portrait' && x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
   const galleries = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, slides: e.querySelectorAll('[data-ach-track] [data-ach-open]').length, viewer: e.querySelectorAll('[data-ach-viewer] img').length, count: e.querySelector('.ach__count')?.textContent.trim() ?? null })));
   check(expected.every((x) => { const g = galleries.find((c) => c.id === x.id); return g && g.slides === x.n && g.viewer === x.n && (x.n > 1 ? g.count === `1 / ${x.n}` : g.count === null); }) && galleries.filter((g) => g.slides).length === expected.length,
     `/hall-of-excellence: each named achiever shows all of their photographs (${expected.filter((x) => x.n > 1).map((x) => `${x.id}: ${x.n}`).join(', ')})`);

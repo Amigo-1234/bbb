@@ -235,9 +235,9 @@ export const aabAchievers: Achiever[] = records
   .map(toAchiever)
   .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
 
-/** 14-point achievers: BIA announced these as "14/16 Points" without grade letters. */
+/** 14-point achievers, announced by BIA as "14/16" (with or without grade letters). */
 export const fourteenPointAchievers: Achiever[] = records
-  .filter((r) => r.grade === null && r.kind === 'student-portrait' && /^14\/16 Points\b/.test(r.reportedResult ?? ''))
+  .filter((r) => r.kind === 'student-portrait' && /^14\s*\/\s*16\b/.test(r.reportedResult ?? ''))
   .map(toAchiever)
   .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
 

@@ -1849,6 +1849,142 @@
       "publishedOriginal": null,
       "reportedResult": "14/16 Points (87.5%)",
       "review": "Name, result ('14/16 Points', 87.5%), Psychology and University of Lagos from BIA's Hall of Excellence post (27 Oct 2026). Not in the V1 archive. No grade letters supplied; grade left null rather than inferred. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-chukwubueze-vera",
+      "kind": "student-portrait",
+      "name": "Chukwubueze Vera Ifeyinwa",
+      "names": null,
+      "grade": "BAB",
+      "course": "Mass Communication",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-chukwubueze-vera-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_Hall_of_Excellence_Batch2.zip (supplied 28 Oct 2026)/student_photos/awobokun_titilola_solape.jpeg (sha256 8779c259a74c860861a02745e0df290505d9d9b699e37ae1227e1694ca46059e). The ZIP's file names are shifted by one student; this photo was matched to Chukwubueze Vera Ifeyinwa by face and outfit against BIA's own post in reference_screenshots/ (the manifest's outfit notes agree).",
+      "sourceSha256": "8779c259a74c860861a02745e0df290505d9d9b699e37ae1227e1694ca46059e",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-28",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts. The batch README asks for the academy's publication approval to be confirmed; Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-chukwubueze-vera-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "14/16 (87.5%)",
+      "review": "Name, result ('14/16 (87.5%)', grades BAB), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (batch manifest, 28 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-awobokun-titilola",
+      "kind": "student-portrait",
+      "name": "Awobokun Titilola Solape",
+      "names": null,
+      "grade": "ABB",
+      "course": "Political Science",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-awobokun-titilola-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_Hall_of_Excellence_Batch2.zip (supplied 28 Oct 2026)/student_photos/orji_mark_jubilee.jpeg (sha256 5ed0f08716420ca2f3986c69f095f728e908c8c75329af4713bc124a953d42d4). The ZIP's file names are shifted by one student; this photo was matched to Awobokun Titilola Solape by face and outfit against BIA's own post in reference_screenshots/ (the manifest's outfit notes agree).",
+      "sourceSha256": "5ed0f08716420ca2f3986c69f095f728e908c8c75329af4713bc124a953d42d4",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-28",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts. The batch README asks for the academy's publication approval to be confirmed; Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-awobokun-titilola-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "14/16 (87.5%)",
+      "review": "Name, result ('14/16 (87.5%)', grades ABB), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (batch manifest, 28 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-orji-mark-jubilee",
+      "kind": "student-portrait",
+      "name": "Orji-Mark Jubilee",
+      "names": null,
+      "grade": "ABB",
+      "course": "Mass Communication/Law",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-orji-mark-jubilee-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_Hall_of_Excellence_Batch2.zip (supplied 28 Oct 2026)/student_photos/brave_eden_michael.jpeg (sha256 a1cd07c0a29d45703b3a9ebae0a5e3dbe44c563935c06863bbfce995c8acc27b). The ZIP's file names are shifted by one student; this photo was matched to Orji-Mark Jubilee by face and outfit against BIA's own post in reference_screenshots/ (the manifest's outfit notes agree).",
+      "sourceSha256": "a1cd07c0a29d45703b3a9ebae0a5e3dbe44c563935c06863bbfce995c8acc27b",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-28",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts. The batch README asks for the academy's publication approval to be confirmed; Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-orji-mark-jubilee-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "14/16 (87.5%)",
+      "review": "Name, result ('14/16 (87.5%)', grades ABB), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (batch manifest, 28 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-brave-eden",
+      "kind": "student-portrait",
+      "name": "Brave Eden Michael",
+      "names": null,
+      "grade": "ABB",
+      "course": "Public Relations and Advertising",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-brave-eden-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_Hall_of_Excellence_Batch2.zip (supplied 28 Oct 2026)/student_photos/ajuogu_chioma_emmanuella.jpeg (sha256 d1076dcbfafc98dc1f82ec6435ae574bc92a1a6718afb57f161c6f458d8d5fec). The ZIP's file names are shifted by one student; this photo was matched to Brave Eden Michael by face and outfit against BIA's own post in reference_screenshots/ (the manifest's outfit notes agree).",
+      "sourceSha256": "d1076dcbfafc98dc1f82ec6435ae574bc92a1a6718afb57f161c6f458d8d5fec",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (Hall of Excellence announcement)",
+        "date": "2026-10-28",
+        "scope": "Name, photograph and result as announced in BIA's WhatsApp Hall of Excellence posts. The batch README asks for the academy's publication approval to be confirmed; Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-brave-eden-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "14/16 (87.5%)",
+      "review": "Name, result ('14/16 (87.5%)', grades ABB), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (batch manifest, 28 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
     }
   ]
 }
