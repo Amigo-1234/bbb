@@ -241,6 +241,12 @@ export const fourteenPointAchievers: Achiever[] = records
   .map(toAchiever)
   .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
 
+/** 13-point achievers, announced by BIA as "13/16". */
+export const thirteenPointAchievers: Achiever[] = records
+  .filter((r) => r.kind === 'student-portrait' && /^13\s*\/\s*16\b/.test(r.reportedResult ?? ''))
+  .map(toAchiever)
+  .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
+
 /** Achievers grouped by session, newest session first. Records without a confirmed
  * session are collected under `null` and shown last. */
 export const hallSessions: { session: string | null; achievers: Achiever[] }[] = [

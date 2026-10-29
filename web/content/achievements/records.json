@@ -548,10 +548,10 @@
     {
       "id": "v1-022",
       "kind": "student-portrait",
-      "name": "NWABIKWU IRENE CHINOSO",
+      "name": "Nwabikwu Irene Chinonso",
       "grade": "AAC",
       "course": "Political Science",
-      "university": null,
+      "university": "University of Lagos",
       "level": null,
       "year": null,
       "category": "arts",
@@ -561,14 +561,20 @@
       "sourceSha256": "cb4a20e937ee9c6494145b35191129d95fd8b81e9959a12900b010d5a08d7569",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": null,
-      "names": null
+      "publishedImage": "v1-022-boma-2026-10.jpg",
+      "review": "V1 caption name: NWABIKWU IRENE CHINOSO. 2026-10-29: manifest spelling 'Chinonso' used and V1 course (Political Science) kept, both confirmed by the site owner; manifest listed course as 'Not provided'. Portrait: BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Nwabikwu_Irene_Chinonso.jpeg (sha256 fb876bb7e69e8e033d139a049fa31b8b4bd319b9af94711df78dfe73a9cc4df2). Result '14/16 (87.5%)', AAC. Points field left null.",
+      "names": null,
+      "reportedResult": "14/16 (87.5%)"
     },
     {
       "id": "v1-023",
@@ -820,7 +826,7 @@
       "name": "Daniel John Inioluwa",
       "grade": "AAC",
       "course": "Political Science",
-      "university": null,
+      "university": "University of Lagos",
       "level": null,
       "year": null,
       "category": "arts",
@@ -830,14 +836,20 @@
       "sourceSha256": "1fd7136817daaf626c1ed69405ebf475bec0336aa327d0f081e0d272b61b1524",
       "sourceText": "BOMA JUPEB PROJECT/index.html (Testimonials 2026 card)",
       "consent": {
-        "status": "pending",
-        "confirmedBy": null,
-        "date": null,
-        "scope": null
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
       },
-      "publishedImage": null,
-      "review": "V1 caption names one student, but the image is a group award photograph (visually like v1-testii-011.png). Confirm who is pictured.",
-      "names": null
+      "publishedImage": "v1-032-boma-2026-10.jpg",
+      "review": "V1 caption names one student, but the image is a group award photograph (visually like v1-testii-011.png). Confirm who is pictured. 2026-10-29: individual portrait supplied in the BIA-confirmed manifest (BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Daniel_John_Inioluwa.jpeg (sha256 63d4c7fb9399657a2fc55771b8b7603a00aeb6d8f9b573d91186aa0b004da224)); result '14/16 (87.5%)', AAC, Political Science, University of Lagos (UNILAG) match this record. The V1 group image is not used. Points field left null.",
+      "names": null,
+      "reportedResult": "14/16 (87.5%)"
     },
     {
       "id": "v1-033",
@@ -1985,6 +1997,346 @@
       "publishedOriginal": null,
       "reportedResult": "14/16 (87.5%)",
       "review": "Name, result ('14/16 (87.5%)', grades ABB), course and institution ('University of Lagos (UNILAG)') exactly as in BIA's Hall of Excellence post (batch manifest, 28 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-imana-nurudeen",
+      "kind": "student-portrait",
+      "name": "Imana Nurudeen Ehimeome",
+      "names": null,
+      "grade": "ABB",
+      "course": "Doctor of Pharmacy (Pharm.D.)",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-imana-nurudeen-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Imana_Nurudeen_Ehimeome.jpeg (sha256 378a6f28f587e0dc694d54d2ee8a8d42ebc0ec212453d2fbd9e0ed19eb6ab0ad)",
+      "sourceSha256": "378a6f28f587e0dc694d54d2ee8a8d42ebc0ec212453d2fbd9e0ed19eb6ab0ad",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-imana-nurudeen-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "14/16 (87.5%)",
+      "review": "Name, result ('14/16 (87.5%)', grades ABB), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-ikejiaku-donald",
+      "kind": "student-portrait",
+      "name": "Ikejiaku Donald Kosisiochukwu",
+      "names": null,
+      "grade": "ABC",
+      "course": "Theatre Arts",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-ikejiaku-donald-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Ikejiaku_Donald_Kosisiochukwu.jpeg (sha256 3d5747d7cd561ed85b15f48a01f51e8409aad7c195c4f36e5943cca5185bdb02)",
+      "sourceSha256": "3d5747d7cd561ed85b15f48a01f51e8409aad7c195c4f36e5943cca5185bdb02",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-ikejiaku-donald-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-igbokwe-divine",
+      "kind": "student-portrait",
+      "name": "Igbokwe Divine Ojichukwujiife",
+      "names": null,
+      "grade": "ABC",
+      "course": "Employment Relations & Human Resources Management",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "business",
+      "featured": false,
+      "image": "originals/boma-2026-igbokwe-divine-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Igbokwe_Divine_Ojichukwujiife.jpeg (sha256 3083bb0f2cf4e94054ed3bdd91114ab6235bb0ca2f3cfeb792e90c810d68e948)",
+      "sourceSha256": "3083bb0f2cf4e94054ed3bdd91114ab6235bb0ca2f3cfeb792e90c810d68e948",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-igbokwe-divine-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Same person as the BIA staff member of this name on /team (photo consistent with the staff portrait); this is the student achievement record for the same person. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-paul-rebecca",
+      "kind": "student-portrait",
+      "name": "Paul Rebecca Opeyemi",
+      "names": null,
+      "grade": "ABC",
+      "course": "Taxation",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "business",
+      "featured": false,
+      "image": "originals/boma-2026-paul-rebecca-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Paul_Rebecca_Opeyemi.jpeg (sha256 20a02b404d97a6cb931c1679a700b5ad89e57aee3b1f39ae5ecb49fda040ed69)",
+      "sourceSha256": "20a02b404d97a6cb931c1679a700b5ad89e57aee3b1f39ae5ecb49fda040ed69",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-paul-rebecca-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-charles-ebuka",
+      "kind": "student-portrait",
+      "name": "Charles Ebuka Ikowa",
+      "names": null,
+      "grade": "ABC",
+      "course": "Public Relations and Advertising",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-charles-ebuka-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Charles_Ebuka_Ikowa.jpeg (sha256 c7359d3426427c64da1b4578a59540b4cbec8e141789db9bda8247b4c1a5e805)",
+      "sourceSha256": "c7359d3426427c64da1b4578a59540b4cbec8e141789db9bda8247b4c1a5e805",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-charles-ebuka-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-ireka-desmond",
+      "kind": "student-portrait",
+      "name": "Ireka Desmond Chukwuebuka",
+      "names": null,
+      "grade": "ABC",
+      "course": "Doctor of Pharmacy (Pharm.D.)",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-ireka-desmond-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Ireka_Desmond_Chukwuebuka.jpeg (sha256 fce1a0e46f9612cd7f23bf8cb7dc28d67186df65cc24b6f6fc6ce470e8ce9547)",
+      "sourceSha256": "fce1a0e46f9612cd7f23bf8cb7dc28d67186df65cc24b6f6fc6ce470e8ce9547",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-ireka-desmond-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-achief-halimat",
+      "kind": "student-portrait",
+      "name": "Achief Halimat Anuoluwapo",
+      "names": null,
+      "grade": "ABC",
+      "course": "Political Science",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-achief-halimat-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Achief_Halimat_Anuoluwapo.jpeg (sha256 f72b5b2fdbad63d8a32ee3856ba5a368d0a3fa4ab17fe016f05c0343a24e97d7)",
+      "sourceSha256": "f72b5b2fdbad63d8a32ee3856ba5a368d0a3fa4ab17fe016f05c0343a24e97d7",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-achief-halimat-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Same person as the BIA staff member of this name on /team (photo consistent with the staff portrait); this is the student achievement record for the same person. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-yusuf-waliu",
+      "kind": "student-portrait",
+      "name": "Yusuf Waliu Gbolahan",
+      "names": null,
+      "grade": "ABC",
+      "course": "Political Science",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "arts",
+      "featured": false,
+      "image": "originals/boma-2026-yusuf-waliu-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Yusuf_Waliu_Gbolahan.jpeg (sha256 303dd4f8c3eb6628e76104a4f5953961b33d7928f0e082e6e25def8ace439a74)",
+      "sourceSha256": "303dd4f8c3eb6628e76104a4f5953961b33d7928f0e082e6e25def8ace439a74",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-yusuf-waliu-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-keyinmo-john",
+      "kind": "student-portrait",
+      "name": "Keyinmo John Misigbeto",
+      "names": null,
+      "grade": "ABC",
+      "course": "Accounting",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "business",
+      "featured": false,
+      "image": "originals/boma-2026-keyinmo-john-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Keyinmo_John_Misigbeto.jpeg (sha256 6a00abc710a52b8b7a138b5270d132abe23a38b1573b48b523d652718fb1f555)",
+      "sourceSha256": "6a00abc710a52b8b7a138b5270d132abe23a38b1573b48b523d652718fb1f555",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-keyinmo-john-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-obi-emmanuella",
+      "kind": "student-portrait",
+      "name": "Obi Emmanuella Chiemeziem",
+      "names": null,
+      "grade": "ABC",
+      "course": "Accounting",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "business",
+      "featured": false,
+      "image": "originals/boma-2026-obi-emmanuella-boma-2026-10.jpeg",
+      "sourceAsset": "BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip (supplied 29 Oct 2026)/Obi_Emmanuella_Chiemeziem.jpeg (sha256 c5697e9f26fdd0ea7df1e3e56936b483c419c9c7eccc8c7c9345067e0e344a48)",
+      "sourceSha256": "c5697e9f26fdd0ea7df1e3e56936b483c419c9c7eccc8c7c9345067e0e344a48",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "BIA (manifest confirmed by the site owner)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest (29 Oct 2026); the site owner confirmed the manifest's photo-to-name mapping. Preview only until the site owner approves production. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-obi-emmanuella-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
     }
   ]
 }
