@@ -2337,6 +2337,40 @@
       "publishedOriginal": null,
       "reportedResult": "13/16 (81.25%)",
       "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
+    },
+    {
+      "id": "boma-2026-kuteyi-michael",
+      "kind": "student-portrait",
+      "name": "Kuteyi Michael Ekundayo",
+      "names": null,
+      "grade": "ABC",
+      "course": "Medical Laboratory Science (MLS)",
+      "university": "University of Lagos",
+      "level": null,
+      "year": null,
+      "session": null,
+      "points": null,
+      "category": "medicine",
+      "featured": false,
+      "image": "originals/boma-2026-kuteyi-michael-boma-2026-10.png",
+      "sourceAsset": "Photo sent by the site owner as Kuteyi's picture, 29 Oct 2026 (sha256 2c6d56ec34492d214496a56141cd00a84f2f448e2c95db9f07954822f428af31); identical to Kuteyi_Michael_Ekundayo.jpeg in BIA_JUPEB_Hall_of_Excellence_Student_Photos_Batch.zip. The supplied image appears retouched; used as supplied at the site owner's request, not edited further.",
+      "sourceSha256": "2c6d56ec34492d214496a56141cd00a84f2f448e2c95db9f07954822f428af31",
+      "sourceText": null,
+      "consent": {
+        "status": "granted",
+        "confirmedBy": "Site owner (all student permissions confirmed)",
+        "date": "2026-10-29",
+        "scope": "Name, photograph and result from the BIA-confirmed student manifest; the site owner confirmed that all students' publication permissions were accepted. Not an individual written consent document.",
+        "allow": [
+          "name",
+          "photo",
+          "result"
+        ]
+      },
+      "publishedImage": "boma-2026-kuteyi-michael-boma-2026-10.jpg",
+      "publishedOriginal": null,
+      "reportedResult": "13/16 (81.25%)",
+      "review": "Name, result ('13/16 (81.25%)', grades ABC), course and institution ('University of Lagos (UNILAG)') exactly as in the BIA-confirmed manifest (29 Oct 2026). Not in the V1 archive. Points field left null until BIA confirms the scale. Session not confirmed."
     }
   ]
 }
