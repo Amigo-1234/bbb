@@ -4102,6 +4102,178 @@ a.scroll-top i {
 }
 
 /* CTA button already handled by .box-btn dark styles */
+
+/*
+SEO content pages (pillar + intent)
+*/
+.seo-page {
+  background: #f6f4ef;
+}
+
+.seo-page .navbar-area {
+  background: linear-gradient(120deg, #5b0b0f 0%, #a31217 55%, #c0191f 100%);
+  box-shadow: 0 18px 40px rgba(64, 10, 12, 0.28);
+}
+
+.seo-page .navbar-area .main-nav {
+  background: rgba(91, 11, 15, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.seo-page .navbar-area .main-nav .navbar {
+  align-items: center;
+}
+
+.seo-page .navbar-area .main-nav .navbar .navbar-nav {
+  align-items: center;
+}
+
+.seo-page .navbar-area .navbar-brand img {
+  max-height: 48px;
+}
+
+.seo-page .navbar-area .main-nav .navbar .navbar-nav .nav-item a {
+  color: #f7f3e8;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.seo-page .navbar-area .main-nav .navbar .navbar-nav .nav-item a:hover,
+.seo-page .navbar-area .main-nav .navbar .navbar-nav .nav-item a:focus,
+.seo-page .navbar-area .main-nav .navbar .navbar-nav .nav-item a.active {
+  color: #ffd4d5;
+}
+
+.seo-page .navbar-area .main-nav .navbar .navbar-nav .nav-item .dropdown-menu {
+  border-radius: 12px;
+  border: 1px solid #e7e0d5;
+  box-shadow: 0 14px 30px rgba(7, 23, 18, 0.12);
+}
+
+.seo-page .nav-cta {
+  background: #ffd4d5;
+  color: #5b0b0f !important;
+  padding: 10px 18px !important;
+  border-radius: 999px;
+  margin-left: 10px;
+}
+
+.seo-page .nav-cta:hover {
+  background: #ffe6e7;
+}
+
+.seo-hero {
+  padding: 140px 0 80px;
+  background: radial-gradient(circle at 20% 20%, rgba(255, 170, 172, 0.3), transparent 55%),
+    radial-gradient(circle at 80% 10%, rgba(255, 218, 219, 0.3), transparent 45%),
+    linear-gradient(120deg, #5b0b0f 0%, #a31217 60%, #c0191f 100%);
+  color: #fff1f1;
+  position: relative;
+  overflow: hidden;
+}
+
+.seo-hero::after {
+  content: "";
+  position: absolute;
+  inset: 20px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  pointer-events: none;
+}
+
+.seo-hero__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffd4d5;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  font-size: 12px;
+}
+
+.seo-hero__title {
+  font-size: 42px;
+  margin: 18px 0 12px;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.seo-hero__lead {
+  font-size: 18px;
+  max-width: 720px;
+  opacity: 0.9;
+}
+
+.seo-hero__actions {
+  margin-top: 26px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.seo-hero__actions .border-btn {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff1f1;
+}
+
+.seo-content {
+  padding: 80px 0 90px;
+}
+
+.seo-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 32px 36px;
+  box-shadow: 0 20px 50px rgba(12, 28, 20, 0.08);
+  border: 1px solid rgba(15, 40, 30, 0.06);
+}
+
+.seo-card h2 {
+  font-size: 26px;
+  margin-top: 26px;
+}
+
+.seo-card h2:first-child {
+  margin-top: 0;
+}
+
+.seo-card ul {
+  padding-left: 20px;
+}
+
+.seo-card li {
+  margin-bottom: 8px;
+}
+
+@media (max-width: 991px) {
+  .seo-hero {
+    padding: 120px 0 70px;
+  }
+
+  .seo-hero__title {
+    font-size: 34px;
+  }
+
+  .seo-hero__actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 575px) {
+  .seo-hero__title {
+    font-size: 30px;
+  }
+
+  .seo-card {
+    padding: 26px 22px;
+  }
+}
+
 /* =========================
    BOMA Results Table Style
 ========================= */
