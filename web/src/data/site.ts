@@ -20,6 +20,12 @@ export type CalendarItem = {
   unconfirmed?: boolean;
 };
 
+/** BIA's CBT practice platform (a separate app; this site only links to it). */
+export const cbt = {
+  url: 'https://biacbtapp.com.ng',
+  host: 'biacbtapp.com.ng',
+};
+
 export const site = {
   name: 'BIA JUPEB',
   parent: "Boma's Intellectual Academy",

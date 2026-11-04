@@ -5,6 +5,7 @@
  */
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
+import CbtPromo from '../../components/CbtPromo.astro';
 import guides from '../../data/guides.json';
 import { primaryContact } from '../../data/site';
 
@@ -66,10 +67,14 @@ const others = guides.filter((g) => g.slug !== guide.slug);
         </nav>
       </aside>
     </div>
+    <div class="wrap guide__cbt"><CbtPromo source="guide" /></div>
   </article>
 </Base>
 
 <style>
+  .guide__cbt {
+    margin-top: var(--s-8);
+  }
   .guide {
     padding-block: var(--s-7) var(--section);
   }

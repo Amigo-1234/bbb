@@ -6,6 +6,7 @@ import Carousel from '../components/Carousel.astro';
 import Icon from '../components/Icon.astro';
 import Laurel from '../components/Laurel.astro';
 import Badge from '../components/Badge.astro';
+import CbtPromo from '../components/CbtPromo.astro';
 import { getImage } from 'astro:assets';
 import { directions, directionsCaptions, founder as founderInfo, mission, routeCaption } from '../data/identity';
 import { programmes, tutorialPackage } from '../data/fees';
@@ -392,6 +393,11 @@ const homeAchievers = achievers;
         </ol>
       </details>
     </div>
+  </section>
+
+  <!-- CBT PRACTICE PLATFORM -->
+  <section class="section cbt-band" id="cbt" aria-label="CBT practice platform">
+    <div class="wrap"><CbtPromo source="home" /></div>
   </section>
 
   <!-- 07 FAQ -->

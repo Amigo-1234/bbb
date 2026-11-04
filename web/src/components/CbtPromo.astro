@@ -1,0 +1,77 @@
+---
+/**
+ * Short promotion for BIA's CBT practice platform (a separate app at biacbtapp.com.ng).
+ * Links out to the app and to /cbt-practice; it never embeds or changes the app.
+ */
+import Icon from './Icon.astro';
+import { cbt } from '../data/site';
+
+interface Props {
+  /** data-cta prefix, e.g. "home" → home-cbt-start */
+  source: string;
+}
+const { source } = Astro.props;
+---
+
+<aside class="cbtp" aria-labelledby={`cbtp-${source}`}>
+  <div class="cbtp__copy">
+    <p class="cbtp__eyebrow"><span class="cbtp__dot" aria-hidden="true"></span>CBT Practice Platform</p>
+    <h2 id={`cbtp-${source}`} class="cbtp__title">Practise JUPEB &amp; JAMB questions online.</h2>
+    <p class="cbtp__text">Exam-style tests with instant grading — built for BIA candidates. Open it on any phone or laptop.</p>
+  </div>
+  <div class="cbtp__ctas">
+    <a class="btn" href={cbt.url} rel="noopener" target="_blank" data-cta={`${source}-cbt-start`}>Start practising<Icon name="arrow-up-right" size={18} /></a>
+    <a class="btn btn--outline" href="/cbt-practice" data-cta={`${source}-cbt-more`}>How it works</a>
+  </div>
+</aside>
+
+<style>
+  .cbtp {
+    display: grid;
+    gap: var(--s-5);
+    padding: var(--s-6);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--bia-red);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .cbtp__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--s-2);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--bia-red);
+  }
+  .cbtp__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bia-red);
+  }
+  .cbtp__title {
+    margin-top: var(--s-2);
+    font-size: var(--step-2);
+    line-height: 1.15;
+  }
+  .cbtp__text {
+    margin-top: var(--s-2);
+    max-width: 52ch;
+    color: var(--muted);
+  }
+  .cbtp__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .cbtp {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: var(--s-6) var(--s-7);
+    }
+  }
+</style>

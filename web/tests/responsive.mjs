@@ -263,7 +263,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const dist = new URL('../dist/', import.meta.url).pathname;
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   const guideSlugs = ['jupeb-guide', 'jupeb-unilag-admission', 'jupeb-vs-ijmb', 'awaiting-result-jupeb-2026', 'jupeb-past-questions'];
-  for (const path of ['', 'success-stories', 'hall-of-excellence', 'team', 'fees', 'timetable', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
+  for (const path of ['', 'success-stories', 'hall-of-excellence', 'team', 'fees', 'timetable', 'cbt-practice', 'gallery', 'contact', 'guides', ...guideSlugs.map((g) => `guides/${g}`)]) {
     const res = await page.goto(new URL(path, BASE).href, { waitUntil: 'networkidle' });
     const robots = await page.locator('meta[name="robots"]').count();
     const canonical = await page.locator('link[rel="canonical"]').getAttribute('href');
@@ -906,6 +906,8 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
       const foot = await p.locator('footer.footer').innerText();
       check(/12 Ameen Street/.test(foot) && /56 Igi Olugbin Street, Shomolu\/Bariga/.test(foot) && /official meetings/.test(foot) && /JUPEB physical tutorials/.test(foot) && (await p.locator('footer a[href="/contact"]').count()) >= 1, 'footer: both addresses and a link to /contact');
       const credit = await p.locator('footer.footer [data-credit]').evaluateAll((a) => a.map((x) => ({ href: x.getAttribute('href'), target: x.target, rel: x.rel, line: x.parentElement.textContent.replace(/\s+/g, ' ').trim(), inBase: !!x.closest('.footer__base'), w: x.getBoundingClientRect().width })));
+      const cbtLinks = await p.evaluate(() => ({ nav: !!document.querySelector('header a[href="/cbt-practice"], #mobile-menu a[href="/cbt-practice"]'), foot: !!document.querySelector('footer a[href="/cbt-practice"]') }));
+      check(cbtLinks.nav && cbtLinks.foot, 'CBT Practice linked from the navigation and the footer');
       check(credit.length === 1 && credit[0].href === 'https://amigodev.com.ng' && credit[0].target === '_blank' && /noopener/.test(credit[0].rel) && credit[0].line === 'Website developed by AmigoDev' && credit[0].inBase && credit[0].w > 0, 'footer: one discreet "Website developed by AmigoDev" credit in the base row, linking to amigodev.com.ng');
     }
     await p.close();
@@ -1094,6 +1096,37 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(cat.count.testii === 43 && cat.count.slider === 16 && cat.count.scroll === 32 && cat.items.every((i) => /^[0-9a-f]{64}$/.test(i.sha256)), 'V1 archive: 91 testimonial assets catalogued with SHA-256');
   check(cat.items.filter((i) => i.folder === 'testii').every((i) => recs.some((r) => r.id === i.recordId)), 'V1 archive: every testii file is linked to an achievement record');
   check(!all.some((f) => /testii|scroll\/|slider\/|v1-archive/.test(f)), 'V1 archive images are not published in the build');
+}
+
+// 14b. /cbt-practice — promotes BIA's CBT app (biacbtapp.com.ng); links out, never embeds
+{
+  for (const [w, label] of [[390, 'mobile'], [1440, 'desktop']]) {
+    const c = await browser.newPage({ viewport: { width: w, height: 900 }, isMobile: w < 800, reducedMotion: 'reduce' });
+    const res = await c.goto(new URL('cbt-practice', BASE).href, { waitUntil: 'networkidle' });
+    const info = await c.evaluate(() => ({
+      title: document.title,
+      desc: document.querySelector('meta[name="description"]')?.content ?? '',
+      h1: document.querySelectorAll('h1').length,
+      starts: [...document.querySelectorAll('main a')].filter((a) => a.getAttribute('href') === 'https://biacbtapp.com.ng' && /Start practising/.test(a.textContent) && a.target === '_blank' && /noopener/.test(a.rel)).length,
+      internal: ['/guides/jupeb-past-questions', '/timetable', '/hall-of-excellence'].every((h) => document.querySelector(`main a[href^="${h}"]`)),
+      iframes: document.querySelectorAll('iframe').length,
+      overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+    }));
+    check(res.status() === 200 && /JUPEB & JAMB Practice Questions/.test(info.title) && /instant grading/.test(info.desc) && info.h1 === 1, `/cbt-practice ${label}: SEO title, description and one h1`);
+    check(info.starts >= 2 && info.internal && info.iframes === 0, `/cbt-practice ${label}: Start practising buttons open biacbtapp.com.ng in a new tab; internal links; no embedded app`);
+    check(!info.overflow, `/cbt-practice ${label}: no horizontal overflow`);
+    if (w === 390) {
+      await c.addScriptTag({ content: axeSource });
+      const v = await c.evaluate(async () => (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id));
+      check(v.length === 0, `/cbt-practice: no serious/critical accessibility violations ${v.join(', ')}`);
+    }
+    await c.close();
+  }
+  const hp = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, reducedMotion: 'reduce' });
+  await hp.goto(BASE, { waitUntil: 'networkidle' });
+  const promo = await hp.evaluate(() => ({ start: !!document.querySelector('#cbt a[href="https://biacbtapp.com.ng"]'), more: !!document.querySelector('#cbt a[href="/cbt-practice"]'), beforeFaq: !!(document.querySelector('#cbt').compareDocumentPosition(document.getElementById('faq')) & Node.DOCUMENT_POSITION_FOLLOWING) }));
+  check(promo.start && promo.more && promo.beforeFaq, 'homepage: CBT practice promo (Start practising + How it works) sits before the FAQ');
+  await hp.close();
 }
 
 // 15. /team — staff directory from BIA's official role documents

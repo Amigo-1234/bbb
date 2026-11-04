@@ -1,0 +1,234 @@
+---
+import Base from '../layouts/Base.astro';
+import Badge from '../components/Badge.astro';
+import Icon from '../components/Icon.astro';
+import { cbt, primaryContact } from '../data/site';
+
+const features = [
+  {
+    title: 'Practice questions',
+    text: 'Work through JUPEB and JAMB-style questions online, at your own pace, on any phone or laptop.',
+  },
+  {
+    title: 'Exam-style testing',
+    text: 'Sit tests in a computer-based format like the real exam, so the screen and the pressure feel familiar on the day.',
+  },
+  {
+    title: 'Instant grading',
+    text: 'See your score as soon as you finish, and know which areas need more work before your next class.',
+  },
+];
+const steps = [
+  'Open the CBT platform and choose how you log in — free class or paying tutorial.',
+  'Enter your details and start a practice test.',
+  'Submit and see your result straight away, then practise again.',
+];
+---
+
+<Base
+  title="JUPEB & JAMB Practice Questions Online — BIA CBT Practice Platform | BIA JUPEB"
+  description="Practise JUPEB and JAMB questions online with BIA's CBT Practice Platform: exam-style computer-based tests with instant grading, built for BIA JUPEB candidates."
+>
+  <section class="ch" aria-labelledby="cbt-title">
+    <Badge variant="mark" size={560} class="ch__mark" />
+    <div class="wrap ch__inner">
+      <p class="ch__eyebrow">CBT Practice Platform · BIA JUPEB</p>
+      <h1 id="cbt-title" class="ch__title">Practise smarter for <em>JUPEB &amp; JAMB.</em></h1>
+      <p class="ch__lead">Practice questions, exam-style testing and instant grading — built for BIA candidates.</p>
+      <div class="ch__ctas" data-cta-zone>
+        <a class="btn btn--white" href={cbt.url} rel="noopener" target="_blank" data-cta="cbt-hero-start">Start practising<Icon name="arrow-up-right" size={18} /></a>
+        <span class="ch__host">{cbt.host}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="what-title">
+    <div class="wrap">
+      <h2 id="what-title" class="sec__title">What you can do on the platform</h2>
+      <ul class="feats" role="list">
+        {features.map((f, i) => (
+          <li class="feat">
+            <span class="feat__n num" aria-hidden="true">0{i + 1}</span>
+            <h3 class="feat__title">{f.title}</h3>
+            <p>{f.text}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--tint" aria-labelledby="how-title">
+    <div class="wrap how">
+      <div>
+        <h2 id="how-title" class="sec__title">How to start</h2>
+        <ol class="steps">
+          {steps.map((s) => <li>{s}</li>)}
+        </ol>
+        <a class="btn" href={cbt.url} rel="noopener" target="_blank" data-cta="cbt-how-start">Start practising<Icon name="arrow-up-right" size={18} /></a>
+      </div>
+      <div class="more">
+        <h2 class="more__title">Keep preparing with BIA</h2>
+        <ul class="more__list" role="list">
+          <li><a href="/guides/jupeb-past-questions">JUPEB past questions and answers<Icon name="arrow-right" size={16} /></a></li>
+          <li><a href="/timetable">Class timetable<Icon name="arrow-right" size={16} /></a></li>
+          <li><a href="/fees#tutorials">Physical tutorials and fees<Icon name="arrow-right" size={16} /></a></li>
+          <li><a href="/hall-of-excellence">Hall of Excellence<Icon name="arrow-right" size={16} /></a></li>
+        </ul>
+        <p class="more__help">Trouble logging in? Call admissions on <a class="num" href={`tel:${primaryContact.phone}`} data-cta="cbt-call">{primaryContact.display}</a>.</p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ch {
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--s-8) var(--s-7);
+    background: var(--bia-red);
+    color: var(--on-red);
+  }
+  .ch :global(.ch__mark) {
+    position: absolute;
+    right: -140px;
+    top: -80px;
+    width: 560px;
+    height: auto;
+    color: #fff;
+    opacity: 0.08;
+    pointer-events: none;
+  }
+  .ch__inner {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+  }
+  .ch__eyebrow {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--on-red-muted);
+  }
+  .ch__title {
+    font-size: var(--step-5);
+    font-weight: 380;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .ch__lead {
+    max-width: 44ch;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--on-red-muted);
+  }
+  .ch__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--s-3) var(--s-4);
+  }
+  .ch__host {
+    font-weight: 700;
+    color: var(--on-red-muted);
+  }
+  .section {
+    padding-block: var(--s-8);
+  }
+  .section--tint {
+    background: var(--surface);
+    padding-bottom: var(--section);
+  }
+  .sec__title {
+    font-size: var(--step-3);
+    margin-bottom: var(--s-5);
+  }
+  .feats {
+    display: grid;
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+  }
+  .feat {
+    display: grid;
+    gap: var(--s-2);
+    align-content: start;
+    padding: var(--s-5);
+    border: 1px solid var(--line);
+    border-top: 4px solid var(--bia-red);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .feat__n {
+    font-weight: 800;
+    color: var(--bia-red);
+  }
+  .feat__title {
+    font-size: var(--step-1);
+  }
+  .feat p {
+    color: var(--muted);
+  }
+  .how {
+    display: grid;
+    gap: var(--s-7);
+  }
+  .steps {
+    display: grid;
+    gap: var(--s-3);
+    margin: 0 0 var(--s-5);
+    padding-left: 1.3em;
+    max-width: 52ch;
+  }
+  .more {
+    display: grid;
+    gap: var(--s-3);
+    align-content: start;
+    padding: var(--s-5);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--paper);
+  }
+  .more__title {
+    font-size: var(--step-1);
+  }
+  .more__list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+  }
+  .more__list a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    min-height: 44px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 700;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .more__list a:hover,
+  .more__list a:focus-visible {
+    color: var(--bia-red);
+  }
+  .more__help {
+    color: var(--muted);
+  }
+  .more__help a {
+    font-weight: 700;
+    color: var(--bia-red);
+  }
+  @media (min-width: 720px) {
+    .feats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  @media (min-width: 900px) {
+    .how {
+      grid-template-columns: 1.3fr 1fr;
+      align-items: start;
+    }
+  }
+</style>
