@@ -997,8 +997,8 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   });
   check(thirteen.length === 0 || (f13 && f13.title === '13 Points Achievers' && f13.after14 && f13.cards.length === thirteen.length && f13.cards.every((c) => { const x = thirteen.find((y) => y.id === c.id); return x && c.big === '13/16' && c.text.includes(x.name) && c.text.includes(x.course) && (x.grade ? c.ribbon === `Grades ${x.grade}` : c.ribbon === '13 of 16 points'); })),
     `/hall-of-excellence: "13 Points Achievers" section beneath the 14-point section, each card showing "13/16" as announced (${f13?.cards.length ?? 0})`);
-  // 12- and 11-point achievers: their own sections, in descending order beneath the 13-point section
-  for (const [pts, prev] of [['12', '13'], ['11', '12']]) {
+  // 12-, 11- and 10-point achievers: their own sections, in descending order beneath the 13-point section
+  for (const [pts, prev] of [['12', '13'], ['11', '12'], ['10', '11']]) {
     const want = recs.filter((x) => x.kind === 'student-portrait' && new RegExp(`^${pts}\\s*/\\s*16\\b`).test(x.reportedResult ?? ''));
     const sec = await h.evaluate(([pts, prev]) => {
       const s = document.querySelector(`[data-grade-section="${pts}"]`);
@@ -1028,7 +1028,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(v.length === 0, `/hall-of-excellence: no serious/critical accessibility violations ${v.join(', ')}`);
 
   // Photo galleries: every consented photograph, primary first; swipe, counter and full-screen viewer
-  const expected = recs.filter((x) => (['AAA', 'AAB'].includes(x.grade) || /^1[1-4]\s*\/\s*16\b/.test(x.reportedResult ?? '')) && x.kind === 'student-portrait' && x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
+  const expected = recs.filter((x) => (['AAA', 'AAB'].includes(x.grade) || /^1[0-4]\s*\/\s*16\b/.test(x.reportedResult ?? '')) && x.kind === 'student-portrait' && x.consent.status === 'granted' && x.publishedImage).map((x) => ({ id: x.id, n: 1 + (x.gallery ?? []).length }));
   const galleries = await h.locator('[data-achiever]').evaluateAll((els) => els.map((e) => ({ id: e.dataset.achiever, slides: e.querySelectorAll('[data-ach-track] [data-ach-open]').length, viewer: e.querySelectorAll('[data-ach-viewer] img').length, count: e.querySelector('.ach__count')?.textContent.trim() ?? null })));
   check(expected.every((x) => { const g = galleries.find((c) => c.id === x.id); return g && g.slides === x.n && g.viewer === x.n && (x.n > 1 ? g.count === `1 / ${x.n}` : g.count === null); }) && galleries.filter((g) => g.slides).length === expected.length,
     `/hall-of-excellence: each named achiever shows all of their photographs (${expected.filter((x) => x.n > 1).map((x) => `${x.id}: ${x.n}`).join(', ')})`);

@@ -253,6 +253,12 @@ export const twelvePointAchievers: Achiever[] = records
   .map(toAchiever)
   .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
 
+/** 10-point achievers, announced by BIA as "10/16". */
+export const tenPointAchievers: Achiever[] = records
+  .filter((r) => r.kind === 'student-portrait' && /^10\s*\/\s*16\b/.test(r.reportedResult ?? ''))
+  .map(toAchiever)
+  .sort((a, b) => Number(!!b.name) - Number(!!a.name) || Number(!!b.photo) - Number(!!a.photo) || Number(b.featured) - Number(a.featured));
+
 /** 11-point achievers, announced by BIA as "11/16". */
 export const elevenPointAchievers: Achiever[] = records
   .filter((r) => r.kind === 'student-portrait' && /^11\s*\/\s*16\b/.test(r.reportedResult ?? ''))
