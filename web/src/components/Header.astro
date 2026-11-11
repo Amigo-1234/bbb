@@ -3,6 +3,12 @@ import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import { calendar, primaryContact, site } from '../data/site';
 
+interface Props {
+  /** The page opens on a full-bleed photograph ([data-hero]): the header starts transparent over it. */
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+
 const nav = [
   { label: 'Hall of Excellence', href: '/hall-of-excellence' },
   { label: 'Fees', href: '/fees' },
@@ -27,6 +33,7 @@ const fmt = (d: string) =>
   });
 // An event already under way shows its end date instead of its start.
 const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.end) : fmt(next.start)) : '';
+const isCurrent = (href: string) => (Astro.url.pathname === href ? 'page' : undefined);
 ---
 
 <div class="notice">
@@ -44,10 +51,10 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
   </div>
 </div>
 
-<header class="header" data-header>
+<header class="header" data-header data-overlay={overlay ? '' : undefined} data-on-hero={overlay ? '' : undefined}>
   <div class="wrap header__inner">
     <a href="/" class="brand">
-      <Logo height={30} tone="red" />
+      <Logo height={28} tone="red" class="brand__logo" />
       <span class="brand__text">
         <span class="brand__name">JUPEB</span>
         <span class="brand__sub">Boma’s Intellectual Academy</span>
@@ -57,88 +64,132 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
 
     <nav class="nav" aria-label="Primary">
       <ul>
-        {nav.map((n) => <li><a href={n.href} aria-current={Astro.url.pathname === n.href ? 'page' : undefined}>{n.label}</a></li>)}
+        {nav.map((n) => <li><a href={n.href} aria-current={isCurrent(n.href)}>{n.label}</a></li>)}
       </ul>
     </nav>
 
     <div class="header__actions">
-      <a class="header__call with-icon" href={`tel:${primaryContact.phone}`} data-cta="header-call">
-        <Icon name="phone" size={17} />
-        <span class="sr-only">Call admissions on </span>{primaryContact.display}
+      <a class="header__call" href={`tel:${primaryContact.phone}`} data-cta="header-call">
+        <span class="header__call-icon"><Icon name="phone" size={16} /></span>
+        <span class="sr-only">Call admissions on {primaryContact.display}</span>
       </a>
-      <a class="btn header__apply" href="/#apply" data-cta="header-apply">Enquire</a>
+      <a class="header__apply" href="/#apply" data-cta="header-apply">
+        Enquire<Icon name="arrow-right" size={16} />
+      </a>
       <button
         class="menu-btn"
         type="button"
         aria-expanded="false"
         aria-controls="mobile-menu"
+        aria-label="Menu"
         data-menu-btn
       >
-        <span class="menu-btn__label">Menu</span>
-        <span class="menu-btn__icon" aria-hidden="true"><span></span><span></span></span>
+        <span class="menu-btn__text" aria-hidden="true"><span>Menu</span><span>Close</span></span>
+        <svg class="menu-btn__icon" viewBox="0 0 16 16" width="14" height="14" fill="currentColor" aria-hidden="true">
+          <path d="M7.33 16V0h1.34v16z" />
+          <path d="M16 8.67H0V7.33h16z" />
+        </svg>
       </button>
     </div>
   </div>
-
 </header>
 
-  <div class="sheet" id="mobile-menu" hidden data-menu>
-  <nav class="wrap" aria-label="Mobile">
-    <ol class="sheet__list">
-      {nav.map((n, i) => (
-        <li style={`--i:${i}`}>
-          <a href={n.href} data-menu-link>
-            <span class="sheet__num num">{String(i + 1).padStart(2, '0')}</span>
-            {n.label}
-          </a>
-        </li>
-      ))}
-    </ol>
-    <div class="sheet__foot">
-      <a class="btn" href="/#apply" data-menu-link data-cta="menu-apply">Enquire about JUPEB admission</a>
-      <a class="btn btn--outline" href={`tel:${primaryContact.phone}`} data-cta="menu-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
-    </div>
-  </nav>
+<!-- Slide-in navigation (below 1200px). Hidden until opened so it stays out of the tab order. -->
+<div class="drawer" id="mobile-menu" hidden data-menu>
+  <div class="drawer__scrim" data-menu-scrim></div>
+  <div class="drawer__layers" aria-hidden="true"><span></span><span></span></div>
+  <div class="drawer__panel">
+    <nav class="drawer__nav" aria-label="Mobile">
+      <p class="drawer__eyebrow">{site.session} session</p>
+      <ol class="drawer__list">
+        {nav.map((n, i) => (
+          <li style={`--i:${i}`}>
+            <a href={n.href} class="drawer__link" aria-current={isCurrent(n.href)} data-menu-link>
+              <span class="drawer__num num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="drawer__label">{n.label}</span>
+              <Icon name="arrow-up-right" size={18} class="drawer__arrow" />
+            </a>
+          </li>
+        ))}
+      </ol>
+      <div class="drawer__foot">
+        <a class="btn" href="/#apply" data-menu-link data-cta="menu-apply">Enquire about JUPEB admission<Icon name="arrow-right" size={18} /></a>
+        <a class="btn btn--outline" href={`tel:${primaryContact.phone}`} data-cta="menu-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+      </div>
+    </nav>
+  </div>
 </div>
 
 <script>
   const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const notice = document.querySelector<HTMLElement>('.notice');
   const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]')!;
   const menu = document.querySelector<HTMLElement>('[data-menu]')!;
+  const hero = header.hasAttribute('data-overlay') ? document.querySelector<HTMLElement>('[data-hero]') : null;
+  // Everything outside the header and drawer is made inert while the drawer is open.
+  const outside = () => [...document.querySelectorAll<HTMLElement>('body > :not(header):not([data-menu]):not(script):not(style)')];
 
   let closeTimer = 0;
   const setOpen = (open: boolean) => {
+    if (open === (btn.getAttribute('aria-expanded') === 'true')) return;
     btn.setAttribute('aria-expanded', String(open));
     header.toggleAttribute('data-open', open);
     document.documentElement.style.overflow = open ? 'hidden' : '';
+    outside().forEach((el) => (el.inert = open));
     clearTimeout(closeTimer);
     if (open) {
       header.removeAttribute('data-hidden');
-      menu.style.setProperty('--sheet-top', `${header.getBoundingClientRect().bottom}px`);
+      // The header is sticky below the notice bar: the drawer starts where the header ends.
+      const top = Math.max(0, notice?.getBoundingClientRect().bottom ?? 0) + header.offsetHeight;
+      menu.style.setProperty('--drawer-top', `${top}px`);
       menu.hidden = false;
-      requestAnimationFrame(() => requestAnimationFrame(() => menu.classList.add('is-open')));
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => {
+          menu.classList.add('is-open');
+          menu.querySelector<HTMLElement>('[data-menu-link]')?.focus({ preventScroll: true });
+        }),
+      );
     } else {
       menu.classList.remove('is-open');
-      // Let the closing transition play before removing the sheet.
-      closeTimer = window.setTimeout(() => (menu.hidden = true), 260);
+      // Let the closing transition play before removing the drawer.
+      closeTimer = window.setTimeout(() => (menu.hidden = true), 520);
     }
   };
 
   btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  menu.querySelector('[data-menu-scrim]')!.addEventListener('click', () => setOpen(false));
   menu.querySelectorAll('[data-menu-link]').forEach((a) => a.addEventListener('click', () => setOpen(false)));
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !menu.hidden) {
+    if (menu.hidden) return;
+    if (e.key === 'Escape') {
       setOpen(false);
       btn.focus();
+    } else if (e.key === 'Tab') {
+      // Keep focus cycling between the drawer and the menu button.
+      const items = [...menu.querySelectorAll<HTMLElement>('a[href]')];
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        btn.focus();
+      } else if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        btn.focus();
+      } else if (!e.shiftKey && document.activeElement === btn) {
+        e.preventDefault();
+        first.focus();
+      }
     }
   });
-  matchMedia('(min-width: 1200px)').addEventListener('change', (e) => e.matches && setOpen(false));
+  matchMedia('(min-width: 1280px)').addEventListener('change', (e) => e.matches && setOpen(false));
 
   // Hide the header while reading downwards; bring it back on any upward scroll.
+  // Over the hero photograph it stays light-on-dark; past it, it turns to paper.
   let lastY = window.scrollY;
   const onScroll = () => {
     const y = window.scrollY;
     header.toggleAttribute('data-scrolled', y > 8);
+    if (hero) header.toggleAttribute('data-on-hero', hero.getBoundingClientRect().bottom > header.offsetHeight);
     if (!header.hasAttribute('data-open')) {
       if (y > 480 && y > lastY + 6) header.setAttribute('data-hidden', '');
       else if (y < lastY - 6 || y <= 480) header.removeAttribute('data-hidden');
@@ -160,8 +211,9 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
     align-items: center;
     justify-content: space-between;
     gap: var(--s-4);
-    min-height: 40px;
-    padding-block: var(--s-2);
+    min-height: 36px;
+    padding-block: 6px;
+    line-height: 1.4;
   }
   .notice__session {
     color: var(--on-red-muted);
@@ -185,15 +237,36 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
     }
   }
 
+  /* ---------- Header ---------- */
   .header {
+    --h-fg: var(--ink);
+    --h-fg-2: var(--ink-2);
+    --h-muted: var(--muted);
+    --h-rule: var(--line-strong);
+    --h-pill: rgb(21 23 30 / 0.035);
+    --h-pill-bd: var(--line);
+    --h-hover: var(--crimson-wash);
+    --h-hover-fg: var(--crimson);
+    --h-current-bg: var(--ink);
+    --h-current-fg: var(--on-ink);
+    --h-cta-bg: var(--crimson);
+    --h-cta-fg: #fff;
+    --h-cta-hover: var(--crimson-ink);
+    --h-logo: var(--bia-red);
+    --h-name: var(--bia-red);
     position: sticky;
     top: 0;
     z-index: 50;
-    background: color-mix(in srgb, var(--paper) 92%, transparent);
-    backdrop-filter: saturate(1.4) blur(10px);
-    -webkit-backdrop-filter: saturate(1.4) blur(10px);
+    color: var(--h-fg);
+    background: color-mix(in srgb, var(--paper) 90%, transparent);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
     border-bottom: 1px solid transparent;
-    transition: border-color 0.2s var(--ease), transform 0.4s var(--ease);
+    transition:
+      background-color 0.35s var(--ease),
+      border-color 0.35s var(--ease),
+      color 0.35s var(--ease),
+      transform 0.4s var(--ease);
   }
   .header[data-hidden]:not(:focus-within) {
     transform: translateY(-100%);
@@ -205,10 +278,42 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
   .header[data-open] {
     background: var(--paper);
   }
+
+  /* Over the hero photograph: transparent at rest, dark glass once scrolling. */
+  .header[data-on-hero]:not([data-open]) {
+    --h-fg: #fff;
+    --h-fg-2: rgb(255 255 255 / 0.86);
+    --h-muted: rgb(255 255 255 / 0.72);
+    --h-rule: rgb(255 255 255 / 0.32);
+    --h-pill: rgb(255 255 255 / 0.08);
+    --h-pill-bd: rgb(255 255 255 / 0.16);
+    --h-hover: rgb(255 255 255 / 0.14);
+    --h-hover-fg: #fff;
+    --h-current-bg: #fff;
+    --h-current-fg: var(--ink);
+    --h-cta-bg: #fff;
+    --h-cta-fg: var(--ink);
+    --h-cta-hover: var(--paper-2);
+    --h-logo: #fff;
+    --h-name: #fff;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .header[data-on-hero]:not([data-open]) :focus-visible {
+    outline-color: #fff; /* crimson ring is too dark on the photograph */
+  }
+  .header[data-on-hero][data-scrolled]:not([data-open]) {
+    background: rgb(17 18 24 / 0.62);
+    backdrop-filter: saturate(1.3) blur(14px);
+    -webkit-backdrop-filter: saturate(1.3) blur(14px);
+    border-bottom-color: rgb(255 255 255 / 0.1);
+  }
+
   .header__inner {
     display: flex;
     align-items: center;
-    gap: var(--s-5);
+    gap: var(--s-4);
     height: var(--header-h);
   }
 
@@ -218,219 +323,343 @@ const nextWhen = next ? (next.end && next.start <= today ? 'until ' + fmt(next.e
     gap: var(--s-3);
     text-decoration: none;
     margin-right: auto;
+    min-width: 0;
+  }
+  .brand :global(.brand__logo) {
+    color: var(--h-logo);
+    transition: color 0.35s var(--ease);
   }
   .brand__text {
     display: grid;
     line-height: 1.05;
     padding-left: var(--s-3);
-    border-left: 1px solid var(--line-strong);
+    border-left: 1px solid var(--h-rule);
   }
   .brand__name {
     font-family: var(--sans);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 800;
     letter-spacing: 0.16em;
-    color: var(--bia-red);
+    color: var(--h-name);
   }
   .brand__sub {
-    font-size: 0.66rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--h-muted);
+    white-space: nowrap;
+  }
+  /* Room is short on small phones (beside the menu button) and on desktop (beside nine links). */
+  @media (max-width: 399px), (min-width: 1280px) {
+    .brand__sub {
+      display: none;
+    }
   }
 
+  /* Desktop links sit in one quiet pill */
   .nav {
     display: none;
   }
   .nav ul {
     display: flex;
-    gap: var(--s-1);
+    gap: 2px;
     list-style: none;
     margin: 0;
-    padding: 0;
+    padding: 4px;
+    border: 1px solid var(--h-pill-bd);
+    border-radius: 999px;
+    background: var(--h-pill);
+    transition: background-color 0.35s var(--ease), border-color 0.35s var(--ease);
   }
   .nav a {
     display: block;
     white-space: nowrap;
-    padding: var(--s-2) var(--s-3);
-    font-size: 0.95rem;
-    font-weight: 500;
+    padding: 7px 12px;
+    border-radius: 999px;
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.4;
     text-decoration: none;
-    color: var(--ink-2);
-    border-radius: var(--radius);
-  }
-  .nav a {
-    background: linear-gradient(currentColor, currentColor) left calc(100% - 4px) / 0 1px no-repeat;
-    background-origin: content-box;
-    transition: color 0.2s var(--ease), background-size 0.3s var(--ease);
-  }
-  .nav a[aria-current='page'] {
-    color: var(--crimson);
-    background-size: 100% 1px;
+    color: var(--h-fg-2);
+    transition: color 0.2s var(--ease), background-color 0.2s var(--ease);
   }
   .nav a:hover,
   .nav a:focus-visible {
-    color: var(--crimson);
-    background-size: 100% 1px;
+    color: var(--h-hover-fg);
+    background: var(--h-hover);
+  }
+  .nav a[aria-current='page'] {
+    color: var(--h-current-fg);
+    background: var(--h-current-bg);
   }
 
   .header__actions {
     display: flex;
     align-items: center;
-    gap: var(--s-3);
+    gap: var(--s-2);
   }
   .header__call {
     display: none;
+    align-items: center;
+    gap: var(--s-2);
     white-space: nowrap;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.9rem;
+    font-weight: 700;
     text-decoration: none;
-    font-variant-numeric: tabular-nums;
+    color: var(--h-fg);
   }
-  .header__call:hover {
-    color: var(--crimson);
+  .header__call-icon {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--h-pill-bd);
+    border-radius: 999px;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .header__call:hover .header__call-icon {
+    background: var(--h-hover);
+    color: var(--h-hover-fg);
   }
   .header__apply {
     display: none;
-    min-height: 42px;
+    align-items: center;
+    gap: 0.4em;
+    min-height: 44px;
+    padding: 0 1.1em 0 1.25em;
+    border-radius: 999px;
+    background: var(--h-cta-bg);
+    color: var(--h-cta-fg);
+    font: 700 0.9rem/1 var(--sans);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .header__apply:hover {
+    background: var(--h-cta-hover);
+    transform: translateY(-1px);
+  }
+  .header__apply :global(svg) {
+    transition: transform 0.25s var(--ease);
+  }
+  .header__apply:hover :global(svg) {
+    transform: translateX(3px);
   }
 
+  /* Menu button: label swaps Menu → Close, plus turns into a cross */
   .menu-btn {
     display: inline-flex;
     align-items: center;
-    gap: var(--s-2);
+    gap: 10px;
     min-height: 44px;
-    padding: 0 var(--s-2) 0 var(--s-3);
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius);
-    background: transparent;
-    color: var(--ink);
-    font: 600 0.9rem/1 var(--sans);
+    padding: 0 16px 0 18px;
+    border: 1px solid var(--h-pill-bd);
+    border-radius: 999px;
+    background: var(--h-pill);
+    color: var(--h-fg);
+    font: 700 0.88rem/1 var(--sans);
     cursor: pointer;
+    transition: background-color 0.2s var(--ease), border-color 0.2s var(--ease), color 0.35s var(--ease);
+  }
+  @media (hover: hover) {
+    .menu-btn:hover {
+      background: var(--h-hover);
+    }
+  }
+  .menu-btn__text {
+    display: grid;
+    height: 1.1em;
+    overflow: hidden;
+    line-height: 1.1;
+  }
+  .menu-btn__text span {
+    transition: transform 0.5s cubic-bezier(0.65, 0.01, 0.05, 0.99);
+  }
+  .menu-btn[aria-expanded='true'] .menu-btn__text span {
+    transform: translateY(-100%);
   }
   .menu-btn__icon {
-    position: relative;
-    width: 18px;
-    height: 12px;
+    transition: transform 0.6s cubic-bezier(0.65, 0.01, 0.05, 0.99);
   }
-  .menu-btn__icon span {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: 1.5px;
-    background: currentColor;
-    transition: transform 0.2s var(--ease), top 0.2s var(--ease);
-  }
-  .menu-btn__icon span:first-child {
-    top: 2px;
-  }
-  .menu-btn__icon span:last-child {
-    top: 8px;
-  }
-  [aria-expanded='true'] .menu-btn__icon span:first-child {
-    top: 5px;
-    transform: rotate(45deg);
-  }
-  [aria-expanded='true'] .menu-btn__icon span:last-child {
-    top: 5px;
-    transform: rotate(-45deg);
+  .menu-btn[aria-expanded='true'] .menu-btn__icon {
+    transform: rotate(135deg);
   }
 
-  .sheet {
+  /* ---------- Slide-in drawer ---------- */
+  .drawer {
+    --w: min(460px, 100%);
+    --slide: cubic-bezier(0.65, 0.01, 0.05, 0.99);
     position: fixed;
-    inset: var(--sheet-top, var(--header-h)) 0 0 0;
+    inset: var(--drawer-top, var(--header-h)) 0 0 0;
     z-index: 45;
+    overflow: hidden;
+  }
+  .drawer__scrim {
+    position: absolute;
+    inset: 0;
+    background: rgb(17 18 24 / 0.5);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity 0.45s var(--ease);
+  }
+  .drawer__layers span,
+  .drawer__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: var(--w);
+    transform: translateX(101%);
+    transition: transform 0.45s var(--slide);
+  }
+  .drawer__layers span:first-child {
+    background: var(--bia-red);
+  }
+  .drawer__layers span:last-child {
+    background: var(--ink);
+  }
+  .drawer__panel {
     background: var(--paper);
     overflow-y: auto;
-    padding-block: var(--s-5) var(--s-7);
-    opacity: 0;
-    transition: opacity 0.25s var(--ease);
+    overscroll-behavior: contain;
   }
-  .sheet.is-open {
+  .drawer.is-open .drawer__scrim {
     opacity: 1;
   }
-  .sheet__list li,
-  .sheet__foot {
-    opacity: 0;
-    transform: translateY(14px);
-    transition:
-      opacity 0.35s var(--ease) calc(var(--i, 0) * 45ms + 60ms),
-      transform 0.45s var(--ease) calc(var(--i, 0) * 45ms + 60ms);
-  }
-  .sheet__foot {
-    --i: 6;
-  }
-  .sheet.is-open .sheet__list li,
-  .sheet.is-open .sheet__foot {
-    opacity: 1;
+  .drawer.is-open .drawer__layers span,
+  .drawer.is-open .drawer__panel {
     transform: none;
+    transition-duration: 0.6s;
   }
-  .sheet__list a:hover .sheet__num,
-  .sheet__list a:focus-visible .sheet__num {
-    transform: translateX(4px);
+  .drawer.is-open .drawer__layers span:last-child {
+    transition-delay: 0.08s;
   }
-  .sheet__num {
-    transition: transform 0.25s var(--ease);
+  .drawer.is-open .drawer__panel {
+    transition-delay: 0.16s;
   }
-  .sheet__list {
+
+  .drawer__nav {
+    display: grid;
+    gap: var(--s-5);
+    padding: var(--s-5) var(--gutter) var(--s-7);
+  }
+  .drawer__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .drawer__list {
     list-style: none;
     margin: 0;
     padding: 0;
+    border-top: 1px solid var(--line);
   }
-  .sheet__list a {
+  .drawer__list li {
+    overflow: hidden; /* masks the links as they rise in */
+    border-bottom: 1px solid var(--line);
+  }
+  .drawer__link {
     display: flex;
     align-items: baseline;
     gap: var(--s-4);
-    padding: var(--s-4) 0;
-    border-bottom: 1px solid var(--line);
+    padding: 0.8rem 0;
     font-family: var(--serif);
-    font-size: var(--step-3);
+    font-size: clamp(1.55rem, 1.3rem + 1.2vw, 2rem);
     line-height: 1.1;
     text-decoration: none;
+    transform: translateY(120%) rotate(4deg);
+    transform-origin: left bottom;
+    transition: transform 0.3s var(--ease), color 0.2s var(--ease);
   }
-  .sheet__num {
+  .drawer.is-open .drawer__link {
+    transform: none;
+    transition:
+      transform 0.7s var(--slide) calc(0.32s + var(--i, 0) * 0.045s),
+      color 0.2s var(--ease);
+  }
+  .drawer__num {
+    flex: none;
+    min-width: 1.6rem;
     font-family: var(--sans);
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--crimson);
+    transition: transform 0.25s var(--ease);
+  }
+  .drawer__label {
+    flex: 1;
+  }
+  .drawer__link :global(.drawer__arrow) {
+    align-self: center;
+    color: var(--crimson);
+    opacity: 0;
+    transform: translate(-6px, 6px);
+    transition: opacity 0.2s var(--ease), transform 0.25s var(--ease);
+  }
+  .drawer__link:hover,
+  .drawer__link:focus-visible,
+  .drawer__link[aria-current='page'] {
     color: var(--crimson);
   }
-  .sheet__foot {
+  .drawer__link:hover .drawer__num,
+  .drawer__link:focus-visible .drawer__num {
+    transform: translateX(4px);
+  }
+  .drawer__link:hover :global(.drawer__arrow),
+  .drawer__link:focus-visible :global(.drawer__arrow),
+  .drawer__link[aria-current='page'] :global(.drawer__arrow) {
+    opacity: 1;
+    transform: none;
+  }
+  .drawer__link:focus-visible {
+    outline-offset: -2px;
+  }
+  .drawer__eyebrow,
+  .drawer__foot {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  }
+  .drawer.is-open .drawer__eyebrow,
+  .drawer.is-open .drawer__foot {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s var(--ease) 0.3s, transform 0.6s var(--ease) 0.3s;
+  }
+  .drawer.is-open .drawer__foot {
+    transition-delay: 0.7s;
+  }
+  .drawer__foot {
     display: grid;
     gap: var(--s-3);
-    margin-top: var(--s-6);
+  }
+  .drawer__foot .btn {
+    white-space: normal;
+    text-align: center;
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 560px) {
     .header__apply {
       display: inline-flex;
     }
   }
-  @media (min-width: 1200px) {
+  @media (min-width: 1280px) {
     .nav {
       display: block;
+      margin-inline: auto;
     }
     .menu-btn {
       display: none;
     }
     .header__call {
-      display: inline;
+      display: inline-flex;
     }
     .brand {
       margin-right: 0;
-    }
-    .nav {
-      margin-inline: auto;
-    }
-  }
-  /* Nine nav items: the phone number joins the menu and the links tighten until there is room for all. */
-  @media (min-width: 1200px) and (max-width: 1559px) {
-    .header__call {
-      display: none;
-    }
-    .nav a {
-      padding-inline: 8px;
-      font-size: 0.9rem;
     }
   }
 </style>

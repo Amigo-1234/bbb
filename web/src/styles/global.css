@@ -131,9 +131,9 @@ a {
 .js-motion .facts {
   opacity: 0;
 }
-/* The hero photograph stays painted (it is the LCP element) — only clipped. */
-.js-motion .hero__media .carousel__track {
-  clip-path: inset(14% 10% 14% 10% round 4px);
+/* The hero photograph stays painted (it is the LCP element) — it only starts slightly zoomed. */
+.js-motion .hero__bg img {
+  transform: scale(1.12);
 }
 
 .wrap {

@@ -15,9 +15,11 @@ interface Props {
   noindex?: boolean;
   /** Page runs the GSAP motion layer (enables the hero pre-hide). */
   motion?: boolean;
+  /** Page opens on a full-bleed photograph: the header starts transparent over it. */
+  overlayHeader?: boolean;
 }
 
-const { title, description, noindex = false, motion = false } = Astro.props;
+const { title, description, noindex = false, motion = false, overlayHeader = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, site.url).href;
 // Structured data: the confirmed centre address and official contacts.
 const org = {
@@ -80,7 +82,7 @@ const org = {
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header />
+    <Header overlay={overlayHeader} />
     <main id="main">
       <slot />
     </main>

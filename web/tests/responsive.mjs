@@ -45,7 +45,7 @@ await page.goto(BASE, { waitUntil: 'networkidle' });
 await page.waitForTimeout(2600); // let the hero entrance finish
 const carousels = page.locator('[data-carousel]');
 const count = await carousels.count();
-check(count === 2, `found ${count} carousels (hero, Hall of Excellence)`);
+check(count === 1, `found ${count} carousel (Hall of Excellence)`);
 for (let i = 0; i < count; i++) {
   const c = carousels.nth(i);
   const label = await c.getAttribute('aria-label');
@@ -65,29 +65,75 @@ for (let i = 0; i < count; i++) {
   const total = await c.locator('[data-total]').textContent();
   check((await current()) === total, `${label}: End jumps to last slide`);
 }
-const hero = carousels.first();
-check((await hero.getAttribute('data-autoplay')) === 'true', 'hero carousel autoplays');
-check((await hero.locator('[data-toggle]').getAttribute('aria-pressed')) === 'true', 'hero pause button reports paused state');
 await page.close();
 
-// 3. Reduced motion: no autoplay, pause control hidden
-const rm = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
-await rm.goto(BASE, { waitUntil: 'networkidle' });
-await rm.waitForTimeout(7500);
-check((await rm.locator('[data-carousel] [data-current]').first().textContent()) === '01', 'reduced motion: hero does not auto-advance');
-check(!(await rm.locator('[data-carousel] [data-toggle]').first().isVisible()), 'reduced motion: pause control hidden');
-await rm.close();
+// 3. Hero: one full-bleed photograph behind the copy, transparent header over it
+for (const [label, opts] of [
+  ['mobile', { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }],
+  ['tablet', { viewport: { width: 820, height: 1180 }, isMobile: true, hasTouch: true }],
+  ['desktop', { viewport: { width: 1440, height: 900 } }],
+]) {
+  const hp = await browser.newPage(opts);
+  await hp.goto(BASE, { waitUntil: 'networkidle' });
+  await hp.waitForTimeout(2800);
+  const r = await hp.evaluate(() => {
+    const box = (s) => document.querySelector(s).getBoundingClientRect();
+    const hero = box('.hero'), img = box('.hero__bg img'), header = box('.header'), title = box('.hero__title'), cta = box('.hero__ctas');
+    return {
+      covers: img.left <= 0 && img.right >= document.documentElement.clientWidth && Math.abs(img.top - hero.top) < 1 && Math.abs(img.bottom - hero.bottom) < 1,
+      underHeader: hero.top <= header.top + 1,
+      copyInside: title.top > header.bottom && cta.bottom <= hero.bottom,
+      transparent: getComputedStyle(document.querySelector('.header')).backgroundColor === 'rgba(0, 0, 0, 0)',
+      titleColor: getComputedStyle(document.querySelector('.hero__title')).color,
+    };
+  });
+  check(r.covers, `hero ${label}: photograph fills the whole hero`);
+  check(r.underHeader, `hero ${label}: photograph extends behind the header`);
+  check(r.copyInside, `hero ${label}: headline and CTAs sit inside the hero, below the header`);
+  check(r.transparent && r.titleColor === 'rgb(255, 255, 255)', `hero ${label}: transparent header, light headline at rest`);
+  await hp.evaluate(() => scrollTo(0, document.querySelector('.hero').offsetHeight + 200));
+  await hp.waitForTimeout(500);
+  check(!(await hp.locator('.header').evaluate((h) => h.hasAttribute('data-on-hero'))), `hero ${label}: header turns solid past the hero`);
+  await hp.close();
+}
 
-// 4. Mobile menu opens and closes with Escape
+// Desktop header: brand, link pill and actions never collide
+for (const width of [1280, 1366, 1440, 1920]) {
+  const dp = await browser.newPage({ viewport: { width, height: 900 } });
+  await dp.goto(BASE, { waitUntil: 'networkidle' });
+  const g = await dp.evaluate(() => {
+    const r = (s) => document.querySelector(s).getBoundingClientRect();
+    return { brand: r('.brand').right, navL: r('.nav ul').left, navR: r('.nav ul').right, act: r('.header__actions').left, menu: getComputedStyle(document.querySelector('.menu-btn')).display };
+  });
+  check(g.brand + 8 <= g.navL && g.navR + 8 <= g.act && g.menu === 'none', `${width}px: desktop header items fit without overlapping`);
+  await dp.close();
+}
+
+// 4. Mobile slide-in menu: opens, traps focus, makes the page inert, closes with Escape and the scrim
 const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 await m.goto(BASE, { waitUntil: 'networkidle' });
+await m.waitForTimeout(2600);
 await m.click('[data-menu-btn]');
 check(await m.locator('#mobile-menu').isVisible(), 'mobile menu opens');
-await m.waitForTimeout(500);
-check(await m.locator('.sheet__list li').first().evaluate((el) => getComputedStyle(el).opacity === '1'), 'mobile menu items animate in');
+await m.waitForTimeout(1700);
+check((await m.locator('[data-menu-btn]').getAttribute('aria-expanded')) === 'true', 'mobile menu button reports expanded');
+check(await m.locator('.drawer__link').last().evaluate((el) => getComputedStyle(el).transform === 'none'), 'mobile menu links animate in');
+check(await m.locator('.drawer__panel').evaluate((el) => Math.round(el.getBoundingClientRect().right) === innerWidth && Math.round(el.getBoundingClientRect().left) === 0), 'mobile menu panel slides fully in');
+check(await m.evaluate(() => document.activeElement?.classList.contains('drawer__link')), 'focus moves into the menu');
+check(await m.evaluate(() => document.querySelector('main').inert), 'page behind the menu is inert');
 await m.keyboard.press('Escape');
-await m.waitForTimeout(450);
+await m.waitForTimeout(700);
 check(!(await m.locator('#mobile-menu').isVisible()), 'mobile menu closes with Escape');
+check(await m.evaluate(() => document.activeElement?.hasAttribute('data-menu-btn') && !document.querySelector('main').inert), 'focus returns to the menu button; page is interactive again');
+const tm = await browser.newPage({ viewport: { width: 820, height: 1180 }, isMobile: true, hasTouch: true });
+await tm.goto(BASE, { waitUntil: 'networkidle' });
+await tm.click('[data-menu-btn]');
+await tm.waitForTimeout(1300);
+check(await tm.locator('.drawer__panel').evaluate((el) => el.getBoundingClientRect().width <= 460 && Math.round(el.getBoundingClientRect().right) === innerWidth), 'tablet: menu is a side panel on the right');
+await tm.mouse.click(40, 600);
+await tm.waitForTimeout(700);
+check(!(await tm.locator('#mobile-menu').isVisible()), 'tablet: tapping the dimmed page closes the menu');
+await tm.close();
 await m.close();
 
 // 5. Motion layer (GSAP + ScrollTrigger)
@@ -133,7 +179,7 @@ for (const [label, opts] of [
   await page.goto(BASE, { waitUntil: 'networkidle' });
   check((await page.evaluate(() => document.documentElement.dataset.motion)) === 'running', `${label}: GSAP motion layer initialised`);
   await page.waitForTimeout(2600);
-  check((await opacity(page, '.hero__title')) === 1 && (await opacity(page, '.hero__media')) === 1, `${label}: hero entrance completes visible`);
+  check((await opacity(page, '.hero__title')) === 1 && (await opacity(page, '.hero__bg')) === 1, `${label}: hero entrance completes visible`);
   check(!(await page.evaluate(() => document.documentElement.classList.contains('js-motion'))), `${label}: pre-hide class released`);
   await scrollThrough(page);
   const stuck = await hiddenContent(page);
@@ -379,13 +425,13 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await m.goto(BASE, { waitUntil: 'networkidle' });
   await m.waitForTimeout(2800);
   const hero = await m.evaluate(() => {
-    const img = document.querySelector('.hero__media .carousel__track').getBoundingClientRect();
+    const img = document.querySelector('.hero__bg').getBoundingClientRect();
     const h1 = document.querySelector('.hero__title').getBoundingClientRect();
     const copy = document.querySelector('.hero__copy').getBoundingClientRect();
     return { imgTop: img.top, imgH: img.height, imgW: img.width, copyTop: copy.top, h1Bottom: h1.bottom, vw: innerWidth };
   });
-  check(hero.imgTop < 160 && hero.imgH > 220 && Math.round(hero.imgW) === hero.vw, `mobile hero: full-bleed photograph at the top (${Math.round(hero.imgH)}px tall)`);
-  check(hero.copyTop < hero.imgTop + hero.imgH && hero.h1Bottom < 844, 'mobile hero: copy sheet overlaps the photo edge; headline in the first screen');
+  check(hero.imgTop < 60 && hero.imgH > 560 && Math.round(hero.imgW) === hero.vw, `mobile hero: full-bleed photograph from the top of the screen (${Math.round(hero.imgH)}px tall)`);
+  check(hero.copyTop > hero.imgTop && hero.copyTop < hero.imgTop + hero.imgH && hero.h1Bottom < 844, 'mobile hero: copy sits on the photograph; headline in the first screen');
   // Action bar: hidden while hero CTAs are visible, shown mid-page, hidden at the enquiry section
   const barHidden = () => m.locator('[data-actionbar]').evaluate((el) => el.hasAttribute('data-hidden'));
   await m.evaluate(() => document.querySelector('.hero__ctas').scrollIntoView({ block: 'center', behavior: 'instant' }));
@@ -404,11 +450,11 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await d.goto(BASE, { waitUntil: 'networkidle' });
   await d.waitForTimeout(2800);
   const dh = await d.evaluate(() => {
-    const t = document.querySelector('.hero__media .carousel__track').getBoundingClientRect();
+    const t = document.querySelector('.hero__bg').getBoundingClientRect();
     const inset = document.querySelector('.hero__inset');
-    return { right: t.right, vw: document.documentElement.clientWidth, inset: inset && getComputedStyle(inset).display !== 'none' && Number(getComputedStyle(inset).opacity) === 1 };
+    return { left: t.left, right: t.right, vw: document.documentElement.clientWidth, inset: inset && getComputedStyle(inset).display !== 'none' && Number(getComputedStyle(inset).opacity) === 1 };
   });
-  check(Math.abs(dh.right - dh.vw) <= 1 && dh.inset, 'desktop hero: photograph bleeds to the right edge with the inset photo');
+  check(dh.left <= 0 && Math.abs(dh.right - dh.vw) <= 1 && dh.inset, 'desktop hero: photograph spans edge to edge with the BIA seal');
   await d.close();
 }
 

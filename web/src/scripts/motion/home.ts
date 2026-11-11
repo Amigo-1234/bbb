@@ -7,45 +7,35 @@ import { gsap, SplitText, root, EASE, EASE_TEXT, $, $$, safely, onEnter, maskLin
 function hero() {
   const title = $('.hero__title')!;
   const copy = $$('.hero__copy > *').filter((el) => el !== title);
-  const track = $('.hero__media .carousel__track');
-  const bar = $('.hero__media .carousel__bar');
-  const facts = $$('.facts > div');
+  const img = $('.hero__bg img');
 
   // Take over from the CSS pre-hide with inline state, then animate with explicit end values.
-  // The hero photograph is never hidden (it is the LCP element); it is only clipped, then revealed.
-  gsap.set([...copy, title, '.facts'], { autoAlpha: 0 });
+  // The background photograph is never hidden (it is the LCP element); it only settles from a slight zoom.
+  gsap.set([...copy, title], { autoAlpha: 0 });
   const split = SplitText.create(title, { type: 'lines', mask: 'lines', aria: 'auto' });
-  const show = { autoAlpha: 1 };
 
   const tl = gsap.timeline({
     defaults: { ease: EASE, duration: 0.8 },
     onComplete: () => {
       split.revert();
-      gsap.set([...copy, ...facts, bar], { clearProps: 'transform' });
+      gsap.set(copy, { clearProps: 'transform' });
     },
   });
 
   chromeIn(tl);
   root.classList.remove('js-motion');
-  tl.fromTo(copy[0], { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, '-=0.35')
-    .set(title, show, '<')
+  tl.fromTo(img, { scale: 1.12 }, { scale: 1, duration: 2.6, ease: 'power2.out', clearProps: 'transform' }, 0)
+    .fromTo(copy[0], { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, 0.25)
+    .set(title, { autoAlpha: 1 }, '<')
     .from(split.lines, { yPercent: 110, duration: 1.05, ease: EASE_TEXT, stagger: 0.1 }, '<0.1')
     .fromTo(copy.slice(1), { y: 22, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.09 }, '-=0.7')
-    .fromTo(
-      track,
-      { clipPath: 'inset(14% 10% 14% 10% round 4px)' },
-      { clipPath: 'inset(0% 0% 0% 0% round 4px)', duration: 1.3, ease: 'expo.out', clearProps: 'clipPath' },
-      0.1,
-    )
     .fromTo(
       '.hero__inset',
       { y: 40, autoAlpha: 0, rotate: -3 },
       { y: 0, autoAlpha: 1, rotate: 0, duration: 1.1, ease: 'expo.out', clearProps: 'transform' },
       0.9,
     )
-    .fromTo(bar, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6 }, '-=0.9')
-    .set('.facts', show, '-=0.6')
-    .fromTo(facts, { y: 18, autoAlpha: 0 }, { y: 0, autoAlpha: 1, stagger: 0.07, duration: 0.6 }, '<');
+    .fromTo('.hero__caption', { x: 12, autoAlpha: 0 }, { x: 0, autoAlpha: 1, duration: 0.7, clearProps: 'transform' }, 1.1);
 }
 
 /** Honours: cards rise with a slight tilt, grade letters climb out of a mask, watermark drifts. */
@@ -151,7 +141,7 @@ export function initHomeMotion() {
     // The entrance plays once per visit, even if a breakpoint change re-runs this block.
     if (!heroPlayed) {
       heroPlayed = true;
-      safely('hero', '.notice, .header, .hero__copy > *, .hero__media', hero);
+      safely('hero', '.notice, .header, .hero__copy > *, .hero__bg img, .hero__inset, .hero__caption', hero);
     }
     safely('headings', '.head__label, .head__title, .head__intro', headings);
     safely('honours', '.hall__head > *, .hall__carousel .ach', () => honours(desktop));
