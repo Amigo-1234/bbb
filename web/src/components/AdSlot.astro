@@ -1,0 +1,60 @@
+---
+/**
+ * One manual AdSense display unit. Renders NOTHING unless advertising is on
+ * (src/data/ads.ts) and this placement has an ad unit ID — so pages carry no
+ * empty boxes while ads are off.
+ *
+ * Placement rules (docs/adsense.md): only after a page's main content, never
+ * beside navigation, buttons, phone numbers or fee tables; always labelled
+ * "Advertisement"; space reserved so the page does not jump when the ad loads.
+ */
+import { ads, adsEnabled, type AdSlotName } from '../data/ads';
+
+interface Props {
+  name: AdSlotName;
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+const slot = ads.slots[name];
+const show = adsEnabled && slot !== '';
+---
+
+{
+  show && (
+    <aside class:list={['ad', className]} aria-label="Advertisement">
+      <p class="ad__label">Advertisement</p>
+      <ins
+        class="adsbygoogle"
+        style="display:block"
+        data-ad-client={ads.client}
+        data-ad-slot={slot}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+      <script is:inline>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
+    </aside>
+  )
+}
+
+<style>
+  .ad {
+    display: grid;
+    gap: var(--s-2);
+    margin-block: var(--s-7);
+    padding-block: var(--s-4);
+    border-block: 1px solid var(--line);
+    /* Reserve room for a typical responsive unit so content below does not shift. */
+    min-height: 300px;
+  }
+  .ad__label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  /* AdSense marks unfilled units; collapse them instead of leaving a blank band. */
+  .ad:has(ins[data-ad-status='unfilled']) {
+    display: none;
+  }
+</style>

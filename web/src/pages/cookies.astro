@@ -1,0 +1,69 @@
+---
+/**
+ * Cookie Policy. Verified in the code: the website itself sets no cookies and
+ * uses no browser storage, analytics or third-party embeds. Advertising cookies
+ * appear only once AdSense is switched on in src/data/ads.ts.
+ */
+import DocPage from '../components/DocPage.astro';
+import { adsEnabled } from '../data/ads';
+
+const updated = '2026-11-13';
+---
+
+<DocPage
+  title="Cookie Policy | BIA JUPEB — Boma’s Intellectual Academy"
+  description="Which cookies biajupeb.com.ng uses, including Google AdSense advertising cookies, and how to control them."
+  eyebrow="Cookies"
+  heading="Cookie Policy"
+  lead="Cookies are small files a website stores in your browser. This page explains which ones this website uses and how you can control them."
+  updated={updated}
+>
+  <h2>Cookies set by BIA</h2>
+  <p>
+    BIA does not set any cookies on this website, and does not use analytics, tracking pixels or browser storage. Our fonts,
+    photographs and videos are served from this website itself, so reading a page does not involve other companies’ trackers.
+  </p>
+
+  <h2>Advertising cookies (Google AdSense)</h2>
+  {adsEnabled ? (
+    <p>
+      This website shows ads served by Google AdSense. Google and its partners use cookies to show ads, to limit how often you
+      see the same ad, to measure ads and to prevent fraud. Where you have allowed it, these cookies also let Google show ads
+      based on your visits to this and other websites.
+    </p>
+  ) : (
+    <p>
+      This website does not show ads yet. When we start showing ads served by Google AdSense, Google and its partners will use
+      cookies to show ads, to limit how often you see the same ad, to measure ads and to prevent fraud. Where you allow it, these
+      cookies will also let Google show ads based on your visits to this and other websites. We will update this page when that
+      happens.
+    </p>
+  )}
+  <p>
+    Visitors in the European Economic Area, the United Kingdom and Switzerland are asked for consent before advertising cookies are
+    used{adsEnabled ? '' : ' (once ads are shown)'}, through a consent message provided by Google. Elsewhere, you can turn off
+    personalised ads using the options below.
+  </p>
+
+  <h2>How to control cookies</h2>
+  <ul>
+    <li>
+      <strong>Personalised Google ads:</strong> turn them off in Google’s
+      {' '}<a href="https://www.google.com/settings/ads" rel="noopener" target="_blank">Ads Settings</a>.
+    </li>
+    <li>
+      <strong>Other advertising companies:</strong> opt out at
+      {' '}<a href="https://optout.aboutads.info/" rel="noopener" target="_blank">www.aboutads.info</a> or, in Europe,
+      {' '}<a href="https://www.youronlinechoices.eu" rel="noopener" target="_blank">www.youronlinechoices.eu</a>.
+    </li>
+    <li>
+      <strong>Your browser:</strong> every major browser lets you block or delete cookies in its settings. The website works
+      fully without cookies; with them blocked you may see less relevant ads.
+    </li>
+  </ul>
+  <p>
+    Google explains its advertising cookies at
+    {' '}<a href="https://policies.google.com/technologies/ads" rel="noopener" target="_blank">How Google uses cookies in advertising</a>.
+    For how BIA handles personal information, see our <a href="/privacy">Privacy Policy</a>.
+  </p>
+</DocPage>

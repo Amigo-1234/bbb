@@ -1,0 +1,76 @@
+---
+/**
+ * About BIA JUPEB. Every statement comes from data already published on the
+ * site (src/data/identity.ts, src/data/site.ts) — nothing new is claimed here.
+ */
+import DocPage from '../components/DocPage.astro';
+import { audiences, founder, mission, offers } from '../data/identity';
+import { address, email, office, site } from '../data/site';
+---
+
+<DocPage
+  title="About BIA JUPEB — Boma’s Intellectual Academy, Akoka, Lagos"
+  description="About BIA JUPEB: Boma’s Intellectual Academy’s JUPEB programme for Science and Non-Science students in Akoka, Lagos and online — our mission, founder, what we offer and where to find us."
+  eyebrow="About us"
+  heading="About BIA JUPEB"
+  lead={`BIA JUPEB is the JUPEB programme of ${site.parent} (BIA): ${site.descriptor}.`}
+>
+  <h2>Who we are</h2>
+  <p>
+    {site.parent} prepares Science and Non-Science students for the Joint Universities Preliminary Examinations Board
+    (JUPEB) examination, so they can apply for Direct Entry admission into 200 Level. The programme runs for
+    {' '}{site.programmeLength}, with physical classes at our tutorial centre in Akoka, near the University of Lagos, and
+    online lessons for students who cannot attend in person.
+  </p>
+  <p class="note"><strong>Our mission:</strong> {mission}</p>
+
+  <h2>What we offer</h2>
+  <ul>
+    {offers.map((o) => <li>{o}</li>)}
+  </ul>
+  <p>
+    Current fees and payment terms are on the <a href="/fees">fees page</a>, and class times are on the
+    {' '}<a href="/timetable">timetable</a>. Students can also practise past-question style tests on BIA’s
+    {' '}<a href="/cbt-practice">CBT practice platform</a>.
+  </p>
+
+  <h2>Who the programme is for</h2>
+  {audiences.map((a) => (
+    <>
+      <h3>{a.title}</h3>
+      <p>{a.text}</p>
+    </>
+  ))}
+
+  <h2>Our founder</h2>
+  <p>{founder.name} ({founder.fullName}) is the {founder.role}.</p>
+  <p>{founder.bio}</p>
+  <p><em>{founder.nameNote}</em></p>
+  <p>Meet the tutors and staff who run the programme on <a href="/team">our team page</a>.</p>
+
+  <h2>Results</h2>
+  <p>
+    Results of BIA JUPEB students — named only where BIA has confirmed their permission — are on the
+    {' '}<a href="/hall-of-excellence">Hall of Excellence</a> and <a href="/success-stories">success stories</a> pages.
+  </p>
+
+  <h2>Where to find us</h2>
+  <h3>{office.name}</h3>
+  <address>
+    {office.lines.map((l) => <>{l}<br /></>)}
+    Landmark: {office.landmark}
+  </address>
+  <p>{office.purpose}</p>
+  <h3>{address.name}</h3>
+  <address>
+    {address.lines.map((l) => <>{l}<br /></>)}
+    Landmark: {address.landmark}
+  </address>
+  <p>{address.purpose} <a href="/#location">Directions and video</a>.</p>
+  <p>
+    Phone numbers for admissions and every member of staff are on the <a href="/contact">contact page</a>, and you can email
+    {' '}BIA at <a href={`mailto:${email}`}>{email}</a>. You can also
+    find BIA on <a href={site.facebook} rel="noopener" target="_blank">Facebook</a> and
+    {' '}<a href={site.tiktok} rel="noopener" target="_blank">TikTok</a>.
+  </p>
+</DocPage>

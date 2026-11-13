@@ -2,279 +2,989 @@
   {
     "slug": "jupeb-guide",
     "legacyPath": "/jupeb-guide.html",
-    "metaTitle": "JUPEB Guide 2026 | Registration, Fees & Requirements - BIA JUPEB",
-    "description": "Your complete JUPEB 2026 guide from BIA JUPEB: fees, requirements, UNILAG, points, and subject combinations.",
-    "title": "JUPEB Guide 2026: Registration, Fees, and Admissions",
-    "lead": "Everything you need to know about JUPEB 2026 and how BIA JUPEB helps you prepare for Direct Entry into 200 Level.",
+    "metaTitle": "JUPEB Guide 2026/27: Requirements, Programme Year & Registration | BIA JUPEB",
+    "description": "How JUPEB works at BIA in the 2026/27 session: requirements, the three ways to study, how the year runs, a typical teaching week, choosing subjects and registering.",
+    "title": "JUPEB Guide 2026/27: how the programme works, from registration to exams",
+    "lead": "A practical walkthrough of JUPEB at Boma’s Intellectual Academy for the 2026/27 session — what you need, how the year runs and what a normal week looks like.",
+    "updated": "2026-11-13",
+    "sources": [
+      "BIA Payment Advice 2026/27 (Science and Non-Science), pages 1–3: requirements, registration fee, payment stages, non-refundable notice, Lecture Banks notice",
+      "BIA Entrance Exam & Special Classes flyer (Payment Advice page 4): purpose of the Entrance Examination; free marathon class 5–31 October 2026",
+      "BIA JUPEB First Semester Timetable (physical class), 2026/27: days, times, subject codes, Saturday tests, night classes, monthly mocks",
+      "Physical Tutorial Services Package flyer, 2026/27",
+      "V1 biajupeb.com.ng text (BIA’s own): what JUPEB is, programme length, offers, subject combination examples",
+      "External (13 Nov 2026): UNILAG SFS 2025/26 admission notice — combinations; UNILAG orientation article — SFS"
+    ],
     "blocks": [
       {
         "type": "h2",
-        "html": "What is JUPEB?"
+        "html": "What JUPEB is"
       },
       {
         "type": "p",
-        "html": "JUPEB (Joint Universities Preliminary Examinations Board) is a one-year, A-Level standard programme recognised by Nigerian universities. Successful candidates can use their JUPEB results to apply for Direct Entry admission into 200 Level. BIA JUPEB prepares students with focused classes, weekly tests, mock examinations and admission guidance."
+        "html": "JUPEB (Joint Universities Preliminary Examinations Board) runs an A-Level standard programme recognised by Nigerian universities. Students who succeed can use their JUPEB results to apply for <strong>Direct Entry admission into 200 Level</strong>, skipping the first year of a degree. At BIA the programme runs for <strong>8–9 months</strong>, with physical classes near the University of Lagos and online lessons for students who cannot attend in person."
       },
       {
         "type": "h2",
-        "html": "JUPEB 2026 Fees (Form and Programme)"
-      },
-      {
-        "type": "p",
-        "html": "Registration with BIA JUPEB for the 2026/27 session costs ₦45,000 (application form, non-refundable). Programme fees, physical tutorial options and payment terms are on the <a href=\"/fees\">fees page</a>."
-      },
-      {
-        "type": "h2",
-        "html": "Where We Guide Students"
-      },
-      {
-        "type": "p",
-        "html": "Our admission guidance currently focuses on:"
+        "html": "Who the programme is for"
       },
       {
         "type": "ul",
         "items": [
-          "University of Lagos (UNILAG)"
+          "<strong>O’Level holders aiming for 200 Level.</strong> You can register with your O’Level result — or with an awaiting result (see <a href='/guides/awaiting-result-jupeb-2026'>our awaiting-result guide</a>).",
+          "<strong>Students who learn online.</strong> If you cannot attend physical classes, the Lecture Banks carry the teaching, materials and guidance you need.",
+          "<strong>Students from other institutions.</strong> You can join BIA’s physical tutorials only, through the Physical Tutorial Services Package."
         ]
       },
       {
         "type": "h2",
-        "html": "How JUPEB Points Are Calculated"
+        "html": "What you need to register"
       },
       {
         "type": "p",
-        "html": "JUPEB grades convert to points as follows:"
+        "html": "BIA’s 2026/27 payment advice lists four requirements:"
       },
       {
-        "type": "ul",
+        "type": "ol",
         "items": [
-          "A = 5 points",
-          "B = 4 points",
-          "C = 3 points",
-          "D = 2 points",
-          "E = 1 point"
+          "The full registration fee — <strong>₦45,000</strong> for the application form (compulsory).",
+          "Your O’Level result. If it is not out yet, an awaiting result is acceptable.",
+          "Your National Identification Number (NIN).",
+          "Your birth certificate."
+        ]
+      },
+      {
+        "type": "note",
+        "html": "All payments to BIA are final and non-refundable once processed. Be certain before you pay, and keep every payment receipt safe — you will need them for record and verification purposes."
+      },
+      {
+        "type": "h2",
+        "html": "Three ways to study at BIA"
+      },
+      {
+        "type": "table",
+        "caption": "Study options, 2026/27",
+        "head": [
+          "Option",
+          "How you learn",
+          "Good for"
+        ],
+        "rows": [
+          [
+            "Full programme with physical classes",
+            "Classes and tutorials in person near UNILAG, plus weekly tests and monthly mock examinations",
+            "Students who can attend in Lagos and want the full timetable"
+          ],
+          [
+            "Full programme online (Lecture Banks)",
+            "Recorded and live lessons with materials. BIA makes the Lecture Banks <strong>compulsory</strong> for students who cannot attend physical classes or prefer online learning",
+            "Students outside Lagos or with fixed daytime commitments"
+          ],
+          [
+            "Physical Tutorial Services Package",
+            "BIA’s physical tutorials only — ₦150,000 one-time until the exam, or ₦25,000 per month, plus a ₦5,000 tutorial registration form",
+            "Students who want BIA’s physical tutorials only, including students from other institutions"
+          ]
+        ]
+      },
+      {
+        "type": "p",
+        "html": "Full fee details for each option are on the <a href='/fees'>fees page</a>."
+      },
+      {
+        "type": "h2",
+        "html": "How the 2026/27 year runs"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>Registration.</strong> Pay the registration fee and submit your documents. The first instalment of the programme fee is paid on registration and closes before the BIA Entrance Examination.",
+          "<strong>BIA Entrance Examination.</strong> This exam is <em>not</em> used to refuse anyone admission. It assesses each student’s strengths and the areas to improve before the programme starts. Students who do not perform well are still admitted, but may be advised or required to take additional academic support.",
+          "<strong>Free Special Marathon Class.</strong> A free academic support class held before the main physical resumption to strengthen your foundation. For 2026/27 it ran from 5 to 31 October 2026, alongside free online tutorials.",
+          "<strong>Resumption and First Semester.</strong> The second instalment is due upon resumption — by January, before the First Semester Examination or the final JUPEB biometrics.",
+          "<strong>Final JUPEB thumbprint and biometrics exercise.</strong> BIA’s payment schedule is tied to this exercise; the admissions office confirms its date.",
+          "<strong>Second Semester.</strong> The fee balance is due on or before <strong>4 May 2027</strong>, before Second Semester resumption.",
+          "<strong>Direct Entry.</strong> After your JUPEB results, BIA guides you through the Direct Entry window, timelines and documentation — see <a href='/guides/jupeb-unilag-admission'>JUPEB to UNILAG</a>."
         ]
       },
       {
         "type": "h2",
-        "html": "JUPEB Subject Combinations (Popular Courses)"
+        "html": "What a teaching week looks like"
       },
       {
         "type": "p",
-        "html": "Below are common subject combinations for top courses:"
+        "html": "This is BIA’s first-semester physical timetable for 2026/27, summarised. The full version, with venues, is on the <a href='/timetable'>timetable page</a>."
+      },
+      {
+        "type": "table",
+        "caption": "First semester week (physical class)",
+        "head": [
+          "Day",
+          "What happens"
+        ],
+        "rows": [
+          [
+            "Monday & Wednesday",
+            "Self study and lectures, 8:00 AM – 7:00 PM (self study inside MTN Library, UNILAG)"
+          ],
+          [
+            "Tuesday & Thursday",
+            "Self study 8am – 1pm, then subject classes: 2–3pm Physics, Government, Business Studies; 3–4pm Chemistry, Economics, Christian Religious Studies; 4–5pm Biology, Accounting, Literature-in-English, F/MTH. Special Private Class 5–7pm"
+          ],
+          [
+            "Friday",
+            "Self study 8am – 1pm; Marathon 001 for SFS students 2:30 – 7:30 PM"
+          ],
+          [
+            "Saturday",
+            "001 & 002 Tests, 10:00 AM – 4:00 PM"
+          ],
+          [
+            "Sunday",
+            "Marathon 002 for SFS students, 2:00 – 7:00 PM"
+          ]
+        ]
+      },
+      {
+        "type": "p",
+        "html": "Two rhythms run on top of the weekly timetable: <strong>every third week</strong>, night classes are held as intensive preparation for the monthly mock, and <strong>every fourth week</strong> the Monthly Mock Examination takes place at the end of the week. Treat the Saturday tests and the mocks as checkpoints — they show you which topics need attention while there is still time to fix them."
+      },
+      {
+        "type": "p",
+        "html": "<strong>SFS</strong> on the timetable refers to the University of Lagos <strong>School of Foundation Studies</strong>, which runs UNILAG’s own JUPEB programme. BIA’s first-semester timetable is for BIA private JUPEB students and some selected UNILAG School of Foundation students. Subject codes, “001” and “002” are shown as printed on BIA’s timetable."
+      },
+      {
+        "type": "h2",
+        "html": "Choosing your subjects"
+      },
+      {
+        "type": "p",
+        "html": "Your JUPEB subject combination must match the course you want to study at university. Some common examples:"
       },
       {
         "type": "ul",
         "items": [
           "<strong>Medicine:</strong> Biology, Chemistry, Physics",
-          "<strong>Law:</strong> Literature-in-English, Government, CRS",
+          "<strong>Law:</strong> Literature-in-English, Government, Christian Religious Studies",
           "<strong>Engineering:</strong> Mathematics, Physics, Chemistry"
         ]
       },
       {
-        "type": "h2",
-        "html": "How to Register with BIA JUPEB"
+        "type": "p",
+        "html": "All three combinations appear in the list of JUPEB subject combinations offered by UNILAG’s School of Foundation Studies (<a href='https://unilag.edu.ng/admission-into-school-of-foundation-studies-formerly-foundation-programmes-2025-2026-academic-session/' rel='noopener' target='_blank'>2025/26 admission notice</a>). Which combination suits which degree is BIA’s advice — confirm yours with the admissions office."
       },
       {
         "type": "p",
-        "html": "Registration is handled in person by the BIA admissions office — there is no online registration or payment. <a href=\"/#apply\">Call or visit us</a> to begin."
+        "html": "Decide your target course first, then choose subjects — not the other way round. Before you register, check the Direct Entry requirements for that course at the university you want, and ask the admissions office to confirm your combination."
+      },
+      {
+        "type": "h2",
+        "html": "How to register"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Call or WhatsApp the admissions office on <a href='tel:+2347012388184'>0701 238 8184</a>, or visit BIA (addresses on the <a href='/contact'>contact page</a>).",
+          "Bring your documents: O’Level result (or awaiting result), NIN and birth certificate.",
+          "Pay the ₦45,000 registration fee and keep the receipt.",
+          "Confirm your subject combination and study option with the admissions office.",
+          "Sit the BIA Entrance Examination and follow any academic support you are advised to take."
+        ]
+      },
+      {
+        "type": "p",
+        "html": "Registration is handled by the admissions office — it is not done through this website."
+      },
+      {
+        "type": "h2",
+        "html": "Frequently asked questions"
+      },
+      {
+        "type": "h3",
+        "html": "Can I do the whole programme online?"
+      },
+      {
+        "type": "p",
+        "html": "Yes. Students who cannot attend physical classes, or who prefer online learning, study through the Lecture Banks, which BIA makes compulsory for them."
+      },
+      {
+        "type": "h3",
+        "html": "Can a poor Entrance Examination result stop me being admitted?"
+      },
+      {
+        "type": "p",
+        "html": "No. The Entrance Examination identifies where you need help. Students who do not perform well are still admitted, but may be advised or required to take extra academic support."
+      },
+      {
+        "type": "h3",
+        "html": "Is the registration fee refundable?"
+      },
+      {
+        "type": "p",
+        "html": "No. All payments are final and non-refundable once processed, so be certain before you pay."
+      },
+      {
+        "type": "h3",
+        "html": "Can I pay the programme fee in parts?"
+      },
+      {
+        "type": "p",
+        "html": "Yes — in three instalments: on registration, on resumption, and the balance on or before 4 May 2027. The admissions office confirms each amount; see the <a href='/fees'>fees page</a>."
+      },
+      {
+        "type": "h2",
+        "html": "Sources"
+      },
+      {
+        "type": "p",
+        "html": "<strong>BIA’s own documents</strong> — the basis for everything specific to BIA in this guide:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "BIA Payment Advice 2026/27 (Science and Non-Science): requirements, fees, payment stages, non-refundable notice, Lecture Banks",
+          "BIA Entrance Exam & Special Classes flyer, 2026/27",
+          "BIA JUPEB First Semester Timetable (physical class), 2026/27",
+          "Physical Tutorial Services Package flyer, 2026/27",
+          "BIA’s published programme information (biajupeb.com.ng)"
+        ]
+      },
+      {
+        "type": "p",
+        "html": "<strong>External sources</strong> — used only where marked in the text:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<a href='https://unilag.edu.ng/admission-into-school-of-foundation-studies-formerly-foundation-programmes-2025-2026-academic-session/' rel='noopener' target='_blank'>University of Lagos — Admission into School of Foundation Studies, 2025/2026</a>: JUPEB subject combinations; School of Foundation Studies",
+          "<a href='https://unilag.edu.ng/?p=66358' rel='noopener' target='_blank'>University of Lagos — Highlights from 2025/2026 SFS Orientation</a>: “SFS” as UNILAG’s School of Foundation Studies"
+        ]
       }
     ]
   },
   {
     "slug": "jupeb-unilag-admission",
     "legacyPath": "/jupeb-unilag-admission.html",
-    "metaTitle": "How to Gain Admission into UNILAG via JUPEB 2026 | BIA JUPEB",
-    "description": "Step-by-step guide to gaining admission into UNILAG through JUPEB in 2026, with subject choices and tips.",
-    "title": "How to Gain Admission into UNILAG via JUPEB 2026",
-    "lead": "Follow these steps to prepare for 200 Level Direct Entry into the University of Lagos with JUPEB.",
+    "metaTitle": "JUPEB to UNILAG Direct Entry 2026: Subjects, Grades & Steps | BIA JUPEB",
+    "description": "How BIA JUPEB students prepare for Direct Entry into 200 Level at the University of Lagos: matching subjects to courses, how grades convert to points, documents and steps.",
+    "title": "From JUPEB to UNILAG: preparing for Direct Entry into 200 Level",
+    "lead": "Most of the university placements BIA has recorded are at the University of Lagos. Here is how to prepare for the same route.",
+    "updated": "2026-11-13",
+    "sources": [
+      "BIA achievements records (content/achievements/records.json): university and course of each recorded placement, grouped by the site’s outcome categories",
+      "V1 biajupeb.com.ng text (BIA’s own): UNILAG focus, grade-to-point conversion, subject combination examples, Direct Entry guidance, screening note",
+      "BIA Payment Advice 2026/27: requirements, JUPEB admission letter fee item, receipts notice",
+      "BIA JUPEB First Semester Timetable, 2026/27: Saturday tests, night classes, monthly mocks",
+      "External (13 Nov 2026): UNILAG orientation article (16 = highest attainable); UNILAG SFS 2025/26 notice (DE through JAMB; combinations); UNILAG 2025/26 registration notice (DE documents)",
+      "BIA records check (13 Nov 2026): all 36 records with grade letters and an announced total satisfy total = grade points + 1"
+    ],
     "blocks": [
       {
         "type": "h2",
-        "html": "Step 1: Register for JUPEB 2026 with BIA JUPEB"
+        "html": "Why this guide focuses on UNILAG"
       },
       {
         "type": "p",
-        "html": "Start by registering for the 2026/27 JUPEB session with the BIA admissions office. BIA JUPEB guides you on documentation, payment and class schedules. <a href=\"/#apply\">Contact admissions</a> to register."
+        "html": "BIA’s admission guidance currently focuses on the <strong>University of Lagos (UNILAG)</strong>, and BIA’s tutorial centre is in Akoka, near UNILAG. Of the university placements BIA has recorded on this website, the large majority are at UNILAG; the rest include Osun State University and Mercy Medical University."
       },
       {
         "type": "h2",
-        "html": "Step 2: Choose the Right Subject Combination"
+        "html": "Courses BIA students have entered at UNILAG"
       },
       {
         "type": "p",
-        "html": "UNILAG considers your JUPEB subjects for admission. Your combination must match your intended course. For example:"
+        "html": "These are courses recorded for BIA JUPEB students at UNILAG. They show how wide the route is — not just Medicine and Law."
+      },
+      {
+        "type": "table",
+        "caption": "UNILAG courses in BIA’s records",
+        "head": [
+          "Area",
+          "Courses"
+        ],
+        "rows": [
+          [
+            "Medicine & Health",
+            "Medicine & Surgery (MBBS), Dentistry / Dental Surgery (BDS), Doctor of Pharmacy (Pharm.D.), Pharmacology, Nursing / Nursing Science, Physiotherapy, Medical Laboratory Science, Anatomy, Health Education"
+          ],
+          [
+            "Law",
+            "Law"
+          ],
+          [
+            "Sciences & Technology",
+            "Biochemistry, Microbiology, Software Engineering, Materials and Metallurgical Engineering, Architecture"
+          ],
+          [
+            "Business & Finance",
+            "Accounting, Banking & Finance, Business Administration, Economics, Taxation, Employment Relations & Human Resources Management"
+          ],
+          [
+            "Arts, Education & Social Sciences",
+            "Political Science, Mass Communication, Public Relations and Advertising, Philosophy, Psychology, Theatre Arts, Creative Arts, European Studies, English Language, Christian Religious Studies"
+          ]
+        ]
+      },
+      {
+        "type": "p",
+        "html": "Individual results and placements are on the <a href='/success-stories'>success stories</a> and <a href='/hall-of-excellence'>Hall of Excellence</a> pages."
+      },
+      {
+        "type": "h2",
+        "html": "Step 1: Choose subjects that fit your course"
+      },
+      {
+        "type": "p",
+        "html": "UNILAG considers your JUPEB subjects when you apply, so your combination must match your intended course. For example, Medicine uses Biology, Chemistry and Physics; Law uses Literature-in-English, Government and Christian Religious Studies; Engineering uses Mathematics, Physics and Chemistry."
+      },
+      {
+        "type": "p",
+        "html": "<em>External check:</em> each of these three combinations is on the list of JUPEB combinations offered by UNILAG’s School of Foundation Studies (<a href='https://unilag.edu.ng/admission-into-school-of-foundation-studies-formerly-foundation-programmes-2025-2026-academic-session/' rel='noopener' target='_blank'>2025/26 notice</a>). The notice lists combinations but not the degree each one leads to; that matching is BIA’s guidance."
+      },
+      {
+        "type": "p",
+        "html": "If you are deciding between two courses — say Medicine and Pharmacy — choose a combination that keeps both open, and confirm it with the admissions office before you register. More on choosing subjects is in the <a href='/guides/jupeb-guide'>JUPEB guide</a>."
+      },
+      {
+        "type": "h2",
+        "html": "Step 2: Understand how your grades become points"
+      },
+      {
+        "type": "p",
+        "html": "Each JUPEB grade converts to points:"
+      },
+      {
+        "type": "table",
+        "caption": "JUPEB grade points",
+        "head": [
+          "Grade",
+          "Points"
+        ],
+        "rows": [
+          [
+            "A",
+            "5"
+          ],
+          [
+            "B",
+            "4"
+          ],
+          [
+            "C",
+            "3"
+          ],
+          [
+            "D",
+            "2"
+          ],
+          [
+            "E",
+            "1"
+          ]
+        ]
+      },
+      {
+        "type": "h3",
+        "html": "Why results are out of 16"
+      },
+      {
+        "type": "p",
+        "html": "JUPEB results are reported as a total out of <strong>16 points</strong>. The University of Lagos describes 16 as “the highest grade attainable” (<a href='https://unilag.edu.ng/?p=66358' rel='noopener' target='_blank'>UNILAG, December 2025</a>)."
+      },
+      {
+        "type": "p",
+        "html": "<em>From BIA’s records:</em> in every result BIA has published with grade letters, the total is the three grade points <strong>plus one</strong>:"
+      },
+      {
+        "type": "table",
+        "caption": "Totals in BIA’s published results",
+        "head": [
+          "Grades",
+          "Grade points",
+          "Total announced"
+        ],
+        "rows": [
+          [
+            "AAA",
+            "5 + 5 + 5 = 15",
+            "16"
+          ],
+          [
+            "AAB",
+            "5 + 5 + 4 = 14",
+            "15"
+          ],
+          [
+            "AAC",
+            "5 + 5 + 3 = 13",
+            "14"
+          ],
+          [
+            "ABC",
+            "5 + 4 + 3 = 12",
+            "13"
+          ]
+        ]
+      },
+      {
+        "type": "note",
+        "html": "BIA’s records do not state the rule behind the additional point, so this guide does not explain it. If your result or a course requirement depends on it, ask the admissions office."
+      },
+      {
+        "type": "p",
+        "html": "UNILAG is competitive, and courses such as Medicine need high points. The practical lesson: one weak subject can pull your total down more than you expect, so do not neglect the subject you find hardest. Use BIA’s Saturday tests and monthly mocks to find that subject early."
+      },
+      {
+        "type": "h2",
+        "html": "Step 3: Use the assessment rhythm"
       },
       {
         "type": "ul",
         "items": [
-          "Medicine: Biology, Chemistry, Physics",
-          "Law: Literature-in-English, Government, CRS",
-          "Engineering: Mathematics, Physics, Chemistry"
+          "<strong>Saturday tests</strong> every week show you where you stand in each subject.",
+          "<strong>Night classes</strong> every third week prepare you for the mock.",
+          "<strong>The Monthly Mock Examination</strong>, every fourth week, is your best rehearsal for the real exam."
+        ]
+      },
+      {
+        "type": "p",
+        "html": "After each test, write down the topics you lost marks on and revisit them before the next one. Students who track their mistakes this way see the same weak topics come up again — and fix them."
+      },
+      {
+        "type": "h2",
+        "html": "Step 4: Keep your documents in order"
+      },
+      {
+        "type": "p",
+        "html": "Start a folder on day one and keep it up to date:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "O’Level result (bring it to the admissions office as soon as it is released if you registered while awaiting)",
+          "National Identification Number (NIN) and birth certificate",
+          "Every BIA payment receipt — BIA asks students to keep them for record and verification",
+          "Your JUPEB admission letter",
+          "Your JUPEB result, once released"
         ]
       },
       {
         "type": "h2",
-        "html": "Step 3: Aim for High JUPEB Points"
+        "html": "Step 5: Apply for Direct Entry in the approved window"
       },
       {
         "type": "p",
-        "html": "UNILAG is competitive. The higher your JUPEB points, the better your chances. Points are calculated as A=5, B=4, C=3, D=2, E=1. BIA JUPEB provides mock exams and weekly tests to help you achieve top results."
+        "html": "After JUPEB, apply for UNILAG Direct Entry within the approved application window. BIA guides you on the timelines and the documents required. Keep your results and admission documents ready and continue preparing academically: UNILAG may ask for additional screening or verification."
+      },
+      {
+        "type": "p",
+        "html": "<em>What UNILAG says:</em> successful JUPEB candidates “are eligible for consideration for Direct Entry admission into the 200 Level of the Degree Programmes of the University through JAMB (Joint Admissions and Matriculation Board)”, and “success at JUPEB examination does not always translate into admission for preferred course of choice” (<a href='https://unilag.edu.ng/admission-into-school-of-foundation-studies-formerly-foundation-programmes-2025-2026-academic-session/' rel='noopener' target='_blank'>UNILAG, 2025/26</a>)."
+      },
+      {
+        "type": "p",
+        "html": "For 2025/26 registration, UNILAG asked newly admitted Direct Entry candidates for documents including the UNILAG online application form, JAMB acknowledgement slip, JAMB admission letter, O’Level result certificate and JUPEB result slip (<a href='https://unilag.edu.ng/important-notice-on-2025-2026-screening-registration-exercise/' rel='noopener' target='_blank'>UNILAG registration notice</a>). Check the notice for your own year — the list can change."
       },
       {
         "type": "h2",
-        "html": "Step 4: Apply for UNILAG Direct Entry"
+        "html": "Frequently asked questions"
+      },
+      {
+        "type": "h3",
+        "html": "Does BIA only help with UNILAG?"
       },
       {
         "type": "p",
-        "html": "After completing JUPEB, apply for UNILAG Direct Entry within the approved window. BIA JUPEB will guide you on timelines and required documentation."
+        "html": "BIA’s guidance currently focuses on UNILAG. Its records also include students placed at other universities, including Osun State University and Mercy Medical University."
+      },
+      {
+        "type": "h3",
+        "html": "How many points do I need for my course at UNILAG?"
+      },
+      {
+        "type": "p",
+        "html": "Requirements differ by course and can change each year, so this guide does not list them. Ask the admissions office about the course you are aiming for before you choose your subjects."
+      },
+      {
+        "type": "h3",
+        "html": "I study online — does BIA still guide me on Direct Entry?"
+      },
+      {
+        "type": "p",
+        "html": "Online students follow the JUPEB programme through the Lecture Banks. Ask the admissions office how Direct Entry guidance works for online students in your session."
       },
       {
         "type": "h2",
-        "html": "Step 5: Follow Up and Prepare"
+        "html": "Sources"
       },
       {
         "type": "p",
-        "html": "Keep all your JUPEB results and admission documents ready. Continue academic preparation, as UNILAG may request additional screening or verification."
+        "html": "<strong>BIA’s own documents</strong> — the basis for everything specific to BIA in this guide:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "BIA’s achievement records: courses, universities and announced results of BIA JUPEB students (no names used here)",
+          "BIA’s published programme information (biajupeb.com.ng): UNILAG focus, grade points, combination examples, Direct Entry guidance",
+          "BIA Payment Advice 2026/27: requirements, JUPEB admission letter, receipts",
+          "BIA JUPEB First Semester Timetable, 2026/27"
+        ]
       },
       {
         "type": "p",
-        "html": "Need help? Visit the <a href=\"/guides/jupeb-guide\">JUPEB Guide 2026</a> or contact BIA JUPEB for personalized assistance."
+        "html": "<strong>External sources</strong> — used only where marked in the text:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<a href='https://unilag.edu.ng/?p=66358' rel='noopener' target='_blank'>University of Lagos — Highlights from 2025/2026 SFS Orientation</a>: 16 points as the highest grade attainable",
+          "<a href='https://unilag.edu.ng/admission-into-school-of-foundation-studies-formerly-foundation-programmes-2025-2026-academic-session/' rel='noopener' target='_blank'>University of Lagos — Admission into School of Foundation Studies, 2025/2026</a>: Direct Entry through JAMB; JUPEB combinations",
+          "<a href='https://unilag.edu.ng/important-notice-on-2025-2026-screening-registration-exercise/' rel='noopener' target='_blank'>University of Lagos — 2025/2026 screening and registration notice</a>: Direct Entry documents"
+        ]
       }
     ]
   },
   {
     "slug": "jupeb-vs-ijmb",
     "legacyPath": "/jupeb-vs-ijmb.html",
-    "metaTitle": "JUPEB vs IJMB: Which Is Easier in 2026? | BIA JUPEB",
-    "description": "Compare JUPEB and IJMB for 2026: duration, acceptance, subject combinations, and who should choose each.",
-    "title": "JUPEB vs IJMB: Which Is Easier in 2026?",
-    "lead": "A clear comparison to help you choose the right A-Level program.",
+    "metaTitle": "JUPEB vs IJMB: Which Should You Choose in 2026? | BIA JUPEB",
+    "description": "JUPEB and IJMB compared for Direct Entry: duration, grading and study options, plus the questions to answer before you choose one.",
+    "title": "JUPEB vs IJMB: which should you choose?",
+    "lead": "Both lead to Direct Entry into 200 Level. The right choice depends less on which is “easier” and more on your target university, your timeline and how you study.",
+    "updated": "2026-11-13",
+    "sources": [
+      "V1 biajupeb.com.ng text (BIA’s own): JUPEB 8–9 months, IJMB 9–12 months depending on centre; both accepted by many Nigerian universities; similar grading, calendar and format may differ; UNILAG focus",
+      "BIA Payment Advice 2026/27: Lecture Banks notice, payment stages",
+      "BIA JUPEB First Semester Timetable, 2026/27"
+    ],
     "blocks": [
       {
         "type": "h2",
-        "html": "Duration"
+        "html": "The short answer"
       },
       {
         "type": "p",
-        "html": "JUPEB typically runs for about 8 to 9 months, while IJMB can take 9 to 12 months depending on the study center. If you want a faster route to Direct Entry in 2026, JUPEB is often preferred."
+        "html": "Neither programme is easier for everyone. Both are accepted by many Nigerian universities for Direct Entry into 200 Level. JUPEB is usually shorter, which saves time; IJMB is usually longer, which some students use for extra revision. Choose the one your target university accepts for your course, that fits your timeline, and that you can commit to fully."
       },
       {
         "type": "h2",
-        "html": "University Acceptance"
+        "html": "Side by side"
+      },
+      {
+        "type": "table",
+        "caption": "JUPEB and IJMB at a glance",
+        "head": [
+          "",
+          "JUPEB",
+          "IJMB"
+        ],
+        "rows": [
+          [
+            "Typical length",
+            "About 8–9 months (BIA’s programme runs 8–9 months)",
+            "Usually longer — up to about 12 months. Check the exact length with the study centre"
+          ],
+          [
+            "What it is for",
+            "Direct Entry into 200 Level",
+            "Direct Entry into 200 Level"
+          ],
+          [
+            "Grading",
+            "Letter grades converted to points (A = 5 down to E = 1); results reported out of 16",
+            "A similar grading system"
+          ],
+          [
+            "Calendar and exam format",
+            "Set by JUPEB",
+            "May differ from JUPEB"
+          ],
+          [
+            "Acceptance",
+            "Accepted by many Nigerian universities",
+            "Accepted by many Nigerian universities"
+          ]
+        ]
       },
       {
         "type": "p",
-        "html": "Both programs are accepted by many Nigerian universities. BIA JUPEB's admission guidance currently focuses on the University of Lagos (UNILAG)."
+        "html": "“Accepted by many universities” is not the same as “accepted by yours, for your course”. Always check the Direct Entry requirements of the university and course you want before you commit."
       },
       {
         "type": "h2",
-        "html": "Subject Combination and Exam Style"
+        "html": "Five questions to answer before you choose"
       },
       {
-        "type": "p",
-        "html": "JUPEB uses a modular exam style with a clear points system (A=5, B=4, C=3, D=2, E=1). IJMB uses a similar grading system but may differ in academic calendar and exam format. Your success depends on quality preparation and consistency."
+        "type": "ol",
+        "items": [
+          "<strong>Which university and course do I want?</strong> Check that it accepts the programme for Direct Entry into that course.",
+          "<strong>When do I want to be in 200 Level?</strong> A shorter programme gets you there sooner if you are ready for the pace.",
+          "<strong>Can I attend in person?</strong> If not, look for a programme with proper online teaching — at BIA, the Lecture Banks.",
+          "<strong>Do I work well with regular testing?</strong> BIA’s JUPEB programme has tests every Saturday and a mock examination every fourth week.",
+          "<strong>Can I meet the payment schedule?</strong> At BIA the programme fee is paid in three stages across the session — see the <a href='/fees'>fees page</a>."
+        ]
       },
       {
         "type": "h2",
-        "html": "Which Is Easier?"
+        "html": "Why the shorter programme suits many students"
       },
       {
         "type": "p",
-        "html": "\"Easier\" depends on your study habits and support system. JUPEB is a shorter program, which many students prefer because it reduces time and cost. IJMB is longer but may give extra time for deeper revision. If you want a focused and structured approach, JUPEB with BIA JUPEB is an excellent choice."
+        "html": "A shorter programme means less time between leaving secondary school and starting 200 Level, and fewer months of fees and living costs. The trade-off is pace: there is less slack if you fall behind. That is why steady habits matter more than raw ability — attending consistently, taking every Saturday test seriously and fixing weak topics before the monthly mock."
+      },
+      {
+        "type": "h2",
+        "html": "JUPEB at BIA in brief"
       },
       {
         "type": "p",
-        "html": "For full details on JUPEB 2026, visit the <a href=\"/guides/jupeb-guide\">JUPEB Guide</a> or <a href=\"/#apply\">enquire about registration</a>."
+        "html": "BIA prepares Science and Non-Science students for JUPEB over 8–9 months, with physical classes near UNILAG, online Lecture Banks, weekly tests and monthly mocks, and admission guidance focused on the University of Lagos. The <a href='/guides/jupeb-guide'>JUPEB guide</a> explains how the year runs."
+      },
+      {
+        "type": "h2",
+        "html": "Frequently asked questions"
+      },
+      {
+        "type": "h3",
+        "html": "Is JUPEB accepted at UNILAG?"
+      },
+      {
+        "type": "p",
+        "html": "BIA’s admission guidance focuses on UNILAG, and most of the university placements BIA has recorded for its JUPEB students are at UNILAG — see <a href='/guides/jupeb-unilag-admission'>JUPEB to UNILAG</a>."
+      },
+      {
+        "type": "h3",
+        "html": "Which is cheaper?"
+      },
+      {
+        "type": "p",
+        "html": "Costs depend on the centre. BIA’s JUPEB fees for 2026/27 are on the <a href='/fees'>fees page</a>; compare them with the full cost of any other option, including how long you will be studying."
+      },
+      {
+        "type": "h3",
+        "html": "Which has the harder exams?"
+      },
+      {
+        "type": "p",
+        "html": "Students find different things hard. What makes the biggest difference is preparation: regular practice, honest review of mistakes and using mock examinations as rehearsals."
+      },
+      {
+        "type": "h2",
+        "html": "Sources"
+      },
+      {
+        "type": "p",
+        "html": "<strong>BIA’s own documents</strong> — the basis for everything specific to BIA in this guide:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "BIA’s published programme information (biajupeb.com.ng): JUPEB and IJMB comparison, programme length, UNILAG focus",
+          "BIA Payment Advice 2026/27 and First Semester Timetable, 2026/27"
+        ]
+      },
+      {
+        "type": "p",
+        "html": "<strong>External sources</strong> — used only where marked in the text:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<a href='https://unilag.edu.ng/?p=66358' rel='noopener' target='_blank'>University of Lagos — Highlights from 2025/2026 SFS Orientation</a>: JUPEB results out of 16"
+        ]
       }
     ]
   },
   {
     "slug": "awaiting-result-jupeb-2026",
     "legacyPath": "/awaiting-result-jupeb-2026.html",
-    "metaTitle": "Can I Use Awaiting Result for JUPEB 2026? | BIA JUPEB",
-    "description": "Find out if you can register for JUPEB 2026 with awaiting results and how to complete your documents.",
-    "title": "Can I Use Awaiting Result for JUPEB 2026?",
-    "lead": "Yes, you can register with awaiting result, but there are important steps to follow.",
+    "metaTitle": "Can I Register for JUPEB With an Awaiting Result? (2026/27) | BIA JUPEB",
+    "description": "Yes — BIA JUPEB accepts awaiting O’Level results. What to bring, what to do while you wait, and what to do the day your result is released.",
+    "title": "Can I register for JUPEB with an awaiting result?",
+    "lead": "Yes. BIA accepts candidates with awaiting O’Level results. Here is what to bring, how to use the waiting time, and what to do when your result comes out.",
+    "updated": "2026-11-13",
+    "sources": [
+      "BIA Payment Advice 2026/27, page 1: requirements (awaiting result acceptable), registration fee, non-refundable notice, receipts",
+      "BIA Entrance Exam & Special Classes flyer: purpose of the Entrance Examination; free marathon class 5–31 October 2026",
+      "V1 biajupeb.com.ng text (BIA’s own): O’Level requirements complete before final JUPEB registration closes; bring results to the admissions office",
+      "BIA CBT practice platform page"
+    ],
     "blocks": [
       {
         "type": "h2",
-        "html": "Short Answer: Yes"
+        "html": "The short answer: yes"
       },
       {
         "type": "p",
-        "html": "BIA JUPEB accepts candidates with awaiting O'Level results. Your O'Level requirements must be complete before final JUPEB registration closes; the admissions office will guide you through the timeline."
+        "html": "BIA’s 2026/27 requirements say it plainly: bring your O’Level result — <em>if not available, awaiting results is acceptable</em>. You can register and start preparing before your result is released."
+      },
+      {
+        "type": "note",
+        "html": "Your O’Level requirements must be complete before final JUPEB registration closes. The admissions office will tell you the timeline for your session."
       },
       {
         "type": "h2",
-        "html": "What Documents You Need"
+        "html": "What to bring when you register"
       },
       {
-        "type": "ul",
-        "items": [
-          "The ₦45,000 registration fee (application form)",
-          "O'Level result — an awaiting result is acceptable",
-          "National Identification Number (NIN)",
-          "Birth certificate"
+        "type": "table",
+        "caption": "Registration checklist",
+        "head": [
+          "Item",
+          "Notes"
+        ],
+        "rows": [
+          [
+            "Registration fee",
+            "₦45,000 for the application form. Compulsory and non-refundable — keep the receipt."
+          ],
+          [
+            "O’Level result",
+            "An awaiting result is acceptable at registration."
+          ],
+          [
+            "National Identification Number (NIN)",
+            "Required for every student."
+          ],
+          [
+            "Birth certificate",
+            "Required for every student."
+          ]
         ]
       },
       {
         "type": "h2",
-        "html": "When to Submit Your Result"
+        "html": "Using the waiting time well"
       },
       {
         "type": "p",
-        "html": "Once your results are out, bring them to the BIA admissions office straight away to avoid delays in final registration. This is essential for Direct Entry admission into 200 Level."
+        "html": "Waiting for a result is not wasted time. Students who register early get the most out of BIA’s preparation:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>Sit the BIA Entrance Examination.</strong> It does not decide whether you are admitted — it shows your strengths and the areas to work on before the programme starts.",
+          "<strong>Join the free preparation before resumption.</strong> In 2026/27, BIA ran a free Special Marathon Class from 5 to 31 October, with free online tutorials, to strengthen students’ foundations before the main physical resumption.",
+          "<strong>Practise.</strong> BIA’s <a href='/cbt-practice'>CBT practice platform</a> has JUPEB and JAMB-style questions with instant grading.",
+          "<strong>Get your documents ready.</strong> Make sure you have your NIN and birth certificate to hand, so the only thing outstanding is your result."
+        ]
       },
       {
         "type": "h2",
-        "html": "Tips to Avoid Problems"
+        "html": "The day your result is released"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Print or save a copy of your result.",
+          "Bring it to the BIA admissions office straight away — delays can hold up your final JUPEB registration.",
+          "Check that your name is written the same way on your result, NIN and birth certificate. If anything differs, tell the admissions office immediately.",
+          "Keep a copy in the same folder as your payment receipts."
+        ]
+      },
+      {
+        "type": "h2",
+        "html": "If your result is not what you hoped"
       },
       {
         "type": "p",
-        "html": "Register early, attend classes consistently, and keep communication open with the BIA JUPEB team. Early registration gives you more time to prepare."
+        "html": "Speak to the admissions office as soon as possible — before making any further payment. BIA’s payments are final and non-refundable, so get clear advice on your situation first."
+      },
+      {
+        "type": "h2",
+        "html": "Frequently asked questions"
+      },
+      {
+        "type": "h3",
+        "html": "Will I be refused if I do badly in the Entrance Examination?"
       },
       {
         "type": "p",
-        "html": "For more details, see the <a href=\"/guides/jupeb-guide\">JUPEB Guide 2026</a> or <a href=\"/#apply\">contact admissions</a>."
+        "html": "No. Students who do not perform well are still admitted, but may be advised or required to take additional academic support."
+      },
+      {
+        "type": "h3",
+        "html": "Do I get my registration fee back if my result is delayed?"
+      },
+      {
+        "type": "p",
+        "html": "No — all payments are final and non-refundable once processed. That is why it pays to register early and keep in touch with the admissions office."
+      },
+      {
+        "type": "h3",
+        "html": "Can I start classes before my result is out?"
+      },
+      {
+        "type": "p",
+        "html": "Awaiting results are accepted at registration, so you can register and begin preparing. The admissions office will tell you when your result must be submitted."
+      },
+      {
+        "type": "h2",
+        "html": "Sources"
+      },
+      {
+        "type": "p",
+        "html": "<strong>BIA’s own documents</strong> — the basis for everything specific to BIA in this guide:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "BIA Payment Advice 2026/27, page 1: requirements (awaiting result acceptable), registration fee, non-refundable notice, receipts",
+          "BIA Entrance Exam & Special Classes flyer, 2026/27",
+          "BIA’s published programme information (biajupeb.com.ng)",
+          "BIA CBT practice platform page"
+        ]
       }
     ]
   },
   {
     "slug": "jupeb-past-questions",
     "legacyPath": "/jupeb-past-questions.html",
-    "metaTitle": "JUPEB Past Questions and Answers | 2026 - BIA JUPEB",
-    "description": "How BIA JUPEB students get JUPEB past questions for 2026, and how to use them to prepare.",
-    "title": "JUPEB Past Questions and Answers (2026)",
-    "lead": "Prepare smarter with past questions, exam tips, and guided practice.",
+    "metaTitle": "JUPEB Past Questions: How to Get and Use Them | BIA JUPEB",
+    "description": "How BIA JUPEB students get past questions, the tests and mocks that go with them, and a practical routine for using past questions to improve your grades.",
+    "title": "JUPEB past questions: how to get them and how to use them well",
+    "lead": "Past questions are only useful if you use them properly. Here is what BIA provides and a practical routine for turning practice into better grades.",
+    "updated": "2026-11-13",
+    "sources": [
+      "V1 biajupeb.com.ng text (BIA’s own): past questions provided directly to registered students across Science, Arts and Commercial subjects",
+      "BIA JUPEB First Semester Timetable, 2026/27: self-study days, class days, Saturday tests, night classes, monthly mocks",
+      "BIA CBT practice platform page (biacbtapp.com.ng)"
+    ],
     "blocks": [
       {
         "type": "h2",
-        "html": "Why Past Questions Matter"
+        "html": "How BIA students get past questions"
       },
       {
         "type": "p",
-        "html": "Past questions help you understand the JUPEB exam pattern and focus on frequently tested topics. Practicing with real questions improves speed, confidence, and accuracy for the 2026 session."
+        "html": "BIA provides past questions directly to <strong>registered students</strong>, across Science, Arts and Commercial subjects. They are not sold through this website. If you have not registered yet, start with the <a href='/guides/jupeb-guide'>JUPEB guide</a> and contact the admissions office."
       },
       {
         "type": "h2",
-        "html": "Available Subjects"
+        "html": "The practice built into the programme"
+      },
+      {
+        "type": "table",
+        "caption": "Practice at BIA, 2026/27",
+        "head": [
+          "Practice",
+          "When",
+          "What it is for"
+        ],
+        "rows": [
+          [
+            "Saturday tests",
+            "Every week",
+            "Checking each subject while topics are fresh"
+          ],
+          [
+            "Night classes",
+            "Every third week",
+            "Intensive preparation for the monthly mock"
+          ],
+          [
+            "Monthly Mock Examination",
+            "End of every fourth week",
+            "Rehearsing the real exam under pressure"
+          ],
+          [
+            "CBT practice platform",
+            "Any time, on a phone or laptop",
+            "JUPEB and JAMB-style questions with instant grading"
+          ]
+        ]
       },
       {
         "type": "p",
-        "html": "BIA JUPEB supports Science, Arts, and Commercial subjects. If you need past questions for Biology, Chemistry, Physics, Economics, Literature, Government, or CRS, we can help you access the right materials."
+        "html": "The <a href='/cbt-practice'>CBT practice platform</a> lets you choose how you log in — free class or paying tutorial — and shows your score as soon as you submit."
       },
       {
         "type": "h2",
-        "html": "How to Get Past Questions"
+        "html": "A routine for using past questions"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "<strong>Learn the topic first.</strong> Attempt questions on a topic after it has been taught, not before — otherwise you are guessing, not practising.",
+          "<strong>Start untimed, by topic.</strong> Work through questions one topic at a time and check every answer, including the ones you got right by luck.",
+          "<strong>Keep an error log.</strong> For every wrong answer, write the topic, what went wrong (didn’t know it, misread it, ran out of time) and the correct method.",
+          "<strong>Repeat after a week.</strong> Redo the questions you got wrong without looking at your notes. If you still get them wrong, the topic needs reteaching — take it to your tutor.",
+          "<strong>Move to timed papers.</strong> Once topics are solid, do full papers under time pressure so the mock and the real exam feel familiar.",
+          "<strong>Review after every test and mock.</strong> Add new mistakes to your log. The same weak topics tend to reappear — that is your revision list."
+        ]
+      },
+      {
+        "type": "h2",
+        "html": "Fitting it into the BIA week"
       },
       {
         "type": "p",
-        "html": "For now, we provide past questions directly to registered students. If you are not yet registered, complete your application first and contact our team for access."
+        "html": "The first-semester timetable already gives you the structure:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "<strong>Monday and Wednesday</strong> are self-study and lecture days — use part of them for topic practice on what was taught that week.",
+          "<strong>Tuesday and Thursday</strong> are class days — note anything you did not follow and check it against past questions that evening.",
+          "<strong>Saturday</strong> is test day — afterwards, update your error log.",
+          "<strong>Before each monthly mock</strong>, use the third-week night classes and your error log to target your weakest topics."
+        ]
+      },
+      {
+        "type": "h2",
+        "html": "Common mistakes to avoid"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Memorising answers instead of understanding the method — the same idea is often asked in a different way.",
+          "Practising only your favourite subject. Every subject counts towards your result.",
+          "Never practising under time pressure, then running out of time in the exam.",
+          "Skipping the review. Doing questions without checking why you got them wrong teaches very little."
+        ]
+      },
+      {
+        "type": "h2",
+        "html": "Frequently asked questions"
+      },
+      {
+        "type": "h3",
+        "html": "Can I get BIA’s past questions before I register?"
       },
       {
         "type": "p",
-        "html": "Ready to begin? <a href=\"/#apply\">Enquire about registration</a> or see the <a href=\"/guides/jupeb-guide\">JUPEB Guide</a> for more information."
+        "html": "BIA currently provides past questions directly to registered students. Complete your registration first, then ask the team for access."
+      },
+      {
+        "type": "h3",
+        "html": "Which subjects are covered?"
+      },
+      {
+        "type": "p",
+        "html": "BIA supports Science, Arts and Commercial subjects. Ask the admissions office about the papers available for your combination."
+      },
+      {
+        "type": "h3",
+        "html": "How do I log in to the CBT platform?"
+      },
+      {
+        "type": "p",
+        "html": "Open the platform and choose how you log in — free class or paying tutorial — then enter your details and start a test. Call admissions on <a href='tel:+2347012388184'>0701 238 8184</a> if you have trouble logging in."
+      },
+      {
+        "type": "h2",
+        "html": "Sources"
+      },
+      {
+        "type": "p",
+        "html": "<strong>BIA’s own documents</strong> — the basis for everything specific to BIA in this guide:"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "BIA’s published programme information (biajupeb.com.ng): past questions for registered students",
+          "BIA JUPEB First Semester Timetable, 2026/27",
+          "BIA CBT practice platform page"
+        ]
       }
     ]
   }

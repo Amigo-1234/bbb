@@ -336,13 +336,26 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   const cfgB = JSON.parse(readFileSync(new URL('../../BOMA JUPEB PROJECT/vercel.json', import.meta.url), 'utf8'));
   check(JSON.stringify(cfgA.redirects) === JSON.stringify(cfgB.redirects), 'both vercel.json files define identical redirects');
   check(!JSON.stringify(cfgA).includes('noindex') && !JSON.stringify(cfgB).includes('noindex'), 'vercel.json files carry no noindex headers');
-  const bad = cfgA.redirects.filter(({ destination }) => {
+  // Host rule: www.biajupeb.com.ng → biajupeb.com.ng, same path, permanent; it must match only the www host.
+  const hostRules = cfgA.redirects.filter((r) => r.has);
+  check(
+    hostRules.length === 1 &&
+      hostRules[0].has.length === 1 &&
+      hostRules[0].has[0].type === 'host' &&
+      hostRules[0].has[0].value === 'www.biajupeb.com.ng' &&
+      hostRules[0].source === '/:path*' &&
+      hostRules[0].destination === 'https://biajupeb.com.ng/:path*' &&
+      hostRules[0].permanent === true,
+    'www.biajupeb.com.ng permanently redirects to biajupeb.com.ng (same path)',
+  );
+  const legacy = cfgA.redirects.filter((r) => !r.has);
+  const bad = legacy.filter(({ destination }) => {
     const [path, hash] = destination.split('#');
     const file = join(dist, path === '/' ? 'index.html' : `${path}/index.html`);
     if (!existsSync(file)) return true;
     return hash ? !readFileSync(file, 'utf8').includes(`id="${hash}"`) : false;
   });
-  check(cfgA.redirects.length === 20 && bad.length === 0, `all ${cfgA.redirects.length} legacy redirects resolve ${bad.map((b) => b.source).join(', ')}`);
+  check(legacy.length === 20 && bad.length === 0, `all ${legacy.length} legacy redirects resolve ${bad.map((b) => b.source).join(', ')}`);
   // No legacy V1 / sensitive files in the build output
   const files = [];
   const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : files.push(join(d, f).slice(dist.length))));
@@ -837,8 +850,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await chip('student-life').click();
   const sl = await g.evaluate(() => [...document.querySelectorAll('.mg__item:not([hidden])')].map((li) => li.dataset.cat));
   check(sl.length === 6 && sl.every((c) => c === 'student-life') && !(await g.locator('[data-mg-more]').isVisible()), 'gallery: Student Life filter shows its 6 photographs, no "Show more" when nothing is left');
-  await chip('celebrations').click();
-  check((await g.locator('.mg__item:not([hidden])').count()) === 0 && (await g.locator('[data-mg-empty]').isVisible()), 'gallery: empty category (Academic Celebrations) shows a "coming soon" note');
+  check((await chip('celebrations').count()) === 0 && !(await g.locator('.mg__chip', { hasText: 'soon' }).count()), 'gallery: categories with no items (Academic Celebrations) are not offered as filters');
   await chip('all').click();
   await g.locator('[data-mg-more]').click();
   check((await g.locator('.mg__item:not([hidden])').count()) === 24 && (await g.evaluate(() => document.activeElement?.closest('.mg__item')?.dataset.i)) === '12', 'gallery: "Show more" loads the next batch and moves focus to it');
@@ -1249,6 +1261,113 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   await t.goto(BASE, { waitUntil: 'domcontentloaded' });
   check((await t.locator('header a[href="/team"], #mobile-menu a[href="/team"]').count()) >= 1 && (await t.locator('footer a[href="/team"]').count()) >= 1 && (await t.locator('#founder a[href="/team"], main a[href="/team"]').count()) >= 1, '/team linked from navigation, footer and the homepage founder section');
   await t.close();
+}
+
+// 11. AdSense readiness: policy pages, one canonical URL per page, sitemap coverage, no ad code while ads are off
+{
+  const { readdirSync, statSync, existsSync } = await import('node:fs');
+  const { join } = await import('node:path');
+  const dist = new URL('../dist/', import.meta.url).pathname;
+  const sitemap = readFileSync(join(dist, 'sitemap.xml'), 'utf8');
+  const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  const htmlFiles = [];
+  const walk = (d) => readdirSync(d).forEach((f) => (statSync(join(d, f)).isDirectory() ? walk(join(d, f)) : f.endsWith('.html') && htmlFiles.push(join(d, f))));
+  walk(dist);
+  const pageUrl = (f) => {
+    const rel = f.slice(dist.length).replace(/index\.html$/, '').replace(/\/$/, '');
+    return 'https://biajupeb.com.ng/' + rel;
+  };
+  const indexable = htmlFiles.filter((f) => !/noindex/.test(readFileSync(f, 'utf8')));
+  const missing = indexable.map(pageUrl).filter((u) => !locs.includes(u));
+  check(missing.length === 0, `every indexable page is in sitemap.xml ${missing.join(' ')}`);
+  const badCanon = indexable
+    .map((f) => [pageUrl(f), readFileSync(f, 'utf8').match(/<link rel="canonical" href="([^"]+)"/)?.[1]])
+    .filter(([u, c]) => u !== c);
+  check(badCanon.length === 0, `canonical URL matches the sitemap URL on every page (no trailing slash) ${badCanon.map((p) => p.join(' ≠ ')).join(' | ')}`);
+  const unbuilt = locs.filter((u) => !indexable.map(pageUrl).includes(u));
+  check(unbuilt.length === 0, `every sitemap URL is a built, indexable page ${unbuilt.join(' ')}`);
+
+  const legal = ['/about', '/privacy', '/cookies', '/terms'];
+  const noFooterLinks = indexable.filter((f) => {
+    const s = readFileSync(f, 'utf8');
+    const footer = s.slice(s.indexOf('<footer'));
+    return !['/privacy', '/cookies', '/terms', '/about'].every((h) => footer.includes(`href="${h}"`));
+  });
+  check(noFooterLinks.length === 0, `About, Privacy, Cookie and Terms pages linked from every page's footer ${noFooterLinks.length} missing`);
+
+  const privacy = readFileSync(join(dist, 'privacy/index.html'), 'utf8');
+  check(
+    /Third-party vendors, including Google, use cookies to serve ads/.test(privacy) &&
+      /Google’s use of advertising cookies enables it and its partners/.test(privacy) &&
+      privacy.includes('https://www.google.com/settings/ads') &&
+      privacy.includes('https://policies.google.com/technologies/partner-sites') &&
+      /Nigeria Data Protection Act 2023/.test(privacy),
+    'privacy policy carries Google’s required AdSense disclosures and NDPA 2023 rights',
+  );
+
+  const adsEnabled = /client:\s*'ca-pub-\d{16}'/.test(readFileSync(new URL('../src/data/ads.ts', import.meta.url), 'utf8'));
+  if (!adsEnabled) {
+    const withAds = htmlFiles.filter((f) => /adsbygoogle|googlesyndication|google-adsense-account/.test(readFileSync(f, 'utf8')));
+    check(withAds.length === 0 && !existsSync(join(dist, 'ads.txt')), 'ads switched off: no ad script, slots, verification tag or ads.txt in the build');
+  }
+
+  // Official email (confirmed by BIA): published consistently; the PA-card misspelling never appears
+  const EMAIL = 'bomasintellectualacademy@gmail.com';
+  const allText = htmlFiles.map((f) => readFileSync(f, 'utf8')).join('\n');
+  const home = readFileSync(join(dist, 'index.html'), 'utf8');
+  const ld = JSON.parse(home.match(/<script type="application\/ld\+json">([^<]+)<\/script>/)[1]);
+  check(
+    ld.email === EMAIL &&
+      ['contact/index.html', 'privacy/index.html', 'terms/index.html', 'index.html'].every((f) => readFileSync(join(dist, f), 'utf8').includes(`mailto:${EMAIL}`)) &&
+      !/bomaintellectualacademy@/i.test(allText),
+    'official email in structured data, footer, contact and policy pages; misspelling absent',
+  );
+  check(!/written (consent|permission)\b(?! from)/i.test(allText.replace(/without our written permission/g, '')), 'no unverified "written consent" claims about students');
+
+  // Guides: substantial, distinct, with FAQs; gated instalment amounts never shown
+  const guideFiles = readdirSync(join(dist, 'guides')).filter((d) => statSync(join(dist, 'guides', d)).isDirectory());
+  const thin = [];
+  for (const slug of guideFiles) {
+    const s = readFileSync(join(dist, 'guides', slug, 'index.html'), 'utf8');
+    const prose = s.match(/<div class="prose"[^>]*>([\s\S]*?)<aside/)?.[1] ?? '';
+    const words = prose.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+    const ok = words >= 400 && /Frequently asked questions/.test(prose) && /<time datetime="\d{4}-\d{2}-\d{2}"/.test(s) && /href='\/(guides|fees|timetable|cbt-practice)/.test(prose) && !/₦(200,000|287,000|400,000)/.test(prose);
+    if (!ok) thin.push(`${slug} (${words} words)`);
+  }
+  // Grading: explained consistently (out of 16, grade points + 1) without touching published results
+  {
+    const ug = readFileSync(join(dist, 'guides/jupeb-unilag-admission/index.html'), 'utf8');
+    const rows = [...ug.matchAll(/<th scope="row"[^>]*>([A-E]{3})<\/th><td[^>]*>[^<]*<\/td><td[^>]*>(\d+)<\/td>/g)];
+    const pts = { A: 5, B: 4, C: 3, D: 2, E: 1 };
+    const okRows = rows.length >= 4 && rows.every(([, g, t]) => [...g].reduce((s, c) => s + pts[c], 0) + 1 === Number(t));
+    check(okRows && /out of <strong>16 points<\/strong>/.test(ug) && /Results are announced out of 16 points/.test(home), 'grading explained consistently: results out of 16 = grade points + 1 (guide table and homepage FAQ)');
+    const withSources = guideFiles.filter((slug) => /<h2[^>]*>Sources<\/h2>/.test(readFileSync(join(dist, 'guides', slug, 'index.html'), 'utf8')));
+    check(withSources.length === 5, 'every guide lists its sources (BIA documents, external sources where used)');
+  }
+  check(guideFiles.length === 5 && thin.length === 0, `all 5 guides are substantial (≥400 words), dated, with FAQs and internal links, and show no gated amounts ${thin.join(', ')}`);
+  {
+    const gp = await browser.newPage({ viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+    const wide = [];
+    for (const slug of guideFiles) {
+      await gp.goto(new URL(`guides/${slug}`, BASE).href, { waitUntil: 'domcontentloaded' });
+      const sw = await gp.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      if (sw > 0) wide.push(slug);
+    }
+    check(wide.length === 0, `guides fit a 320px screen (tables scroll inside their box) ${wide.join(' ')}`);
+    await gp.close();
+  }
+
+  for (const path of legal) {
+    const page = await browser.newPage({ viewport: { width: 320, height: 640 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+    const res = await page.goto(new URL(path.slice(1), BASE).href, { waitUntil: 'networkidle' });
+    const sw = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    await page.addScriptTag({ content: axeSource });
+    const v = await page.evaluate(async () =>
+      (await window.axe.run(document, { resultTypes: ['violations'] })).violations.filter((x) => ['serious', 'critical'].includes(x.impact)).map((x) => x.id),
+    );
+    check(res.status() === 200 && sw <= 0 && v.length === 0, `${path}: loads, fits 320px, no serious accessibility issues ${v.join(', ')}`);
+    await page.close();
+  }
 }
 
 await browser.close();

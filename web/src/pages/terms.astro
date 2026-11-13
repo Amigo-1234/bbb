@@ -1,0 +1,97 @@
+---
+/**
+ * Terms of Use for the website. Programme terms (fees, refunds, instalments)
+ * stay in BIA's official documents and on /fees — this page does not restate
+ * or change them. Approved by BIA (November 2026).
+ */
+import DocPage from '../components/DocPage.astro';
+import { adsEnabled } from '../data/ads';
+import { cbt, email, office, primaryContact, site } from '../data/site';
+
+const updated = '2026-11-13';
+---
+
+<DocPage
+  title="Terms of Use | BIA JUPEB — Boma’s Intellectual Academy"
+  description="Terms for using biajupeb.com.ng, the website of BIA JUPEB (Boma’s Intellectual Academy): information accuracy, content ownership, links and advertising."
+  eyebrow="Terms"
+  heading="Terms of Use"
+  lead="The terms that apply when you use biajupeb.com.ng. Please read them together with our Privacy Policy."
+  updated={updated}
+>
+  <h2>About these terms</h2>
+  <p>
+    This website is run by {site.parent} (“BIA”, “we”, “us”). By using it you agree to these terms. If you do not agree, please
+    do not use the website.
+  </p>
+
+  <h2>Information on this website</h2>
+  <p>
+    We work to keep the information on this website accurate and up to date. Fees, dates, timetables and programme details can
+    change, so please confirm them with the BIA admissions office before you register or make a payment. If anything on this
+    website differs from BIA’s official documents or what the admissions office tells you, the official information applies.
+  </p>
+  <p>
+    The guides on this website are general information to help you understand JUPEB and Direct Entry. Always check admission
+    requirements with JUPEB and with the university you are applying to.
+  </p>
+
+  <h2>Registration and payments</h2>
+  <p>
+    Registration is handled by the BIA admissions office. This website does not take registrations or payments. Programme fees,
+    instalments and payment terms are set out on the <a href="/fees">fees page</a> and in BIA’s official payment documents.
+  </p>
+
+  <h2>Results and testimonials</h2>
+  <p>
+    Student results on this website come from BIA’s records; students are named or pictured only where BIA has confirmed their
+    permission. Results show what individual students achieved; they are not a promise that every student will get the same
+    result.
+  </p>
+
+  <h2>Content and trademarks</h2>
+  <p>
+    The text, photographs, videos, logos and design of this website belong to BIA or are used with permission. You may view and
+    share links to our pages, and print pages for personal use. Please do not copy, republish or sell our content, or use the BIA
+    name or logo, without our written permission.
+  </p>
+
+  <h2>Using the website</h2>
+  <p>
+    Please do not misuse the website — for example by trying to gain unauthorised access, disrupting how it works, or using
+    automated tools to copy its content.
+  </p>
+
+  <h2>Links and advertising</h2>
+  <p>
+    This website links to other services, such as WhatsApp, Facebook, TikTok, Google Maps and BIA’s CBT practice platform at
+    {' '}{cbt.host}, which have their own terms.
+    {adsEnabled
+      ? ' This website also shows advertisements served by Google AdSense.'
+      : ' In future this website may also show advertisements served by Google AdSense.'}
+    {' '}Advertisements are labelled, are chosen by the advertising service rather than by BIA, and do not mean BIA endorses the
+    advertiser.
+  </p>
+
+  <h2>Liability</h2>
+  <p>
+    We provide this website as it is and cannot guarantee it will always be available or free of errors. As far as the law
+    allows, BIA is not responsible for loss caused by relying on information on this website without confirming it with the
+    admissions office, or by your use of other websites linked from it.
+  </p>
+
+  <h2>Governing law</h2>
+  <p>These terms are governed by the laws of the Federal Republic of Nigeria.</p>
+
+  <h2>Changes</h2>
+  <p>We may update these terms. The “Last updated” date above shows when they last changed.</p>
+
+  <h2>Contact</h2>
+  <address>
+    <strong>{site.parent}</strong><br />
+    {office.name}<br />
+    {office.lines.map((l) => <>{l}<br /></>)}
+    Phone: <a href={`tel:${primaryContact.phone}`}>{primaryContact.display}</a><br />
+    Email: <a href={`mailto:${email}`}>{email}</a>
+  </address>
+</DocPage>

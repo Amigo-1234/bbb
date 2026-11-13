@@ -31,9 +31,11 @@ const total = gallery.length;
   <div class="mg__filters" role="toolbar" aria-label="Filter the gallery" data-mg-filters hidden>
     <button type="button" class="mg__chip" data-filter="all" aria-pressed="true">All <span class="num">{total}</span></button>
     {
-      categories.map((c) => (
-        <button type="button" class="mg__chip" data-filter={c.id} aria-pressed="false" data-empty={counts[c.id] === 0 ? '' : undefined}>
-          {c.label} <span class="num">{counts[c.id] || 'soon'}</span>
+      // Only categories that have items: an empty "coming soon" filter reads as unfinished content.
+      // A category appears automatically once photographs are added to it in data/gallery.ts.
+      categories.filter((c) => counts[c.id] > 0).map((c) => (
+        <button type="button" class="mg__chip" data-filter={c.id} aria-pressed="false">
+          {c.label} <span class="num">{counts[c.id]}</span>
         </button>
       ))
     }

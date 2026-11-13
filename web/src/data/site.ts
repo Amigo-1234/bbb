@@ -51,6 +51,10 @@ export const contacts: Contact[] = [
 export const primaryContact = contacts[0];
 export const whatsapp = 'https://wa.me/2347012388184';
 
+/** Official email, confirmed by BIA (November 2026) — the V1 spelling, with the "s".
+ * The PA's business card spelling (bomaintellectualacademy@) is NOT used. */
+export const email = 'bomasintellectualacademy@gmail.com';
+
 export type StaffMember = {
   role: string;
   name?: string;
@@ -136,7 +140,7 @@ export const faqs = [
   },
   {
     q: 'How are JUPEB points calculated?',
-    a: 'Each grade converts to points: A = 5, B = 4, C = 3, D = 2, E = 1. Competitive courses at universities such as UNILAG need high points, which is why we run weekly tests and mock examinations.',
+    a: 'Each grade converts to points: A = 5, B = 4, C = 3, D = 2, E = 1. Results are announced out of 16 points: in every result BIA has published, the total is the three grade points plus one — for example, AAA is 16 and ABC is 13. Competitive courses at universities such as UNILAG need high points, which is why we run weekly tests and mock examinations.',
   },
   {
     q: 'Which subject combination should I choose?',
@@ -166,11 +170,11 @@ export const faqs = [
 
 /** Guide articles (ported from the legacy site; old .html URLs redirect here). */
 export const guides = [
-  { title: 'JUPEB Guide 2026: registration, fees and admissions', href: '/guides/jupeb-guide' },
-  { title: 'How to gain admission into UNILAG via JUPEB', href: '/guides/jupeb-unilag-admission' },
-  { title: 'JUPEB vs IJMB: which is easier?', href: '/guides/jupeb-vs-ijmb' },
-  { title: 'Can I use an awaiting result for JUPEB?', href: '/guides/awaiting-result-jupeb-2026' },
-  { title: 'JUPEB past questions and answers', href: '/guides/jupeb-past-questions' },
+  { title: 'JUPEB Guide 2026/27: how the programme works', href: '/guides/jupeb-guide' },
+  { title: 'From JUPEB to UNILAG: Direct Entry into 200 Level', href: '/guides/jupeb-unilag-admission' },
+  { title: 'JUPEB vs IJMB: which should you choose?', href: '/guides/jupeb-vs-ijmb' },
+  { title: 'Can I register for JUPEB with an awaiting result?', href: '/guides/awaiting-result-jupeb-2026' },
+  { title: 'JUPEB past questions: how to get and use them', href: '/guides/jupeb-past-questions' },
 ];
 
 export const naira = (n: number) => '₦' + n.toLocaleString('en-NG');

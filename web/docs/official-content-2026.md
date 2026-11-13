@@ -63,7 +63,7 @@ registration form (paid separately).
 
 14. **Founder profile.** Confirm the preferred public name and title ("Dr. MedicBoma" on V1) and which V1 biography lines are current. They are omitted until confirmed: final-year Biomedical Engineering student at UNILAG; member of the Nigerian Army; Biomedical Engineer at 68 Nigerian Army Reference Hospital, Yaba; JUPEB Coordinator for a private university. A short statement in his own words would also help.
 15. **Other V1 numbers removed.** 0703 983 4168 (Miss Esther), 0802 104 7735 (Miss Gloria), 0916 750 5810 (Reception) and 0913 245 8227. Should any return?
-16. **Email.** V1 says bomasintellectualacademy@gmail.com; the PA's card says bomaintellectualacademy@gmail.com. Not published until confirmed.
+16. ~~Email~~ **Resolved (November 2026):** BIA confirmed **bomasintellectualacademy@gmail.com** (the V1 spelling). The PA's card spelling (bomaintellectualacademy@) is not used. Published via `email` in `src/data/site.ts`.
 17. **Social handles.** TikTok @bomaacademylimited (from the video) is linked; the flyers also show "bomaintellectualacademy" and "BIA JUPEB" handles.
 18. **Directions.** The video starts "from the University of Lagos", not specifically the Main Gate. The street on the route caption is partly hidden by the TikTok logo (read as "Abdul Street"). The gate sign says "Abule-Oja, Yaba" while BIA writes "Abule-Oja, Akoka".
 19. **Teaching venues.** The timetable lists MTN Library and Faculty of Management Science (UNILAG). Confirm which classes are held at 12 Ameen Street.

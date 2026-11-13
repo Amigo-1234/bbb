@@ -48,7 +48,7 @@ const archiveVoices = testimonials.filter((t) => t.archive);
           <a class="btn" href={tel} data-cta="stories-hero-enquire"><Icon name="phone" size={18} />Enquire about JUPEB admission</a>
           <a class="btn btn--outline" href="/#programme" data-cta="stories-hero-programmes">Explore programmes</a>
         </div>
-        <p class="sh__privacy">Names, photographs and testimonials appear only with each student’s written consent.</p>
+        <p class="sh__privacy">Names, photographs and testimonials appear only where BIA has confirmed the student’s permission.</p>
       </div>
       <div class="sh__art">
         <figure class="sh__photo">
@@ -99,7 +99,7 @@ const archiveVoices = testimonials.filter((t) => t.archive);
   <section class="section" aria-labelledby="portraits">
     <div class="wrap">
       <SectionHead index="02" eyebrow="Student portraits" title="The faces behind the grades." id="portraits">
-        <p>Portraits appear here once each student has given written permission. Until then, we celebrate their results anonymously.</p>
+        <p>Portraits appear here once BIA has confirmed each student’s permission. Until then, we celebrate their results anonymously.</p>
       </SectionHead>
       <Carousel label="Student achievements" variant="showcase">
         {consentedPortraits.map((r) => (
@@ -222,8 +222,8 @@ const archiveVoices = testimonials.filter((t) => t.archive);
         </svg>
         <p class="voices__text">
           {testimonials.length > 0
-            ? 'Every testimonial here is published with the student’s written permission.'
-            : 'Our alumni’s own words — and their photographs — will appear here only once each student has given written permission. Until then, we celebrate their results without naming them.'}
+            ? 'Every testimonial here is published with the student’s permission, as confirmed by BIA.'
+            : 'Our alumni’s own words — and their photographs — will appear here only once BIA has confirmed each student’s permission. Until then, we celebrate their results without naming them.'}
         </p>
         <div class="voices__alumni">
           <p><strong>Are you a BIA JUPEB alumnus?</strong> We would love to feature your story with your permission.</p>

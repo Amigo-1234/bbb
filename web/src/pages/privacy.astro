@@ -1,0 +1,167 @@
+---
+/**
+ * Privacy Policy. Describes what the website actually does (verified in the
+ * code: no forms, no accounts, no analytics, no cookies, no third-party
+ * scripts, fonts/media self-hosted) and the Google AdSense disclosures Google
+ * requires. The advertising wording follows src/data/ads.ts automatically.
+ * Approved by BIA (November 2026): operator "Boma's Intellectual Academy",
+ * official email in src/data/site.ts.
+ */
+import DocPage from '../components/DocPage.astro';
+import { adsEnabled } from '../data/ads';
+import { cbt, email, office, primaryContact, site } from '../data/site';
+
+const updated = '2026-11-13';
+---
+
+<DocPage
+  title="Privacy Policy | BIA JUPEB — Boma’s Intellectual Academy"
+  description="How BIA JUPEB (Boma’s Intellectual Academy) handles personal information on biajupeb.com.ng and when you contact us, including advertising cookies and Google AdSense."
+  eyebrow="Privacy"
+  heading="Privacy Policy"
+  lead="How we handle personal information when you use this website or contact BIA JUPEB, and the choices you have."
+  updated={updated}
+>
+  <h2>Who we are</h2>
+  <p>
+    This website, <strong>biajupeb.com.ng</strong>, is run by {site.parent} (“BIA”, “we”, “us”), which offers the BIA JUPEB
+    programme. BIA is the data controller for the personal information described in this policy. You can reach us at
+    {' '}<a href={`mailto:${email}`}>{email}</a> or using the other details in <a href="#contact">Contact us</a> below.
+  </p>
+  <p>
+    This policy covers this website and enquiries made to BIA. BIA’s CBT practice platform at {cbt.host} is a separate website and
+    is not covered by this policy.
+  </p>
+
+  <h2>Information collected when you use this website</h2>
+  <p>
+    This website has no sign-up, no account, no contact form and does not take payments. You can read every page without giving
+    us any personal information.
+  </p>
+  <ul>
+    <li>
+      <strong>Technical information.</strong> Like every website, our hosting provider (Vercel) receives the information your
+      browser sends when it requests a page — such as your IP address, browser type, the page requested and the time. It is used
+      to deliver the website and keep it secure.
+    </li>
+    {adsEnabled ? (
+      <li>
+        <strong>Cookies.</strong> BIA does not set cookies or use analytics on this website. Our advertising partner, Google, uses
+        cookies to show ads — see <a href="#advertising">Advertising</a> and our <a href="/cookies">Cookie Policy</a>.
+      </li>
+    ) : (
+      <li>
+        <strong>Cookies.</strong> This website does not currently set any cookies and does not use analytics or tracking tools.
+        See our <a href="/cookies">Cookie Policy</a>.
+      </li>
+    )}
+  </ul>
+
+  <h2>Information you give us directly</h2>
+  <p>
+    When you call, send a WhatsApp message or visit our offices, we receive the details you choose to share — usually your name,
+    phone number and your questions about the programme. If you register, the admissions office also asks for the documents
+    listed on this website: your O’Level result (or awaiting result), National Identification Number (NIN) and birth
+    certificate.
+  </p>
+  <p>
+    We use this information to answer your enquiry, to process your registration and to keep in touch with you about your
+    studies. We keep it only as long as we need it for these purposes or to meet legal obligations, and we do not sell it.
+  </p>
+  <p>
+    Messages sent through WhatsApp, Facebook or TikTok are also handled by those services under their own privacy policies.
+  </p>
+
+  <h2>Students and staff shown on this website</h2>
+  <p>
+    Students are named or pictured on the Hall of Excellence and success stories pages only where BIA has confirmed their
+    permission; other results are shown without names. Staff names, photographs and phone numbers are published with BIA’s
+    approval. If you appear on this website and want something changed or removed, contact us and we will act on your request.
+  </p>
+
+  <h2 id="advertising">Advertising</h2>
+  {adsEnabled ? (
+    <p>
+      This website shows advertisements served by Google AdSense. Ads are labelled “Advertisement” and are kept separate from
+      BIA’s own content. BIA does not choose individual ads and does not endorse the products or services advertised.
+    </p>
+  ) : (
+    <p>
+      This website does not currently show advertisements. We intend to show ads served by Google AdSense in future. When we do,
+      the following will apply, and ads will be labelled “Advertisement” and kept separate from BIA’s own content.
+    </p>
+  )}
+  <ul>
+    <li>
+      Third-party vendors, including Google, use cookies to serve ads based on a user’s prior visits to this website or other
+      websites.
+    </li>
+    <li>
+      Google’s use of advertising cookies enables it and its partners to serve ads to users based on their visit to this website
+      and/or other sites on the Internet.
+    </li>
+    <li>
+      You may opt out of personalised advertising by visiting Google’s
+      {' '}<a href="https://www.google.com/settings/ads" rel="noopener" target="_blank">Ads Settings</a>. You can also opt out of
+      some third-party vendors’ use of cookies for personalised advertising at
+      {' '}<a href="https://optout.aboutads.info/" rel="noopener" target="_blank">www.aboutads.info</a>.
+    </li>
+    <li>
+      Google explains how it uses information from websites that show its ads at
+      {' '}<a href="https://policies.google.com/technologies/partner-sites" rel="noopener" target="_blank">How Google uses information from sites or apps that use our services</a>.
+    </li>
+    <li>
+      Visitors in the European Economic Area, the United Kingdom and Switzerland will be asked for consent before advertising
+      cookies are used, through a consent message provided by Google.
+    </li>
+  </ul>
+
+  <h2>Links to other websites</h2>
+  <p>
+    This website links to other services, including WhatsApp, Facebook, TikTok, Google Maps and BIA’s CBT practice platform.
+    Their own privacy policies apply when you use them.
+  </p>
+
+  <h2>Where information is processed</h2>
+  <p>
+    Our hosting provider{adsEnabled ? ' and Google' : ''} may process technical information on servers outside Nigeria. Where
+    this happens, we rely on those providers’ safeguards for international transfers.
+  </p>
+
+  <h2>Your rights</h2>
+  <p>Under the Nigeria Data Protection Act 2023 you have the right to:</p>
+  <ul>
+    <li>ask what personal information we hold about you and get a copy;</li>
+    <li>ask us to correct information that is wrong or incomplete;</li>
+    <li>ask us to delete your information, or to restrict how we use it;</li>
+    <li>object to how we use your information, and withdraw any consent you have given.</li>
+  </ul>
+  <p>
+    To use any of these rights, contact us as shown below. If you are not satisfied with our response, you can complain to the
+    {' '}<a href="https://ndpc.gov.ng" rel="noopener" target="_blank">Nigeria Data Protection Commission</a>.
+  </p>
+
+  <h2>Children and young people</h2>
+  <p>
+    This website is for prospective JUPEB students, parents and guardians. It is not directed at children under 13. If you are
+    under 18, please involve a parent or guardian when you contact us or register.
+  </p>
+
+  <h2>Changes to this policy</h2>
+  <p>
+    We will update this page if our practices change — for example when advertising starts — and change the “Last updated” date
+    above.
+  </p>
+
+  <h2 id="contact">Contact us</h2>
+  <p>
+    For privacy questions or requests, email <a href={`mailto:${email}`}>{email}</a> with “Privacy” in the subject line, or
+    contact BIA at:
+  </p>
+  <address>
+    <strong>{site.parent}</strong><br />
+    {office.name}<br />
+    {office.lines.map((l) => <>{l}<br /></>)}
+    Phone / WhatsApp: <a href={`tel:${primaryContact.phone}`}>{primaryContact.display}</a>
+  </address>
+</DocPage>

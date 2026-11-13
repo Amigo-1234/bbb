@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
-import { address, office, primaryContact, staff, waLink } from '../data/site';
+import { address, email, office, primaryContact, staff, waLink } from '../data/site';
 ---
 
 <Base
@@ -17,6 +17,7 @@ import { address, office, primaryContact, staff, waLink } from '../data/site';
       <p class="ch__lead">Call the right person directly, or visit the administrative office or the physical tutorial centre.</p>
       <div class="ch__ctas" data-cta-zone>
         <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="contact-hero-call"><Icon name="phone" size={18} />Admissions · {primaryContact.display}</a>
+        <a class="btn btn--on-red" href={`mailto:${email}`} data-cta="contact-hero-email">Email BIA</a>
       </div>
     </div>
   </section>
@@ -31,6 +32,7 @@ import { address, office, primaryContact, staff, waLink } from '../data/site';
           <address class="place__addr">{office.lines.map((l) => <span>{l}</span>)}</address>
           <p class="place__purpose">{office.purpose}</p>
           <p class="place__landmark"><Icon name="pin" size={16} />Landmark: {office.landmark}</p>
+          <p class="place__email">Email: <a href={`mailto:${email}`} data-cta="contact-office-email">{email}</a></p>
         </article>
         <article class="place" aria-labelledby="place-centre">
           <p class="place__kind">Physical Tutorial Centre</p>
@@ -121,8 +123,20 @@ import { address, office, primaryContact, staff, waLink } from '../data/site';
     line-height: 1.45;
     color: var(--on-red-muted);
   }
+  .ch__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
   .ch__ctas .btn {
     white-space: normal;
+  }
+  .place__email {
+    overflow-wrap: anywhere;
+  }
+  .place__email a {
+    font-weight: 600;
+    color: var(--crimson);
   }
   .section {
     padding-block: var(--s-8);

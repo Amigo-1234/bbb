@@ -1,0 +1,221 @@
+---
+/**
+ * Long-form text page (About, Privacy, Terms, Cookies) in the same editorial
+ * layout as the guide articles: breadcrumb, title, hairline, prose column and
+ * a side panel with the related policy pages and the admissions contact.
+ */
+import Base from '../layouts/Base.astro';
+import Icon from './Icon.astro';
+import { email, office, primaryContact } from '../data/site';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  /** ISO date shown as "Last updated". */
+  updated?: string;
+}
+const { title, description, eyebrow, heading, lead, updated } = Astro.props;
+
+const related = [
+  { label: 'About BIA JUPEB', href: '/about' },
+  { label: 'Privacy Policy', href: '/privacy' },
+  { label: 'Cookie Policy', href: '/cookies' },
+  { label: 'Terms of Use', href: '/terms' },
+  { label: 'Contact', href: '/contact' },
+];
+const here = Astro.url.pathname.replace(/\/$/, '');
+const fmt = (d: string) =>
+  new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Africa/Lagos' });
+---
+
+<Base title={title} description={description}>
+  <article class="doc">
+    <header class="doc__head wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><span aria-current="page">{heading}</span>
+      </nav>
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="doc__title">{heading}</h1>
+      <p class="lead doc__lead">{lead}</p>
+      {updated && <p class="doc__updated">Last updated <time datetime={updated}>{fmt(updated)}</time></p>}
+    </header>
+
+    <div class="wrap doc__layout">
+      <div class="prose">
+        <slot />
+      </div>
+
+      <aside class="doc__aside">
+        <nav class="more" aria-labelledby="doc-more">
+          <p id="doc-more" class="more__title">About this website</p>
+          <ul>
+            {related.filter((r) => r.href !== here).map((r) => (
+              <li><a href={r.href}>{r.label}<Icon name="arrow-up-right" size={16} /></a></li>
+            ))}
+          </ul>
+        </nav>
+        <div class="ask">
+          <p class="ask__title">Questions?</p>
+          <p>Call the BIA admissions office, or visit the {office.name} at {office.short}.</p>
+          <a class="btn" href={`tel:${primaryContact.phone}`} data-cta="doc-call"><Icon name="phone" size={18} />{primaryContact.display}</a>
+          <a class="ask__email" href={`mailto:${email}`} data-cta="doc-email">{email}</a>
+        </div>
+      </aside>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .doc {
+    padding-block: var(--s-7) var(--section);
+  }
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-bottom: var(--s-5);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .crumbs a {
+    color: inherit;
+  }
+  .doc__head {
+    display: grid;
+    gap: var(--s-4);
+    padding-bottom: var(--s-7);
+  }
+  .doc__title {
+    font-size: var(--step-4);
+    font-weight: 400;
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+  }
+  .doc__lead {
+    max-width: 52ch;
+  }
+  .doc__updated {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .doc__layout {
+    display: grid;
+    gap: var(--s-8);
+    background: linear-gradient(var(--ink), var(--ink)) top / 100% 1px no-repeat;
+    background-origin: content-box;
+    background-clip: content-box;
+  }
+  .doc__layout > * {
+    padding-top: var(--s-6);
+  }
+  .prose {
+    max-width: 68ch;
+    min-width: 0;
+  }
+  .prose :global(h2) {
+    margin: var(--s-7) 0 var(--s-3);
+    font-size: var(--step-2);
+  }
+  .prose :global(h2:first-child) {
+    margin-top: 0;
+  }
+  .prose :global(h3) {
+    margin: var(--s-5) 0 var(--s-2);
+    font-size: var(--step-1);
+  }
+  .prose :global(p),
+  .prose :global(ul),
+  .prose :global(ol),
+  .prose :global(address) {
+    margin: 0 0 var(--s-4);
+    color: var(--ink-2);
+  }
+  .prose :global(address) {
+    font-style: normal;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.2em;
+  }
+  .prose :global(li) {
+    margin-bottom: var(--s-2);
+  }
+  .prose :global(li::marker) {
+    color: var(--crimson);
+  }
+  .prose :global(a) {
+    color: var(--crimson);
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+  .prose :global(.note) {
+    padding: var(--s-4);
+    background: var(--paper-2);
+    border-left: 3px solid var(--crimson);
+    border-radius: var(--radius);
+  }
+  .doc__aside {
+    display: grid;
+    gap: var(--s-6);
+    align-content: start;
+  }
+  .ask {
+    display: grid;
+    gap: var(--s-3);
+    padding: var(--s-5);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--crimson);
+    border-radius: var(--radius);
+  }
+  .ask__email {
+    font-weight: 600;
+    color: var(--crimson);
+    overflow-wrap: anywhere;
+  }
+  .ask__title {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+  }
+  .more__title {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: var(--s-2);
+  }
+  .more ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+  .more a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s-3);
+    min-height: 44px;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--serif);
+    text-decoration: none;
+  }
+  .more a:hover {
+    color: var(--crimson);
+  }
+  @media (min-width: 960px) {
+    .doc__layout {
+      grid-template-columns: 8fr 4fr;
+    }
+    .doc__aside {
+      position: sticky;
+      top: calc(var(--header-h) + var(--s-5));
+    }
+  }
+</style>

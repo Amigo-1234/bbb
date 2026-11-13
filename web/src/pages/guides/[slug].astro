@@ -1,16 +1,20 @@
 ---
 /**
- * JUPEB guide articles, ported verbatim from the legacy site
- * (data in src/data/guides.json). Old /<slug>.html URLs redirect here.
+ * JUPEB guide articles (data in src/data/guides.json). Old /<slug>.html URLs
+ * redirect here. Every factual statement is traced to BIA material in each
+ * guide's `sources`; open questions for BIA are in docs/guides-verification.md.
  */
 import Base from '../../layouts/Base.astro';
 import Icon from '../../components/Icon.astro';
 import CbtPromo from '../../components/CbtPromo.astro';
+import AdSlot from '../../components/AdSlot.astro';
 import guides from '../../data/guides.json';
 import { primaryContact } from '../../data/site';
 
-type Block = { type: string; html?: string; items?: string[] };
-type Guide = (typeof guides)[number];
+type Block = { type: string; html?: string; items?: string[]; head?: string[]; rows?: string[][]; caption?: string };
+type Guide = (typeof guides)[number] & { updated?: string };
+const fmt = (d: string) =>
+  new Date(d + 'T12:00:00Z').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Africa/Lagos' });
 
 export function getStaticPaths() {
   return guides.map((g) => ({ params: { slug: g.slug }, props: { guide: g } }));
@@ -29,6 +33,7 @@ const others = guides.filter((g) => g.slug !== guide.slug);
       <p class="eyebrow">JUPEB guide</p>
       <h1 class="guide__title" set:html={guide.title} />
       <p class="lead guide__lead" set:html={guide.lead} />
+      {guide.updated && <p class="guide__updated">Updated <time datetime={guide.updated}>{fmt(guide.updated)}</time></p>}
     </header>
 
     <div class="wrap guide__layout">
@@ -43,6 +48,16 @@ const others = guides.filter((g) => g.slug !== guide.slug);
               <ul>{b.items!.map((i) => <li set:html={i} />)}</ul>
             ) : b.type === 'ol' ? (
               <ol>{b.items!.map((i) => <li set:html={i} />)}</ol>
+            ) : b.type === 'table' ? (
+              <div class="tbl" role="region" aria-label={b.caption} tabindex="0">
+                <table>
+                  {b.caption && <caption>{b.caption}</caption>}
+                  <thead><tr>{b.head!.map((h) => <th scope="col" set:html={h} />)}</tr></thead>
+                  <tbody>{b.rows!.map((r) => <tr>{r.map((c, i) => (i === 0 ? <th scope="row" set:html={c} /> : <td data-label={b.head![i]} set:html={c} />))}</tr>)}</tbody>
+                </table>
+              </div>
+            ) : b.type === 'note' ? (
+              <p class="note" set:html={b.html} />
             ) : (
               <p set:html={b.html} />
             ),
@@ -67,6 +82,7 @@ const others = guides.filter((g) => g.slug !== guide.slug);
         </nav>
       </aside>
     </div>
+    <div class="wrap"><AdSlot name="guideEnd" /></div>
     <div class="wrap guide__cbt"><CbtPromo source="guide" /></div>
   </article>
 </Base>
@@ -102,6 +118,97 @@ const others = guides.filter((g) => g.slug !== guide.slug);
   }
   .guide__lead {
     max-width: 52ch;
+  }
+  .guide__updated {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .prose :global(.note) {
+    padding: var(--s-4);
+    background: var(--paper-2);
+    border-left: 3px solid var(--crimson);
+    border-radius: var(--radius);
+  }
+  /* Tables scroll inside their own box on phones instead of widening the page. */
+  .prose :global(.tbl) {
+    margin: 0 0 var(--s-5);
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .prose :global(table) {
+    width: 100%;
+    min-width: 30rem;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .prose :global(caption) {
+    padding: var(--s-3) var(--s-4) 0;
+    text-align: left;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .prose :global(th),
+  .prose :global(td) {
+    padding: var(--s-3) var(--s-4);
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-2);
+  }
+  .prose :global(thead th) {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .prose :global(tbody th) {
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .prose :global(tbody tr:last-child > *) {
+    border-bottom: 0;
+  }
+  /* Phones: each row becomes a small card; every cell carries its column label. */
+  @media (max-width: 599px) {
+    .prose :global(.tbl) {
+      overflow-x: visible;
+    }
+    .prose :global(table) {
+      min-width: 0;
+    }
+    .prose :global(thead) {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    .prose :global(tbody tr) {
+      display: block;
+      padding: var(--s-3) var(--s-4);
+      border-bottom: 1px solid var(--line);
+    }
+    .prose :global(tbody tr:last-child) {
+      border-bottom: 0;
+    }
+    .prose :global(tbody th),
+    .prose :global(tbody td) {
+      display: block;
+      padding: var(--s-1) 0;
+      border-bottom: 0;
+    }
+    .prose :global(tbody td[data-label]:not([data-label=''])::before) {
+      content: attr(data-label);
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
   }
   .guide__layout {
     display: grid;
