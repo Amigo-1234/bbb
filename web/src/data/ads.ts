@@ -13,7 +13,7 @@
  */
 export const ads = {
   /** AdSense publisher ID, e.g. "ca-pub-0000000000000000". Empty = advertising off. */
-  client: '',
+  client: 'ca-pub-5330784001821858',
   /** Manual display ad unit IDs (numbers only), one per approved placement. */
   slots: {
     /** End of each guide article, after the text and before "Practise for JUPEB". */

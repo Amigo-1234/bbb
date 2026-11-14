@@ -7,6 +7,23 @@ import { chromium } from 'playwright-core';
 
 const BASE = process.env.BASE_URL ?? 'http://localhost:4321/';
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH });
+// Never contact Google's ad servers from tests: it would keep the network busy (breaking
+// "networkidle") and could register as invalid traffic on the live AdSense account.
+const AD_HOSTS = /googlesyndication\.com|doubleclick\.net|googleadservices\.com|adtrafficquality\.google|fundingchoicesmessages\.google\.com|google\.com\/(adsense|pagead)/;
+{
+  const newContext = browser.newContext.bind(browser);
+  browser.newContext = async (opts) => {
+    const ctx = await newContext(opts);
+    await ctx.route(AD_HOSTS, (route) => route.abort());
+    return ctx;
+  };
+  browser.newPage = async (opts) => {
+    const ctx = await browser.newContext(opts);
+    const page = await ctx.newPage();
+    page.on('close', () => ctx.close().catch(() => {}));
+    return page;
+  };
+}
 let failures = 0;
 const check = (ok, msg) => {
   console.log(`${ok ? 'PASS' : 'FAIL'}  ${msg}`);
@@ -1305,6 +1322,19 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   );
 
   const adsEnabled = /client:\s*'ca-pub-\d{16}'/.test(readFileSync(new URL('../src/data/ads.ts', import.meta.url), 'utf8'));
+  if (adsEnabled) {
+    const pub = readFileSync(new URL('../src/data/ads.ts', import.meta.url), 'utf8').match(/client:\s*'(ca-pub-\d{16})'/)[1];
+    const adsTxt = existsSync(join(dist, 'ads.txt')) ? readFileSync(join(dist, 'ads.txt'), 'utf8') : '';
+    const indexable404 = readFileSync(join(dist, '404.html'), 'utf8');
+    const missing = indexable.filter((f) => {
+      const s = readFileSync(f, 'utf8');
+      return !s.includes(`adsbygoogle.js?client=${pub}`) || !s.includes(`<meta name="google-adsense-account" content="${pub}"`);
+    });
+    check(
+      adsTxt.trim() === `google.com, ${pub.replace(/^ca-/, '')}, DIRECT, f08c47fec0942fa0` && missing.length === 0 && !/adsbygoogle|google-adsense-account/.test(indexable404),
+      `ads switched on: ads.txt, AdSense script and verification tag on every indexable page, none on the 404 ${missing.length} missing`,
+    );
+  }
   if (!adsEnabled) {
     const withAds = htmlFiles.filter((f) => /adsbygoogle|googlesyndication|google-adsense-account/.test(readFileSync(f, 'utf8')));
     check(withAds.length === 0 && !existsSync(join(dist, 'ads.txt')), 'ads switched off: no ad script, slots, verification tag or ads.txt in the build');
