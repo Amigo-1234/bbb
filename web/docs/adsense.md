@@ -21,8 +21,12 @@ Still open:
 2. ~~The 16-point question~~ — resolved from BIA's records (total = grade points
    + 1) and UNILAG's statement that 16 is the highest attainable. The *reason*
    for the extra point is still unexplained on the site.
-3. **Who owns the AdSense account.** It must be BIA's (the payee), held by an
-   adult with a Nigerian bank account and BIA's details — not the developer's.
+3. **AdSense account (decided 14 Nov 2026).** BIA has authorised AmigoDev to
+   monetise the site and keep the revenue. Ads run on **AmigoDev's personal
+   AdSense account (Individual payment profile)** — never BIA's payment details,
+   and no account is created on BIA's behalf. Keep BIA's authorisation **in
+   writing** (AdSense may ask the account holder to show authority over the
+   site). Activation needs the publisher ID **and** the owner's go-ahead.
 4. **Deploy and let Google recrawl** the new pages before applying; apply once
    the guides have been live and indexed for a short while.
 5. **O'Level registration route** (guides-verification B4): UNILAG's foundation

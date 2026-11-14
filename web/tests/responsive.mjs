@@ -337,16 +337,15 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   check(JSON.stringify(cfgA.redirects) === JSON.stringify(cfgB.redirects), 'both vercel.json files define identical redirects');
   check(!JSON.stringify(cfgA).includes('noindex') && !JSON.stringify(cfgB).includes('noindex'), 'vercel.json files carry no noindex headers');
   // Host rule: www.biajupeb.com.ng → biajupeb.com.ng, same path, permanent; it must match only the www host.
+  // Two rules: "/:path*" does not match the bare homepage on Vercel, so "/" has its own.
   const hostRules = cfgA.redirects.filter((r) => r.has);
+  const wwwOnly = (r) => r.has.length === 1 && r.has[0].type === 'host' && r.has[0].value === 'www.biajupeb.com.ng' && r.permanent === true;
   check(
-    hostRules.length === 1 &&
-      hostRules[0].has.length === 1 &&
-      hostRules[0].has[0].type === 'host' &&
-      hostRules[0].has[0].value === 'www.biajupeb.com.ng' &&
-      hostRules[0].source === '/:path*' &&
-      hostRules[0].destination === 'https://biajupeb.com.ng/:path*' &&
-      hostRules[0].permanent === true,
-    'www.biajupeb.com.ng permanently redirects to biajupeb.com.ng (same path)',
+    hostRules.length === 2 &&
+      hostRules.every(wwwOnly) &&
+      hostRules.some((r) => r.source === '/' && r.destination === 'https://biajupeb.com.ng/') &&
+      hostRules.some((r) => r.source === '/:path*' && r.destination === 'https://biajupeb.com.ng/:path*'),
+    'www.biajupeb.com.ng permanently redirects to biajupeb.com.ng (homepage and every path)',
   );
   const legacy = cfgA.redirects.filter((r) => !r.has);
   const bad = legacy.filter(({ destination }) => {

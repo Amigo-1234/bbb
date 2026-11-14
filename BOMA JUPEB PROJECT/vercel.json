@@ -6,6 +6,12 @@
   "framework": null,
   "redirects": [
     {
+      "source": "/",
+      "has": [{ "type": "host", "value": "www.biajupeb.com.ng" }],
+      "destination": "https://biajupeb.com.ng/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [{ "type": "host", "value": "www.biajupeb.com.ng" }],
       "destination": "https://biajupeb.com.ng/:path*",
