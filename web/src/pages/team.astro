@@ -1,4 +1,6 @@
 ---
+import HeroBg from '../components/HeroBg.astro';
+import heroBgImg from '../assets/photos/founder-teaching.jpg';
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Badge from '../components/Badge.astro';
@@ -10,10 +12,12 @@ const groups = departments.map((d) => ({ ...d, people: team.filter((p) => p.depa
 ---
 
 <Base
+  image={heroBgImg}
   title="Meet Our Team — Staff & Management | BIA JUPEB, Boma's Intellectual Academy"
   description="The people behind BIA JUPEB: management, administration, tutors, student affairs and the brand team at Boma's Intellectual Academy, with each role's responsibilities."
 >
   <section class="th" aria-labelledby="th-title">
+    <HeroBg src={heroBgImg} position="center 30%" tone="red" />
     <Badge variant="mark" size={560} class="th__mark" />
     <div class="wrap th__inner">
       <p class="th__eyebrow">Our team · Boma’s Intellectual Academy</p>

@@ -1,4 +1,6 @@
 ---
+import HeroBg from '../components/HeroBg.astro';
+import heroBgImg from '../assets/photos/phase6/p123.jpg';
 import Base from '../layouts/Base.astro';
 import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
@@ -26,10 +28,12 @@ const steps = [
 ---
 
 <Base
+  image={heroBgImg}
   title="JUPEB & JAMB Practice Questions Online — BIA CBT Practice Platform | BIA JUPEB"
   description="Practise JUPEB and JAMB questions online with BIA's CBT Practice Platform: exam-style computer-based tests with instant grading, built for BIA JUPEB candidates."
 >
   <section class="ch" aria-labelledby="cbt-title">
+    <HeroBg src={heroBgImg} position="center 60%" tone="red" />
     <Badge variant="mark" size={560} class="ch__mark" />
     <div class="wrap ch__inner">
       <p class="ch__eyebrow">CBT Practice Platform · BIA JUPEB</p>

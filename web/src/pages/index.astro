@@ -14,6 +14,7 @@ import AchieverCard from '../components/AchieverCard.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
 import { achievers } from '../data/achievements';
 import { cutoffPercent, results2026 } from '../data/results-2026';
+import { flyers } from '../data/flyers';
 import { jambScorers, pastQuestionSubjects, utmeTutorial } from '../data/services';
 import { testimonials } from '../data/testimonials';
 import poster from '../assets/official/directions-poster.jpg';
@@ -48,11 +49,42 @@ const posterImg = await getImage({ src: poster, format: 'webp', width: 464 });
 const fmtCap = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
 // Hall of Excellence band: consented achievers first (sorted in data/achievements.ts).
 const homeAchievers = achievers;
+// Structured data for search: the site, the programme, upcoming exam date and the FAQ shown on this page.
+const strip = (h: string) => h.replace(/<[^>]+>/g, '');
+const homeSchema = [
+  { '@type': 'WebSite', name: 'BIA JUPEB', url: site.url, inLanguage: 'en-NG', publisher: { '@id': `${site.url}/#organization` } },
+  {
+    '@type': 'Course',
+    name: 'JUPEB Foundation Programme (Science and Non-Science)',
+    description: `An ${site.programmeLength} JUPEB programme preparing students for Direct Entry into 200 Level, with physical classes in Akoka near UNILAG, online Lecture Banks, weekly tests and monthly mock examinations.`,
+    provider: { '@id': `${site.url}/#organization` },
+    inLanguage: 'en',
+    hasCourseInstance: [
+      { '@type': 'CourseInstance', courseMode: 'onsite', location: { '@type': 'Place', name: 'BIA Physical Tutorial Centre', address: '12 Ameen Street, Abule-Oja, Akoka, Lagos' } },
+      { '@type': 'CourseInstance', courseMode: 'online' },
+    ],
+    offers: { '@type': 'Offer', category: 'Registration (application form)', price: registration.amount, priceCurrency: 'NGN' },
+  },
+  {
+    '@type': 'EducationEvent',
+    name: 'BIA JUPEB First Semester Mock Examination / In-Course',
+    startDate: '2026-12-13',
+    eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+    eventStatus: 'https://schema.org/EventScheduled',
+    location: { '@type': 'Place', name: 'Faculty of Management Science, University of Lagos', address: 'University of Lagos, Akoka, Lagos' },
+    organizer: { '@id': `${site.url}/#organization` },
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: strip(f.a) } })),
+  },
+];
 ---
 
 <Base
   motion
   overlayHeader
+  schema={homeSchema}
   title="BIA JUPEB — Boma’s Intellectual Academy, Akoka, Lagos | JUPEB & Direct Entry into 200 Level"
   description="Prepare for JUPEB with BIA JUPEB: Boma’s Intellectual Academy’s 8–9 month Science and Non-Science programme in Akoka, Lagos and online, with weekly tests, tutorials and Direct Entry admission guidance."
 >
@@ -130,6 +162,27 @@ const homeAchievers = achievers;
         </div>
       </div>
       <p class="honours__note">Names and photographs appear only where BIA has confirmed the student’s permission.</p>
+    </div>
+  </section>
+
+  <!-- WHAT'S ON: BIA's own flyers, each linking to the page with the same information as text -->
+  <section class="section whatson" id="whats-on" aria-labelledby="whatson-title">
+    <div class="wrap">
+      <header class="whatson__head">
+        <p class="eyebrow">What’s on at BIA · {site.session}</p>
+        <h2 id="whatson-title" class="whatson__title">Results, timetables &amp; <em>new intakes.</em></h2>
+      </header>
+      <Carousel label="What’s on at BIA" variant="cards" autoplay interval={5500} class="whatson__carousel">
+        {flyers.map((f) => (
+          <div data-slide class="whatson__slide">
+            <a class="whatson__card" href={f.href} data-cta={`home-whatson-${f.href.split('#')[1] ?? 'page'}`}>
+              <Picture src={f.image} formats={formats} widths={[360, 560, 800]} sizes="(min-width: 960px) 30vw, 74vw" alt={f.alt} loading="lazy" />
+              <span class="whatson__k">{f.kicker}</span>
+              <span class="whatson__t">{f.title}<Icon name="arrow-right" size={16} /></span>
+            </a>
+          </div>
+        ))}
+      </Carousel>
     </div>
   </section>
 
@@ -900,6 +953,55 @@ const homeAchievers = achievers;
   }
   .hall__ctas .btn {
     white-space: normal;
+  }
+  .whatson {
+    background: var(--paper);
+  }
+  .whatson__head {
+    display: grid;
+    gap: var(--s-2);
+    margin-bottom: var(--s-6);
+  }
+  .whatson__title {
+    font-size: var(--step-3);
+    font-weight: 400;
+  }
+  .whatson__title em {
+    color: var(--crimson);
+  }
+  .whatson__card {
+    display: grid;
+    gap: var(--s-2);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .whatson__card :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: var(--radius);
+    box-shadow: 0 16px 34px -24px rgb(21 23 30 / 0.55);
+    transition: transform 0.3s var(--ease);
+  }
+  .whatson__card:hover :global(img) {
+    transform: translateY(-3px);
+  }
+  .whatson__k {
+    margin-top: var(--s-2);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  .whatson__t {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    line-height: 1.2;
   }
   .more__head {
     display: grid;

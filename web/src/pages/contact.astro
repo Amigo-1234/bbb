@@ -1,4 +1,6 @@
 ---
+import HeroBg from '../components/HeroBg.astro';
+import heroBgImg from '../assets/photos/centre-entrance.jpg';
 import Base from '../layouts/Base.astro';
 import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
@@ -6,10 +8,12 @@ import { address, email, office, primaryContact, staff, waLink } from '../data/s
 ---
 
 <Base
+  image={heroBgImg}
   title="Contact BIA JUPEB — Staff Phone Numbers & Office Addresses | Boma's Intellectual Academy"
   description="Phone numbers for BIA JUPEB's admissions and office staff, the administrative office at 56 Igi Olugbin Street, Shomolu/Bariga, and the physical tutorial centre at 12 Ameen Street, Akoka, near UNILAG."
 >
   <section class="ch" aria-labelledby="ch-title">
+    <HeroBg src={heroBgImg} position="center 40%" tone="red" />
     <Badge variant="mark" size={560} class="ch__mark" />
     <div class="wrap ch__inner">
       <p class="ch__eyebrow">Contact · Boma’s Intellectual Academy</p>

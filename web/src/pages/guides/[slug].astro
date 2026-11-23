@@ -9,7 +9,7 @@ import Icon from '../../components/Icon.astro';
 import CbtPromo from '../../components/CbtPromo.astro';
 import AdSlot from '../../components/AdSlot.astro';
 import guides from '../../data/guides.json';
-import { primaryContact } from '../../data/site';
+import { primaryContact, site } from '../../data/site';
 
 type Block = { type: string; html?: string; items?: string[]; head?: string[]; rows?: string[][]; caption?: string };
 type Guide = (typeof guides)[number] & { updated?: string };
@@ -22,9 +22,30 @@ export function getStaticPaths() {
 
 const { guide } = Astro.props as { guide: Guide };
 const others = guides.filter((g) => g.slug !== guide.slug);
+const pageUrl = `${site.url}/guides/${guide.slug}`;
+const guideSchema = [
+  {
+    '@type': 'Article',
+    headline: guide.title.replace(/<[^>]+>/g, ''),
+    description: guide.description,
+    dateModified: guide.updated,
+    inLanguage: 'en-NG',
+    mainEntityOfPage: pageUrl,
+    author: { '@id': `${site.url}/#organization` },
+    publisher: { '@id': `${site.url}/#organization` },
+  },
+  {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: site.url },
+      { '@type': 'ListItem', position: 2, name: 'Guides', item: `${site.url}/guides` },
+      { '@type': 'ListItem', position: 3, name: guide.title.replace(/<[^>]+>/g, ''), item: pageUrl },
+    ],
+  },
+];
 ---
 
-<Base title={guide.metaTitle} description={guide.description}>
+<Base title={guide.metaTitle} description={guide.description} schema={guideSchema}>
   <article class="guide">
     <header class="guide__head wrap">
       <nav class="crumbs" aria-label="Breadcrumb">

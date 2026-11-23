@@ -3,20 +3,51 @@
  * BIA's other services (data: src/data/services.ts). Only what BIA has published:
  * no prices or dates are added here — visitors are sent to the admissions office.
  */
+import HeroBg from '../components/HeroBg.astro';
+import heroBgImg from '../assets/photos/phase6/p041.jpg';
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { Picture } from 'astro:assets';
 import bsaLogo from '../assets/brand/bsa-logo.jpg';
 import { accommodation, bsa, igcse, jambScorers, lectureBanks, pastQuestionSubjects, utmeFreePrep, utmeTutorial } from '../data/services';
 import { naira } from '../data/fees';
+import { site } from '../data/site';
+const org = { '@id': `${site.url}/#organization` };
+const servicesSchema = [
+  {
+    '@type': 'Course',
+    name: utmeTutorial.title,
+    description: `${utmeTutorial.description} ${utmeTutorial.schedule}; starts ${utmeTutorial.start}.`,
+    provider: org,
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online', courseSchedule: { '@type': 'Schedule', byDay: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], startTime: '08:15', endTime: '13:15' } },
+    offers: utmeTutorial.prices.map((p) => ({ '@type': 'Offer', name: p.label, price: p.amount, priceCurrency: 'NGN' })),
+  },
+  {
+    '@type': 'Course',
+    name: lectureBanks.title,
+    description: `${lectureBanks.covers}. ${lectureBanks.includes.join('; ')}.`,
+    provider: org,
+    hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
+    offers: { '@type': 'Offer', price: lectureBanks.price, priceCurrency: 'NGN' },
+  },
+  ...[
+    ['International registration — SAT (USA)', 'Registration for the SAT (USA) for students applying to universities in the United States.'],
+    [igcse.title, igcse.text],
+    [bsa.name, bsa.progression],
+    ['Student accommodation near UNILAG', `Help securing accommodation off campus (${accommodation.offCampus.join(', ')}) and on campus (${accommodation.onCampus}).`],
+  ].map(([name, description]) => ({ '@type': 'Service', name, description, provider: org, areaServed: 'Lagos, Nigeria' })),
+];
 import { cbt, primaryContact, whatsapp } from '../data/site';
 ---
 
 <Base
+  schema={servicesSchema}
+  image={heroBgImg}
   title="BIA Services — JAMB Class, International Registration (SAT USA), Past Questions & Accommodation | Boma's Intellectual Academy"
   description="Beyond JUPEB, Boma's Intellectual Academy (BIA) offers JAMB classes, SAT (USA) registration, Cambridge IGCSE & A-Level programmes, BIA Study Abroad (UK diplomas and degree pathways), 2026/27 JUPEB past questions and help securing accommodation on and off UNILAG campus."
 >
   <section class="sh" aria-labelledby="sh-title">
+    <HeroBg src={heroBgImg} position="center 55%" tone="ink" />
     <div class="wrap sh__inner">
       <p class="eyebrow">Services · Boma’s Intellectual Academy</p>
       <h1 id="sh-title" class="sh__title">More from <em>BIA.</em></h1>
@@ -173,6 +204,8 @@ import { cbt, primaryContact, whatsapp } from '../data/site';
 
 <style>
   .sh {
+    position: relative;
+    overflow: hidden;
     padding-block: var(--s-8) var(--s-7);
     background: var(--ink);
     color: var(--on-ink);

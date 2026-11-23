@@ -1,5 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
+import { Picture } from 'astro:assets';
+import heroGroup from '../assets/photos/gallery/p024.jpg';
 import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
 import Laurel from '../components/Laurel.astro';
@@ -15,10 +17,23 @@ const sessions = hallSessions.filter((g) => g.session).length;
 ---
 
 <Base
+  image={heroGroup}
   title="BIA JUPEB Hall of Excellence — 16 Points (AAA) Achievers | Boma's Intellectual Academy"
   description="BIA JUPEB students who achieved straight As (AAA) in JUPEB, listed by academic session, with the courses and universities they went on to."
 >
   <section class="hh" aria-labelledby="hh-title">
+    <!-- Background: BIA students in lab coats on campus (gallery P024), under a dark wash for legibility -->
+    <div class="hh__bg" data-clip>
+      <Picture
+        src={heroGroup}
+        formats={['avif', 'webp']}
+        widths={[640, 960, 1280]}
+        sizes="100vw"
+        alt=""
+        loading="eager"
+        fetchpriority="high"
+      />
+    </div>
     <Badge variant="mark" size={560} class="hh__mark" />
     <div class="wrap hh__inner">
       <Laurel size={84} class="hh__laurel" />
@@ -208,6 +223,29 @@ const sessions = hallSessions.filter((g) => g.session).length;
     background: var(--ink);
     color: var(--on-ink);
     text-align: center;
+  }
+  .hh__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .hh__bg :global(picture),
+  .hh__bg :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  .hh__bg :global(img) {
+    object-fit: cover;
+    object-position: center 45%;
+  }
+  /* Dark wash keeps the gold headline and stats as legible as on plain ink. */
+  .hh__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 45%, rgb(21 23 30 / 0.72) 0%, rgb(21 23 30 / 0.86) 60%, rgb(21 23 30 / 0.95) 100%);
   }
   .hh :global(.hh__mark) {
     position: absolute;

@@ -1,4 +1,6 @@
 ---
+import HeroBg from '../components/HeroBg.astro';
+import heroBgImg from '../assets/photos/phase6/p031.jpg';
 import Base from '../layouts/Base.astro';
 import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
@@ -11,10 +13,12 @@ const videos = gallery.filter((g) => g.kind === 'video').length;
 ---
 
 <Base
+  image={heroBgImg}
   title="Life at BIA — Photo & Video Gallery | BIA JUPEB, Boma's Intellectual Academy"
   description="Photographs and videos from Boma's Intellectual Academy: JUPEB classrooms, tutorials, lessons on camera and life at BIA in Akoka, Lagos."
 >
   <section class="gh" aria-labelledby="gh-title">
+    <HeroBg src={heroBgImg} position="center 55%" tone="red" />
     <Badge variant="mark" size={560} class="gh__mark" />
     <div class="wrap gh__inner">
       <p class="gh__eyebrow">Gallery · Boma’s Intellectual Academy</p>

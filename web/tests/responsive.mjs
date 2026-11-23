@@ -62,7 +62,7 @@ await page.goto(BASE, { waitUntil: 'networkidle' });
 await page.waitForTimeout(2600); // let the hero entrance finish
 const carousels = page.locator('[data-carousel]');
 const count = await carousels.count();
-check(count === 1, `found ${count} carousel (Hall of Excellence)`);
+check(count === 2, `found ${count} carousels (Hall of Excellence, What’s on)`);
 for (let i = 0; i < count; i++) {
   const c = carousels.nth(i);
   const label = await c.getAttribute('aria-label');
@@ -70,6 +70,9 @@ for (let i = 0; i < count; i++) {
   const pause = c.locator('[data-toggle]');
   if (await pause.isVisible()) await pause.click(); // stop autoplay so it cannot interfere
   const current = () => c.locator('[data-current]').textContent();
+  await c.locator('[data-track]').focus();
+  await page.keyboard.press('Home'); // autoplay may already have moved on: start from slide 1
+  await page.waitForTimeout(900);
   await c.locator('[data-next]').click();
   await page.waitForTimeout(700);
   check((await current()) === '02', `${label}: next button advances`);
@@ -1015,7 +1018,8 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
   });
   check(pos.order[0] === 'hero' && pos.order[1] === 'success', `homepage: Hall of Excellence follows the hero (${pos.order.slice(0, 4).join(' → ')})`);
   check(pos.hall < 844 * 1.3, `homepage: achievers start within ~1 phone screen (${Math.round(pos.hall)}px)`);
-  check(pos.h < 844 * 18, `homepage: reduced scrolling on phones (${(pos.h / 844).toFixed(1)} screens, was 33)`);
+  // Budget raised from 18 to 20 screens for the What’s on slider (Nov 2026); still well under the original 33.
+  check(pos.h < 844 * 20, `homepage: reduced scrolling on phones (${(pos.h / 844).toFixed(1)} screens, was 33)`);
   check((await m.locator('#success [data-achiever]').count()) === aaa.length, 'homepage: AAA achiever cards come from records.json');
   check((await m.locator('#success a[href="/hall-of-excellence"]').count()) >= 1 && (await m.locator('header a[href="/hall-of-excellence"], #mobile-menu a[href="/hall-of-excellence"]').count()) >= 1, 'Hall of Excellence linked from the homepage band and the navigation');
   const hc = m.locator('.hall__carousel');
@@ -1362,6 +1366,24 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const words = prose.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
     const ok = words >= 400 && /Frequently asked questions/.test(prose) && /<time datetime="\d{4}-\d{2}-\d{2}"/.test(s) && /href='\/(guides|fees|timetable|cbt-practice)/.test(prose) && !/₦(200,000|287,000|400,000)/.test(prose);
     if (!ok) thin.push(`${slug} (${words} words)`);
+  }
+  // Search & sharing: every indexable page has a 1200×630 share image and only valid JSON-LD
+  {
+    const bad = [];
+    for (const f of indexable) {
+      const s = readFileSync(f, 'utf8');
+      const og = s.match(/<meta property="og:image" content="([^"]+)"/)?.[1];
+      if (!og || !og.startsWith('https://biajupeb.com.ng/') || !existsSync(join(dist, new URL(og).pathname))) bad.push(`${pageUrl(f)} og:image`);
+      for (const m of s.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)) {
+        try { const j = JSON.parse(m[1]); if (!j['@type']) bad.push(`${pageUrl(f)} ld no @type`); } catch { bad.push(`${pageUrl(f)} invalid JSON-LD`); }
+      }
+    }
+    const homeTypes = [...home.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1])['@type']);
+    const guideLd = readFileSync(join(dist, 'guides/jupeb-guide/index.html'), 'utf8');
+    check(
+      bad.length === 0 && ['EducationalOrganization', 'WebSite', 'Course', 'EducationEvent', 'FAQPage'].every((t) => homeTypes.includes(t)) && /"@type":"Article"/.test(guideLd) && /"@type":"BreadcrumbList"/.test(guideLd),
+      `search: share images on every page; valid JSON-LD (organisation, website, course, event, FAQ, articles, breadcrumbs) ${bad.slice(0, 4).join(' | ')}`,
+    );
   }
   // Services and new schedules: on the homepage, linked, nothing invented
   {
