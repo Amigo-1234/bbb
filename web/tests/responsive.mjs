@@ -1363,6 +1363,21 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const ok = words >= 400 && /Frequently asked questions/.test(prose) && /<time datetime="\d{4}-\d{2}-\d{2}"/.test(s) && /href='\/(guides|fees|timetable|cbt-practice)/.test(prose) && !/₦(200,000|287,000|400,000)/.test(prose);
     if (!ok) thin.push(`${slug} (${words} words)`);
   }
+  // 2025/2026 results announcement: on the Hall page, linked from the homepage, BIA's wording, 60 students
+  {
+    const hall = readFileSync(join(dist, 'hall-of-excellence/index.html'), 'utf8');
+    const sec = hall.match(/<section[^>]*id="results-2025-2026"[\s\S]*?<\/section>\s*(?=<nav|<div class="hbody")/)?.[0] ?? '';
+    const rows = (sec.match(/class="ra__name"/g) ?? []).length;
+    check(
+      rows === 60 &&
+        /154 out of 157 BIA JUPEB students met the cut-off for 200 Level admission consideration, subject to university requirements/.test(sec.replace(/<!--.*?-->/g, '').replace(/\s+/g, ' ')) &&
+        sec.includes('https://www.tiktok.com/@bomaacademylimited/photo/7710724799684709652') &&
+        !/tiktok\.com\/embed|embed\.js/.test(hall) &&
+        home.includes('/hall-of-excellence#results-2025-2026') &&
+        /Sodolamu Comfort<\/span>/.test(sec.split(/<h3[^>]*>\s*<span[^>]*>14</)[0].split(/<h3[^>]*>\s*<span[^>]*>15</)[1] ?? ''),
+      `2025/2026 results: 60 students on the Hall page with BIA's wording, TikTok linked (not embedded), homepage link, Sodolamu at 15 (${rows} rows)`,
+    );
+  }
   // Grading: explained consistently (out of 16, grade points + 1) without touching published results
   {
     const ug = readFileSync(join(dist, 'guides/jupeb-unilag-admission/index.html'), 'utf8');

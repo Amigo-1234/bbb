@@ -1,0 +1,305 @@
+---
+/**
+ * 2025/2026 JUPEB results announcement (data: src/data/results-2026.ts).
+ * The TikTok post is linked, not embedded: an embed would load TikTok's
+ * trackers, which the Cookie Policy says the site does not use.
+ * The "Top 50 Scholars 2026" poster appears automatically once its file is
+ * saved as src/assets/official/top-50-scholars-2026.(jpg|png|webp).
+ */
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Icon from './Icon.astro';
+import { cutoffPercent, listedCount, resultGroups, results2026 } from '../data/results-2026';
+
+const posters = import.meta.glob<ImageMetadata>('../assets/official/top-50-scholars-2026.{jpg,jpeg,png,webp}', { eager: true, import: 'default' });
+const poster = Object.values(posters)[0];
+// BIA's "JUPEB Top 2026 Scholars" slides (from the TikTok post), one per points band, highest first.
+const slideFiles = import.meta.glob<ImageMetadata>('../assets/official/results-2026/points-*.jpg', { eager: true, import: 'default' });
+const slides = Object.entries(slideFiles)
+  .map(([path, img]) => ({ points: Number(path.match(/points-(\d+)/)![1]), img }))
+  .sort((a, b) => b.points - a.points);
+const pct = (p: number) => `${Number(((p / 16) * 100).toFixed(2))}%`;
+const id = `results-${results2026.session.replace('/', '-')}`;
+---
+
+<section class="ra" id={id} aria-labelledby={`${id}-title`}>
+  <div class="wrap">
+    <div class="ra__head">
+      <div class="ra__copy">
+        <p class="ra__eyebrow">JUPEB results · {results2026.session} session</p>
+        <h2 id={`${id}-title`} class="ra__title">
+          <span class="num">{results2026.metCutoff}</span> of <span class="num">{results2026.total}</span> BIA students made the <em>200 Level</em> cut-off.
+        </h2>
+        <p class="ra__lead">
+          As announced by BIA: {results2026.metCutoff} out of {results2026.total} BIA JUPEB students {results2026.claim}.
+          Below are the {listedCount} students BIA listed who scored 10–16 points, with the courses they were admitted to.
+        </p>
+        <a class="ra__post" href={results2026.post} rel="noopener" target="_blank" data-cta="results-tiktok">
+          See BIA’s announcement on TikTok<Icon name="arrow-up-right" size={16} />
+        </a>
+      </div>
+      <div class="ra__stat" aria-hidden="true">
+        <strong class="num">{cutoffPercent}%</strong>
+        <span>met the cut-off</span>
+      </div>
+    </div>
+
+    {poster && (
+      <figure class="ra__poster">
+        <a href={poster.src} target="_blank" rel="noopener">
+          <Picture
+            src={poster}
+            formats={['avif', 'webp']}
+            widths={[400, 640, 900]}
+            sizes="(min-width: 960px) 360px, 80vw"
+            alt={`BIA "JUPEB Top 50 Scholars 2026" poster: photographs of the top 50 students with their grades, listed in full below`}
+            loading="lazy"
+          />
+        </a>
+        <figcaption>JUPEB Top 50 Scholars 2026 — tap to enlarge.</figcaption>
+      </figure>
+    )}
+
+    {slides.length > 0 && (
+      <div class="ra__slides" role="region" aria-label="BIA's JUPEB Top 2026 Scholars posters" tabindex="0" data-clip>
+        <ul role="list">
+          {slides.map((s) => (
+            <li>
+              <a href={s.img.src} target="_blank" rel="noopener">
+                <Picture
+                  src={s.img}
+                  formats={['avif', 'webp']}
+                  widths={[280, 440, 640]}
+                  sizes="(min-width: 960px) 240px, 62vw"
+                  alt={`BIA poster “JUPEB Top 2026 Scholars”: photographs and grades of students who scored ${s.points} points. Names and courses are listed below.`}
+                  loading="lazy"
+                />
+                <span class="ra__slide-cap"><span class="num">{s.points}</span> points</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+
+    <div class="ra__groups">
+      {resultGroups.map((g) => (
+        <section class="ra__group" aria-labelledby={`${id}-${g.points}`}>
+          <h3 id={`${id}-${g.points}`} class="ra__points">
+            <span class="num">{g.points}</span> points <span class="ra__pct num">{pct(g.points)}</span>
+            <span class="ra__n">{g.students.length} {g.students.length === 1 ? 'student' : 'students'}</span>
+          </h3>
+          <ol class="ra__list">
+            {g.students.map(([name, course]) => (
+              <li>
+                <span class="ra__name">{name}</span>
+                <span class="ra__course">{course}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+    <p class="ra__note">
+      Listed as announced by BIA. Points are out of 16. Students already on the site are spelled as on BIA’s records.
+    </p>
+  </div>
+</section>
+
+<style>
+  .ra {
+    padding-block: var(--s-8);
+    background: var(--paper);
+    scroll-margin-top: 84px;
+  }
+  .ra__head {
+    display: grid;
+    gap: var(--s-6);
+    align-items: center;
+    margin-bottom: var(--s-7);
+  }
+  .ra__copy {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .ra__eyebrow {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  .ra__title {
+    font-size: var(--step-3);
+    font-weight: 400;
+    max-width: 22ch;
+  }
+  .ra__title em {
+    color: var(--crimson);
+  }
+  .ra__lead {
+    max-width: 60ch;
+    color: var(--ink-2);
+  }
+  .ra__post {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    width: fit-content;
+    min-height: 44px;
+    font-weight: 700;
+    color: var(--crimson);
+  }
+  .ra__stat {
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: var(--s-1);
+    padding: var(--s-6);
+    border-radius: var(--radius);
+    background: var(--bia-red);
+    color: var(--on-red);
+    text-align: center;
+  }
+  .ra__stat strong {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 2.5rem + 4vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1;
+  }
+  .ra__stat span {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-size: var(--step--1);
+  }
+  .ra__poster {
+    margin: 0 auto var(--s-7);
+    max-width: 360px;
+    text-align: center;
+  }
+  .ra__poster :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: 0 18px 40px -24px rgb(21 23 30 / 0.5);
+  }
+  .ra__poster figcaption {
+    margin-top: var(--s-2);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  /* Posters: a swipeable strip that scrolls inside its own box */
+  .ra__slides {
+    margin: 0 calc(-1 * var(--gutter)) var(--s-7);
+    padding: 0 var(--gutter) var(--s-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gutter);
+    overscroll-behavior-x: contain;
+  }
+  .ra__slides:focus-visible {
+    outline-offset: -2px;
+  }
+  .ra__slides ul {
+    display: flex;
+    gap: var(--s-4);
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ra__slides li {
+    width: min(62vw, 240px);
+    scroll-snap-align: start;
+  }
+  .ra__slides a {
+    display: grid;
+    gap: var(--s-2);
+    text-decoration: none;
+  }
+  .ra__slides :global(img) {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1400 / 1749;
+    border-radius: var(--radius);
+    box-shadow: 0 14px 30px -22px rgb(21 23 30 / 0.55);
+    transition: transform 0.25s var(--ease);
+  }
+  .ra__slides a:hover :global(img) {
+    transform: translateY(-3px);
+  }
+  .ra__slide-cap {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--ink-2);
+  }
+  .ra__groups {
+    display: grid;
+    gap: var(--s-6);
+  }
+  .ra__points {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-3);
+    padding-bottom: var(--s-2);
+    margin-bottom: var(--s-2);
+    border-bottom: 2px solid var(--ink);
+    font-size: var(--step-2);
+    font-weight: 400;
+  }
+  .ra__pct {
+    font-family: var(--sans);
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--crimson);
+  }
+  .ra__n {
+    margin-left: auto;
+    font-family: var(--sans);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  .ra__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+  }
+  .ra__list li {
+    display: grid;
+    gap: 0 var(--s-4);
+    padding: var(--s-2) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .ra__name {
+    font-weight: 700;
+  }
+  .ra__course {
+    color: var(--ink-2);
+  }
+  .ra__note {
+    margin-top: var(--s-5);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+  @media (min-width: 720px) {
+    .ra__list {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--s-6);
+    }
+    .ra__list li {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    }
+  }
+  @media (min-width: 960px) {
+    .ra__head {
+      grid-template-columns: 1fr auto;
+    }
+    .ra__stat {
+      min-width: 240px;
+      aspect-ratio: 1;
+    }
+  }
+</style>

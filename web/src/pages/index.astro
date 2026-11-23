@@ -13,6 +13,7 @@ import { programmes, tutorialPackage } from '../data/fees';
 import AchieverCard from '../components/AchieverCard.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
 import { achievers } from '../data/achievements';
+import { cutoffPercent, results2026 } from '../data/results-2026';
 import { testimonials } from '../data/testimonials';
 import poster from '../assets/official/directions-poster.jpg';
 import {
@@ -118,6 +119,7 @@ const homeAchievers = achievers;
 
       <div class="hall__foot">
         <ul class="hall__stats" role="list">
+          <li><a class="hall__stat-link" href={`/hall-of-excellence#results-${results2026.session.replace('/', '-')}`} data-cta="home-results-2026"><strong class="num">{cutoffPercent}%</strong> met the 200 Level cut-off ({results2026.session})</a></li>
           <li><strong class="num">{achievers.length}</strong> AAA results recorded</li>
           {admissionsByInstitution.length > 0 && <li>Admissions recorded at {admissionsByInstitution.map((a) => a.institution).join(', ')}</li>}
         </ul>
@@ -855,6 +857,13 @@ const homeAchievers = achievers;
   }
   .hall__ctas .btn {
     white-space: normal;
+  }
+  .hall__stat-link {
+    color: inherit;
+    text-decoration-color: rgb(255 255 255 / 0.35);
+  }
+  .hall__stat-link:hover {
+    text-decoration-color: currentColor;
   }
   .btn--brass {
     background: var(--brass-light);

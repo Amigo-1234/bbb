@@ -4,6 +4,8 @@ import Badge from '../components/Badge.astro';
 import Icon from '../components/Icon.astro';
 import Laurel from '../components/Laurel.astro';
 import AchieverCard from '../components/AchieverCard.astro';
+import ResultsAnnouncement from '../components/ResultsAnnouncement.astro';
+import { cutoffPercent, results2026 } from '../data/results-2026';
 import { aabAchievers, achievers, elevenPointAchievers, fourteenPointAchievers, hallSessions, tenPointAchievers, thirteenPointAchievers, twelvePointAchievers } from '../data/achievements';
 import { primaryContact } from '../data/site';
 
@@ -24,6 +26,7 @@ const sessions = hallSessions.filter((g) => g.session).length;
       <h1 id="hh-title" class="hh__title">16 Points <em>(AAA)</em> Achievers</h1>
       <p class="hh__lead">Students who earned straight As in JUPEB with Boma’s Intellectual Academy — by academic session.</p>
       <ul class="hh__stats" role="list">
+        <li><a href={`#results-${results2026.session.replace('/', '-')}`}><strong class="num">{cutoffPercent}%</strong> met the 200 Level cut-off ({results2026.session})</a></li>
         <li><strong class="num">{achievers.length}</strong> AAA results recorded</li>
         {sessions > 0 && <li><strong class="num">{sessions}</strong> {sessions === 1 ? 'session' : 'sessions'}</li>}
         {aabAchievers.length > 0 && <li><a href="#aab"><strong class="num">{aabAchievers.length}</strong> AAB results</a></li>}
@@ -36,6 +39,8 @@ const sessions = hallSessions.filter((g) => g.session).length;
       </ul>
     </div>
   </section>
+
+  <ResultsAnnouncement />
 
   {hallSessions.length > 1 && (
     <nav class="hnav" aria-label="Sessions">
