@@ -1,0 +1,473 @@
+---
+/**
+ * BIA's other services (data: src/data/services.ts). Only what BIA has published:
+ * no prices or dates are added here — visitors are sent to the admissions office.
+ */
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { Picture } from 'astro:assets';
+import bsaLogo from '../assets/brand/bsa-logo.jpg';
+import { accommodation, bsa, igcse, jambScorers, lectureBanks, pastQuestionSubjects, utmeFreePrep, utmeTutorial } from '../data/services';
+import { naira } from '../data/fees';
+import { cbt, primaryContact, whatsapp } from '../data/site';
+---
+
+<Base
+  title="BIA Services — JAMB Class, International Registration (SAT USA), Past Questions & Accommodation | Boma's Intellectual Academy"
+  description="Beyond JUPEB, Boma's Intellectual Academy (BIA) offers JAMB classes, SAT (USA) registration, Cambridge IGCSE & A-Level programmes, BIA Study Abroad (UK diplomas and degree pathways), 2026/27 JUPEB past questions and help securing accommodation on and off UNILAG campus."
+>
+  <section class="sh" aria-labelledby="sh-title">
+    <div class="wrap sh__inner">
+      <p class="eyebrow">Services · Boma’s Intellectual Academy</p>
+      <h1 id="sh-title" class="sh__title">More from <em>BIA.</em></h1>
+      <p class="lead">Beyond the JUPEB programme: JAMB classes, SAT (USA) registration, Cambridge IGCSE & A-Level programmes, study abroad, past questions, and help finding a place to live near UNILAG.</p>
+      <nav class="sh__jump" aria-label="Services on this page">
+        <a href="#lecture-banks">JUPEB Lecture Banks</a>
+        <a href="#jamb">JAMB class</a>
+        <a href="#utme-free">Free UTME prep</a>
+        <a href="#sat">International registration</a>
+        <a href="#igcse">IGCSE &amp; A-Level</a>
+        <a href="#study-abroad">Study abroad</a>
+        <a href="#past-questions">Past questions</a>
+        <a href="#accommodation">Accommodation</a>
+      </nav>
+    </div>
+  </section>
+
+  <section class="svc svc--tint" id="lecture-banks" aria-labelledby="lb-title">
+    <div class="wrap svc__narrow">
+      <p class="svc__kicker">JUPEB · Online</p>
+      <h2 id="lb-title" class="svc__title">{lectureBanks.title}.</h2>
+      <p class="lb__price"><span class="num">{naira(lectureBanks.price)}</span> <span>{lectureBanks.covers}.</span></p>
+      <h3 class="lb__h">What’s included</h3>
+      <ul class="rules">{lectureBanks.includes.map((i) => <li>{i}</li>)}</ul>
+      <ul class="rules lb__why">{lectureBanks.why.map((i) => <li>{i}</li>)}</ul>
+      <p><strong>Science:</strong> {lectureBanks.subjects.science}. <strong>Arts &amp; Commercial:</strong> {lectureBanks.subjects.artsCommercial}.</p>
+      <p class="lb__note">{lectureBanks.note}</p>
+      <p>Weekly online class times are on the <a href="/timetable">timetable page</a> (Online 2026/27). Full programme fees are on the <a href="/fees">fees page</a>.</p>
+    </div>
+  </section>
+
+  <section class="svc" id="jamb" aria-labelledby="jamb-title">
+    <div class="wrap svc__grid">
+      <div class="svc__copy">
+        <p class="svc__kicker">01 · JAMB class</p>
+        <h2 id="jamb-title" class="svc__title">Prepare for JAMB with BIA.</h2>
+        <p><strong>{utmeTutorial.title}</strong> — {utmeTutorial.description}</p>
+        <p class="utme__when">Starts {utmeTutorial.start}. {utmeTutorial.schedule}.</p>
+        <table class="prices">
+          <caption class="sr-only">UTME online tutorial prices</caption>
+          <tbody>
+            {utmeTutorial.prices.map((p) => <tr><th scope="row">{p.label}</th><td class="num">{naira(p.amount)}</td></tr>)}
+          </tbody>
+        </table>
+        <p>Students can also practise JAMB-style questions with instant grading on BIA’s <a href="/cbt-practice">CBT practice platform</a> ({cbt.host}).</p>
+        <div class="svc__ctas" data-cta-zone>
+          <a class="btn" href={`tel:${primaryContact.phone}`} data-cta="services-jamb-call"><Icon name="phone" size={18} />Call {primaryContact.display}</a>
+          <a class="btn btn--outline" href={whatsapp} rel="noopener" target="_blank" data-cta="services-jamb-whatsapp">WhatsApp</a>
+        </div>
+      </div>
+      <figure class="scores">
+        <figcaption class="scores__cap"><strong>Some of our JAMB high scorers</strong> <span>as announced by BIA</span></figcaption>
+        <ol class="scores__list">
+          {jambScorers.map(([name, score]) => (
+            <li><span class="scores__name">{name}</span><span class="scores__n num">{score}</span></li>
+          ))}
+        </ol>
+      </figure>
+    </div>
+  </section>
+
+  <section class="svc" id="utme-free" aria-labelledby="utme-free-title">
+    <div class="wrap svc__narrow">
+      <p class="svc__kicker">Free · {utmeFreePrep.length}</p>
+      <h2 id="utme-free-title" class="svc__title">{utmeFreePrep.title}.</h2>
+      <table class="prices prices--days">
+        <caption class="sr-only">Free UTME preparatory timetable</caption>
+        <tbody>
+          {utmeFreePrep.days.map(([day, what, time]) => <tr><th scope="row">{day}</th><td>{what}</td><td class="num">{time}</td></tr>)}
+        </tbody>
+      </table>
+      <ul class="rules">{utmeFreePrep.quizRules.map((r) => <li>{r}</li>)}</ul>
+      <p>Quizzes are on <a href="/cbt-practice">BIA’s CBT platform</a> ({cbt.host}).</p>
+    </div>
+  </section>
+
+  <section class="svc svc--tint" id="sat" aria-labelledby="sat-title">
+    <div class="wrap svc__narrow">
+      <p class="svc__kicker">02 · International registration</p>
+      <h2 id="sat-title" class="svc__title">SAT (USA) exam registration.</h2>
+      <p>Planning to study in the United States? BIA’s international registration service registers students for the SAT (USA). Call the admissions office for details.</p>
+      <div class="svc__ctas">
+        <a class="btn btn--outline" href={`tel:${primaryContact.phone}`} data-cta="services-sat-call"><Icon name="phone" size={18} />Ask about SAT registration</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="svc" id="igcse" aria-labelledby="igcse-title">
+    <div class="wrap svc__narrow">
+      <p class="svc__kicker">03 · Cambridge</p>
+      <h2 id="igcse-title" class="svc__title">{igcse.title}.</h2>
+      <p>{igcse.text}</p>
+      <div class="svc__ctas">
+        <a class="btn btn--outline" href={`tel:${primaryContact.phone}`} data-cta="services-igcse-call"><Icon name="phone" size={18} />Ask about IGCSE &amp; A-Level</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="svc svc--ink" id="study-abroad" aria-labelledby="bsa-title">
+    <div class="wrap svc__grid">
+      <div class="svc__copy">
+        <p class="svc__kicker">04 · Study abroad</p>
+        <h2 id="bsa-title" class="svc__title">{bsa.name}.</h2>
+        <p class="bsa__tag">{bsa.tagline}</p>
+        <ul class="bsa__list">{bsa.offers.map((o) => <li>{o}</li>)}</ul>
+        <p>{bsa.progression}</p>
+        <p class="bsa__bonus">{bsa.bonus}</p>
+        <div class="svc__ctas" data-cta-zone>
+          <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="services-bsa-call"><Icon name="phone" size={18} />Book a free consultation</a>
+          <a class="btn btn--on-ink" href={whatsapp} rel="noopener" target="_blank" data-cta="services-bsa-whatsapp">WhatsApp</a>
+        </div>
+        <p class="bsa__social">Email: <a href={`mailto:${bsa.email}`}>{bsa.email}</a> · Instagram &amp; TikTok: {bsa.handle}</p>
+      </div>
+      <figure class="bsa__logo">
+        <Picture src={bsaLogo} formats={['avif', 'webp']} widths={[320, 640]} sizes="(min-width: 960px) 420px, 80vw" alt="BIA Study Abroad (BSA) logo — Dream. Plan. Go global." loading="lazy" />
+      </figure>
+    </div>
+  </section>
+
+  <section class="svc svc--tint" id="past-questions" aria-labelledby="pq-title">
+    <div class="wrap svc__narrow">
+      <p class="svc__kicker">05 · Past questions</p>
+      <h2 id="pq-title" class="svc__title">BIA JUPEB Past Questions, 2026/27.</h2>
+      <p>Compiled and updated past questions to help you understand the JUPEB exam pattern and revise effectively. Available subjects:</p>
+      <ul class="chips" role="list">{pastQuestionSubjects.map((s) => <li>{s}</li>)}</ul>
+      <p>Ask the admissions office how to get your copy. Tips for using them are in our <a href="/guides/jupeb-past-questions">past questions guide</a>.</p>
+    </div>
+  </section>
+
+  <section class="svc" id="accommodation" aria-labelledby="acc-title">
+    <div class="wrap svc__narrow">
+      <p class="svc__kicker">06 · Accommodation</p>
+      <h2 id="acc-title" class="svc__title">Secure an apartment via BIA.</h2>
+      <p>BIA helps students find accommodation on and off the UNILAG campus.</p>
+      <div class="acc">
+        <div>
+          <h3>Off campus</h3>
+          <p>{accommodation.offCampus.join(', ')}, and more.</p>
+        </div>
+        <div>
+          <h3>On campus</h3>
+          <p>{accommodation.onCampus}</p>
+        </div>
+      </div>
+      <p class="acc__call">To book, call:</p>
+      <ul class="acc__tels" role="list">
+        {accommodation.contacts.map((c) => (
+          <li><a class="btn btn--outline" href={`tel:${c.phone}`} data-cta={`services-accommodation-${c.phone.slice(-4)}`}><Icon name="phone" size={18} />{c.name} · <span class="num">{c.display}</span></a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .sh {
+    padding-block: var(--s-8) var(--s-7);
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+  .sh__inner {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .sh .eyebrow {
+    color: var(--on-ink-muted);
+  }
+  .sh__title {
+    font-size: var(--step-4);
+    font-weight: 400;
+    letter-spacing: -0.025em;
+  }
+  .sh__title em {
+    color: var(--brass-light);
+  }
+  .sh .lead {
+    color: var(--on-ink);
+  }
+  .sh__jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-top: var(--s-2);
+  }
+  .sh__jump a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 var(--s-4);
+    border: 1px solid rgb(255 255 255 / 0.25);
+    border-radius: 999px;
+    color: var(--on-ink);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .sh__jump a:hover {
+    background: rgb(255 255 255 / 0.1);
+  }
+  .svc {
+    padding-block: var(--section);
+    scroll-margin-top: 84px;
+  }
+  .svc--tint {
+    background: var(--paper-2);
+  }
+  .svc__grid {
+    display: grid;
+    gap: var(--s-7);
+    align-items: start;
+  }
+  .svc__copy,
+  .svc__narrow {
+    display: grid;
+    gap: var(--s-4);
+    max-width: 62ch;
+  }
+  .svc__copy a:not(.btn),
+  .svc__narrow a:not(.btn) {
+    color: var(--crimson);
+    font-weight: 600;
+  }
+  .svc__kicker {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  .svc__title {
+    font-size: var(--step-3);
+    font-weight: 400;
+  }
+  .svc__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .svc--ink {
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+  .svc--ink .svc__kicker {
+    color: var(--brass-light);
+  }
+  .bsa__tag {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #ff6b6b;
+  }
+  .bsa__list {
+    display: grid;
+    gap: var(--s-2);
+    margin: 0;
+    padding-left: 1.2em;
+  }
+  .bsa__list li::marker {
+    color: var(--bia-red);
+  }
+  .bsa__bonus {
+    padding: var(--s-3) var(--s-4);
+    border-left: 3px solid var(--bia-red);
+    background: rgb(255 255 255 / 0.06);
+    font-weight: 700;
+  }
+  .bsa__social {
+    font-size: var(--step--1);
+    color: var(--on-ink-muted);
+  }
+  .bsa__social a {
+    color: var(--on-ink);
+    overflow-wrap: anywhere;
+  }
+  .bsa__logo {
+    margin: 0;
+    max-width: 420px;
+    justify-self: center;
+  }
+  .bsa__logo :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+  .scores {
+    margin: 0;
+    padding: var(--s-5);
+    border-radius: var(--radius);
+    background: var(--ink);
+    color: var(--on-ink);
+  }
+  .scores__cap {
+    display: grid;
+    gap: 2px;
+    margin-bottom: var(--s-4);
+    font-family: var(--serif);
+    font-size: var(--step-1);
+  }
+  .scores__cap span {
+    font-family: var(--sans);
+    font-size: var(--step--1);
+    color: var(--on-ink-muted);
+  }
+  .scores__list {
+    display: grid;
+    gap: 0 var(--s-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .scores__list li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding: var(--s-2) 0;
+    border-bottom: 1px solid rgb(255 255 255 / 0.12);
+  }
+  .scores__n {
+    font-weight: 800;
+    color: var(--brass-light);
+  }
+  .prices {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .prices th,
+  .prices td {
+    padding: var(--s-3) var(--s-4);
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    vertical-align: top;
+  }
+  .prices th {
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .prices td.num {
+    text-align: right;
+    font-weight: 800;
+    color: var(--crimson);
+    white-space: nowrap;
+  }
+  .prices--days td.num {
+    color: var(--ink-2);
+    font-weight: 600;
+  }
+  .prices tr:last-child > * {
+    border-bottom: 0;
+  }
+  .utme__when {
+    font-weight: 700;
+  }
+  .rules {
+    margin: 0;
+    padding-left: 1.2em;
+    display: grid;
+    gap: var(--s-1);
+  }
+  @media (max-width: 559px) {
+    .prices--days th,
+    .prices--days td {
+      display: block;
+      padding-block: var(--s-1);
+      border-bottom: 0;
+      text-align: left !important;
+    }
+    .prices--days tr {
+      display: block;
+      padding: var(--s-2) 0;
+      border-bottom: 1px solid var(--line);
+    }
+  }
+  .lb__price {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-3);
+  }
+  .lb__price .num {
+    font-family: var(--serif);
+    font-size: var(--step-3);
+    color: var(--crimson);
+  }
+  .lb__h {
+    font-size: var(--step-1);
+  }
+  .lb__why {
+    color: var(--ink-2);
+  }
+  .lb__note {
+    padding: var(--s-3) var(--s-4);
+    border-left: 3px solid var(--crimson);
+    background: var(--surface);
+    font-size: var(--step--1);
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .chips li {
+    padding: var(--s-2) var(--s-4);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    background: var(--surface);
+    font-weight: 700;
+  }
+  .acc {
+    display: grid;
+    gap: var(--s-4);
+  }
+  .acc > div {
+    padding: var(--s-4) var(--s-5);
+    border-left: 3px solid var(--crimson);
+    background: var(--surface);
+    border-radius: var(--radius);
+  }
+  .acc h3 {
+    font-size: var(--step-1);
+    margin-bottom: var(--s-1);
+  }
+  .acc__call {
+    font-weight: 700;
+  }
+  .acc__tels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .acc__tels .btn {
+    white-space: normal;
+  }
+  @media (min-width: 720px) {
+    .scores__list {
+      grid-template-columns: 1fr 1fr;
+    }
+    .acc {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 960px) {
+    .svc__grid {
+      grid-template-columns: 5fr 7fr;
+    }
+  }
+</style>

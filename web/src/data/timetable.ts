@@ -147,7 +147,74 @@ export const preResumption: Timetable = {
   footnotes,
 };
 
-export const timetables = [firstSemester, preResumption];
+/**
+ * "Weekend Learning and Assessment Schedule" flyer (BIA, November 2026), transcribed
+ * as printed. Friday and Saturday activities rotate over a four-week cycle.
+ */
+export const weekend: Timetable = {
+  id: 'weekend',
+  title: 'Weekends',
+  heading: 'BIA JUPEB Weekend Learning and Assessment Schedule',
+  audience: 'Fridays and Saturdays rotate over four weeks.',
+  intro: 'First Semester Mock Examination / In-Course: Sunday 13 December 2026.',
+  days: [
+    {
+      day: 'Fri',
+      name: 'Friday',
+      sessions: [
+        { time: '9:30am – 5:30pm', start: '09:30', end: '17:30', title: 'Week 1: Online BIA CBT Test', kind: 'test' },
+        { title: 'Week 2: Weekly Test', kind: 'test' },
+        { title: 'Week 3: Marathon Physical Class', kind: 'marathon' },
+        { title: 'Week 4: Online/Live Class', kind: 'class' },
+      ],
+      note: { label: 'Venue', text: 'BIA Tutorial Venue, 12 Ameen Street, Akoka' },
+    },
+    {
+      day: 'Sat',
+      name: 'Saturday',
+      sessions: [
+        { time: '10:00am – 4:00pm', start: '10:00', end: '16:00', title: 'Week 1: General JUPEB Marathon', kind: 'marathon' },
+        { title: 'Week 2: Special Private Class 001', kind: 'private' },
+        { title: 'Week 3: Special Private Class 002', kind: 'private' },
+        { title: 'Week 4: Monthly Examination 001 & 002', kind: 'test' },
+      ],
+      note: { label: 'Venue', text: 'BIA Tutorial Venue, 12 Ameen Street, Akoka' },
+    },
+    {
+      day: 'Sun',
+      name: 'Sunday',
+      sessions: [{ title: 'First Semester Mock Examination / In-Course — 13 December 2026', kind: 'test' }],
+      note: { label: 'Venue', text: 'Faculty of Management Science, UNILAG' },
+    },
+  ],
+  footnotes: ['Friday times apply to every Friday activity; Saturday times to every Saturday activity (as printed).'],
+};
+
+/** "JUPEB Online Timetable 2026/27" flyer (BIA), transcribed as printed. Part of the paid programme. */
+export const online2627: Timetable = {
+  id: 'online',
+  title: 'Online',
+  heading: 'BIA JUPEB Online Timetable 2026/27',
+  audience: 'For students who learn online.',
+  days: [
+    { day: 'Mon', name: 'Monday', sessions: [{ time: '2:00pm – 6:00pm', start: '14:00', end: '18:00', title: 'Physics · Government · BUS', kind: 'class' }] },
+    { day: 'Tue', name: 'Tuesday', sessions: [{ title: 'Self study · Group study (flexible)', kind: 'self-study' }] },
+    { day: 'Wed', name: 'Wednesday', sessions: [{ time: '2:00pm – 6:00pm', start: '14:00', end: '18:00', title: 'Chemistry · Economics · CRS', kind: 'class' }] },
+    { day: 'Thu', name: 'Thursday', sessions: [{ title: 'Self study · Group study (flexible)', kind: 'self-study' }] },
+    { day: 'Fri', name: 'Friday', sessions: [{ time: '8:00pm – 10:00pm', start: '20:00', end: '22:00', title: 'Biology · Maths · Accounting · Literature', kind: 'class' }] },
+    { day: 'Sat', name: 'Saturday', sessions: [{ time: '6:00pm – 10:00pm', start: '18:00', end: '22:00', title: 'Weekly tests / assessment', kind: 'test' }] },
+    { day: 'Sun', name: 'Sunday', sessions: [{ title: 'Personal revision · Rest (flexible)', kind: 'self-study' }] },
+  ],
+  footnotes: [
+    'WhatsApp brainstorming & practice: scheduled sessions for solving JUPEB questions, explaining methods and correcting misconceptions.',
+    'Tuesdays and Thursdays are set aside for independent revision and collaborative study.',
+    'Two-week intensive period: guided question-solving and detailed explanations with subject tutors.',
+    'Assignment submission & oral defence: compulsory submission of practice assignments, followed by an oral defence of methods and calculations.',
+    'Examinations: a compulsory written exam and oral assessment (dates to be announced by BIA Management).',
+  ],
+};
+
+export const timetables = [firstSemester, preResumption, weekend, online2627];
 
 /** Subject codes as printed, with the names we can state with certainty. */
 export const subjectKey: Record<string, string | null> = {

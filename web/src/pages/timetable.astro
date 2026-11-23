@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import Timetable from '../components/Timetable.astro';
-import { firstSemester, preResumption } from '../data/timetable';
+import { firstSemester, online2627, preResumption, weekend } from '../data/timetable';
 import { naira, tutorialPackage } from '../data/fees';
 import { primaryContact, site } from '../data/site';
 import { docs } from '../data/documents';
@@ -13,6 +13,16 @@ const panels = [
     doc: docs.timetableFirst,
     tab: 'First semester',
     sub: 'Physical classes',
+  },
+  {
+    tt: weekend,
+    tab: 'Weekends',
+    sub: 'Fri–Sun rotation',
+  },
+  {
+    tt: online2627,
+    tab: 'Online 2026/27',
+    sub: 'For online students',
   },
   {
     tt: preResumption,

@@ -14,6 +14,7 @@ import AchieverCard from '../components/AchieverCard.astro';
 import TestimonialCard from '../components/TestimonialCard.astro';
 import { achievers } from '../data/achievements';
 import { cutoffPercent, results2026 } from '../data/results-2026';
+import { jambScorers, pastQuestionSubjects, utmeTutorial } from '../data/services';
 import { testimonials } from '../data/testimonials';
 import poster from '../assets/official/directions-poster.jpg';
 import {
@@ -209,6 +210,48 @@ const homeAchievers = achievers;
           </ul>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- MORE FROM BIA: other services, visible on the homepage -->
+  <section class="section more" id="services" aria-labelledby="more-title">
+    <div class="wrap">
+      <header class="more__head">
+        <p class="eyebrow">More from BIA</p>
+        <h2 id="more-title" class="more__title">Not just JUPEB.</h2>
+      </header>
+      <ul class="more__grid" role="list" data-clip>
+        <li><a class="more__card" href="/services#jamb" data-cta="home-services-jamb">
+          <span class="more__k">JAMB class</span>
+          <strong>UTME 2026/27 online tutorial</strong>
+          <span>From <b class="num">{naira(utmeTutorial.prices[1].amount)}</b>/month, starting {utmeTutorial.start}. BIA students scored up to <b class="num">{jambScorers[0][1]}</b>.</span>
+        </a></li>
+        <li><a class="more__card" href="/services#sat" data-cta="home-services-sat">
+          <span class="more__k">International registration</span>
+          <strong>SAT (USA) exam</strong>
+          <span>Registration for students heading to US universities.</span>
+        </a></li>
+        <li><a class="more__card" href="/services#igcse" data-cta="home-services-igcse">
+          <span class="more__k">Cambridge</span>
+          <strong>IGCSE &amp; A-Level Programmes</strong>
+          <span>Personalised teaching, exam preparation and admission guidance.</span>
+        </a></li>
+        <li><a class="more__card" href="/services#study-abroad" data-cta="home-services-bsa">
+          <span class="more__k">BIA Study Abroad</span>
+          <strong>UK diplomas &amp; degree pathways</strong>
+          <span>Study online with a British curriculum. Free consultation.</span>
+        </a></li>
+        <li><a class="more__card" href="/services#past-questions" data-cta="home-services-pq">
+          <span class="more__k">Past questions</span>
+          <strong>JUPEB past questions 2026/27</strong>
+          <span>{pastQuestionSubjects.length} subjects, from Mathematics to Literature.</span>
+        </a></li>
+        <li><a class="more__card" href="/services#accommodation" data-cta="home-services-accommodation">
+          <span class="more__k">Accommodation</span>
+          <strong>Secure an apartment via BIA</strong>
+          <span>On and off UNILAG campus.</span>
+        </a></li>
+      </ul>
     </div>
   </section>
 
@@ -857,6 +900,84 @@ const homeAchievers = achievers;
   }
   .hall__ctas .btn {
     white-space: normal;
+  }
+  .more__head {
+    display: grid;
+    gap: var(--s-2);
+    margin-bottom: var(--s-6);
+  }
+  .more__title {
+    font-size: var(--step-3);
+    font-weight: 400;
+  }
+  .more__grid {
+    display: grid;
+    gap: var(--s-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .more__card {
+    display: grid;
+    gap: var(--s-2);
+    height: 100%;
+    padding: var(--s-5);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--crimson);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink-2);
+    text-decoration: none;
+    transition: transform 0.2s var(--ease), box-shadow 0.25s var(--ease);
+  }
+  .more__card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px -22px rgb(21 23 30 / 0.5);
+  }
+  .more__card strong {
+    font-family: var(--serif);
+    font-size: var(--step-1);
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .more__card b {
+    color: var(--crimson);
+  }
+  .more__k {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--crimson);
+  }
+  /* Phones: one swipeable row instead of six stacked cards (keeps the homepage short). */
+  @media (max-width: 639px) {
+    .more__grid {
+      grid-auto-flow: column;
+      grid-auto-columns: 78%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(-1 * var(--gutter));
+      padding: 0 var(--gutter) var(--s-3);
+      scroll-padding-inline: var(--gutter);
+      overscroll-behavior-x: contain;
+    }
+    .more__grid li {
+      scroll-snap-align: start;
+    }
+    .more__card:hover {
+      transform: none;
+    }
+  }
+  @media (min-width: 640px) {
+    .more__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 1100px) {
+    .more__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
   .hall__stat-link {
     color: inherit;

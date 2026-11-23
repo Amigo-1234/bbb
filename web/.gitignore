@@ -9,3 +9,9 @@ private-media/
 
 # Archive of original achievement files: never committed (repository history is not rewritten).
 content/achievements/originals/
+
+# Private student documents dropped here for reference — never commit (public repo)
+there/
+
+# BIA source documents (may contain bank details) — reference only, never commit (public repo)
+jupeb-handbook/

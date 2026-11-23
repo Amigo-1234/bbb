@@ -608,9 +608,9 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
       await tab1.focus();
       await p.keyboard.press('ArrowRight');
       check(
-        (await p.locator('#panel-pre-resumption').isVisible()) && !(await p.locator('#panel-first-semester').isVisible()) &&
+        (await p.locator('#panel-weekend').isVisible()) && !(await p.locator('#panel-first-semester').isVisible()) &&
           (await p.locator('[role="tab"]').nth(1).getAttribute('aria-selected')) === 'true',
-        'timetable tabs: ArrowRight shows the pre-resumption timetable',
+        'timetable tabs: ArrowRight shows the next timetable (weekends)',
       );
       const original = await p.locator('#panel-pre-resumption .tt__original [data-doc-open]').getAttribute('href');
       const res = await p.request.get(new URL(original, TT).href);
@@ -651,7 +651,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
 
   // Location consistency
   // Bariga appears only as the administrative office Boma confirmed (Oct 2026); the old V1 spelling is gone
-  check(!/Lady Lag/i.test(builtText) && [...builtText.matchAll(/Bariga/g)].every((m) => builtText.slice(m.index - 40, m.index).includes('Shomolu/')), 'Bariga appears only as the confirmed administrative office address');
+  check(!/Lady Lag/i.test(builtText) && [...builtText.matchAll(/Bariga/g)].every((m) => (builtText.slice(m.index - 40, m.index).includes('Shomolu/') || builtText.slice(m.index - 6, m.index) === 'Ilaje ')), 'Bariga appears only as the confirmed administrative office address (or the Ilaje Bariga area on BIA\'s accommodation flyer)');
   const pages = ['', 'fees', 'timetable', 'success-stories', 'guides', 'guides/jupeb-guide'];
   const p = await browser.newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
   for (const path of pages) {
@@ -1362,6 +1362,21 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const words = prose.replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
     const ok = words >= 400 && /Frequently asked questions/.test(prose) && /<time datetime="\d{4}-\d{2}-\d{2}"/.test(s) && /href='\/(guides|fees|timetable|cbt-practice)/.test(prose) && !/₦(200,000|287,000|400,000)/.test(prose);
     if (!ok) thin.push(`${slug} (${words} words)`);
+  }
+  // Services and new schedules: on the homepage, linked, nothing invented
+  {
+    const svc = readFileSync(join(dist, 'services/index.html'), 'utf8');
+    const tt = readFileSync(join(dist, 'timetable/index.html'), 'utf8');
+    const ok =
+      ['id="jamb"', 'id="sat"', 'id="igcse"', 'id="study-abroad"', 'id="past-questions"', 'id="accommodation"'].every((s) => svc.includes(s)) &&
+      (svc.match(/class="scores__n num/g) ?? []).length === 18 &&
+      /International registration/.test(svc) &&
+      ['₦50,000', '₦20,000', '₦5,000', '₦150,000'].every((p) => svc.includes(p)) &&
+      /id="lecture-banks"/.test(svc) &&
+      /id="utme-free"/.test(svc) &&
+      ['/services#jamb', '/services#sat', '/services#igcse', '/services#study-abroad', '/services#past-questions', '/services#accommodation'].every((h) => home.includes(`href="${h}"`)) &&
+      /id="panel-weekend"/.test(tt) && /id="panel-online"/.test(tt) && /13 December 2026/.test(tt);
+    check(ok, 'services page (JAMB, SAT registration, IGCSE & A-Level, study abroad, past questions, accommodation) linked from the homepage; weekend & online timetables; only BIA’s published UTME prices');
   }
   // 2025/2026 results announcement: on the Hall page, linked from the homepage, BIA's wording, 60 students
   {

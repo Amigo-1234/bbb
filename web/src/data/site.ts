@@ -112,6 +112,7 @@ export { registration, programmes, instalments, instalmentNote, tutorialPackage 
  * resumption were removed pending Boma's confirmation. */
 export const calendar: CalendarItem[] = [
   { label: 'Free marathon class & online tutorials', start: '2026-10-05', end: '2026-10-31' },
+  { label: 'First Semester Mock Examination / In-Course', start: '2026-12-13' },
   { label: 'Fee balance due — before Second Semester resumption', start: '2027-05-04' },
 ];
 

@@ -13,7 +13,8 @@
       "BIA JUPEB First Semester Timetable (physical class), 2026/27: days, times, subject codes, Saturday tests, night classes, monthly mocks",
       "Physical Tutorial Services Package flyer, 2026/27",
       "V1 biajupeb.com.ng text (BIA’s own): what JUPEB is, programme length, offers, subject combination examples",
-      "External (13 Nov 2026): UNILAG SFS 2025/26 admission notice — combinations; UNILAG orientation article — SFS"
+      "External (13 Nov 2026): UNILAG SFS 2025/26 admission notice — combinations; UNILAG orientation article — SFS",
+      "BIA JUPEB Service Support (Lecture Banks + Online Academic Package 2026/27, corrected edition): 001/002 first semester, 003/004 second semester"
     ],
     "blocks": [
       {
@@ -151,7 +152,7 @@
       },
       {
         "type": "p",
-        "html": "<strong>SFS</strong> on the timetable refers to the University of Lagos <strong>School of Foundation Studies</strong>, which runs UNILAG’s own JUPEB programme. BIA’s first-semester timetable is for BIA private JUPEB students and some selected UNILAG School of Foundation students. Subject codes, “001” and “002” are shown as printed on BIA’s timetable."
+        "html": "<strong>SFS</strong> on the timetable refers to the University of Lagos <strong>School of Foundation Studies</strong>, which runs UNILAG’s own JUPEB programme. BIA’s first-semester timetable is for BIA private JUPEB students and some selected UNILAG School of Foundation students. “001” and “002” are the first-semester modules; the second semester covers “003” and “004”."
       },
       {
         "type": "h2",
@@ -847,7 +848,8 @@
     "sources": [
       "V1 biajupeb.com.ng text (BIA’s own): past questions provided directly to registered students across Science, Arts and Commercial subjects",
       "BIA JUPEB First Semester Timetable, 2026/27: self-study days, class days, Saturday tests, night classes, monthly mocks",
-      "BIA CBT practice platform page (biacbtapp.com.ng)"
+      "BIA CBT practice platform page (biacbtapp.com.ng)",
+      "BIA JUPEB Past Questions 2026/27 flyer: available subjects"
     ],
     "blocks": [
       {
@@ -960,7 +962,7 @@
       },
       {
         "type": "p",
-        "html": "BIA supports Science, Arts and Commercial subjects. Ask the admissions office about the papers available for your combination."
+        "html": "BIA’s 2026/27 past questions cover Mathematics, Physics, Chemistry, Biology, Economics, Government, CRS and Literature. Ask the admissions office about the papers for your combination, or see <a href='/services#past-questions'>BIA’s services</a>."
       },
       {
         "type": "h3",
