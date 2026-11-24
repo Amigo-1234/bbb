@@ -20,6 +20,20 @@ export type CalendarItem = {
   unconfirmed?: boolean;
 };
 
+/** BIA's online Student Registration Portal (separate site; this site only links to it). */
+export const portal = {
+  name: 'BIA Student Registration Portal',
+  url: 'https://www.biajupeb.org.ng/register',
+  host: 'biajupeb.org.ng',
+};
+
+/** BIA Spaces — BIA's student accommodation site (separate site; this site only links to it). */
+export const spaces = {
+  name: 'BIA Spaces',
+  url: 'https://biaaccomodations.vercel.app',
+  host: 'biaaccomodations.vercel.app',
+};
+
 /** BIA's CBT practice platform (a separate app; this site only links to it). */
 export const cbt = {
   url: 'https://biacbtapp.com.ng',

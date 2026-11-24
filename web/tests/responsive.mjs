@@ -129,6 +129,26 @@ for (const width of [1280, 1366, 1440, 1920]) {
   await dp.close();
 }
 
+// Desktop "More" menu and the two external BIA sites in the navigation
+{
+  const np = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await np.goto(new URL('fees', BASE).href, { waitUntil: 'networkidle' });
+  const extOk = await np.evaluate(() =>
+    ['https://www.biajupeb.org.ng/register', 'https://biaaccomodations.vercel.app'].every((u) => {
+      const a = document.querySelector(`.nav a[href="${u}"]`);
+      return a && a.target === '_blank' && /noopener/.test(a.rel) && document.querySelector(`#mobile-menu a[href="${u}"]`);
+    }),
+  );
+  await np.click('[data-more-btn]');
+  const opened = await np.locator('#nav-more').isVisible();
+  const items = await np.locator('#nav-more a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+  await np.keyboard.press('Escape');
+  const closed = !(await np.locator('#nav-more').isVisible()) && (await np.evaluate(() => document.activeElement?.hasAttribute('data-more-btn')));
+  check(extOk && opened && closed && ['/success-stories', '/gallery', '/services', '/#faq', '/team', '/contact'].every((h) => items.includes(h)),
+    'navigation: Register online and Accommodation open BIA’s sites in a new tab; “More” menu opens, lists the other pages and closes with Escape');
+  await np.close();
+}
+
 // 4. Mobile slide-in menu: opens, traps focus, makes the page inert, closes with Escape and the scrim
 const m = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
 await m.goto(BASE, { waitUntil: 'networkidle' });

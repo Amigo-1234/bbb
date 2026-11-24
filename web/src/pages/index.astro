@@ -29,6 +29,7 @@ import {
   primaryContact,
   site,
   whatsapp,
+  portal,
 } from '../data/site';
 import founder from '../assets/photos/founder.png';
 import founderTeaching from '../assets/photos/founder-teaching.jpg';
@@ -525,6 +526,7 @@ const homeSchema = [
         <div class="apply__ctas">
           <a class="btn btn--white" href={`tel:${primaryContact.phone}`} data-cta="home-apply-call"><Icon name="phone" size={18} />Speak to admissions · {primaryContact.display}</a>
           <a class="btn btn--on-red" href={whatsapp} rel="noopener" target="_blank" data-cta="home-apply-whatsapp">WhatsApp</a>
+          <a class="btn btn--on-red" href={portal.url} rel="noopener" target="_blank" data-cta="home-apply-portal">Register online<Icon name="arrow-up-right" size={18} /></a>
           <a class="btn btn--on-red" href="#location" data-cta="home-apply-directions"><Icon name="pin" size={18} />Directions</a>
         </div>
       </div>

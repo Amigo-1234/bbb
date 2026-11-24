@@ -11,7 +11,7 @@ import { Picture } from 'astro:assets';
 import bsaLogo from '../assets/brand/bsa-logo.jpg';
 import { accommodation, bsa, igcse, jambScorers, lectureBanks, pastQuestionSubjects, utmeFreePrep, utmeTutorial } from '../data/services';
 import { naira } from '../data/fees';
-import { site } from '../data/site';
+import { site, spaces } from '../data/site';
 const org = { '@id': `${site.url}/#organization` };
 const servicesSchema = [
   {
@@ -192,7 +192,11 @@ import { cbt, primaryContact, whatsapp } from '../data/site';
           <p>{accommodation.onCampus}</p>
         </div>
       </div>
-      <p class="acc__call">To book, call:</p>
+      <div class="svc__ctas">
+        <a class="btn" href={spaces.url} rel="noopener" target="_blank" data-cta="services-spaces">Browse spaces on {spaces.name}<Icon name="arrow-up-right" size={18} /></a>
+      </div>
+      <p>{spaces.name} lists verified hostels and apartments near campus, with photos, videos and inspection booking.</p>
+      <p class="acc__call">Or call:</p>
       <ul class="acc__tels" role="list">
         {accommodation.contacts.map((c) => (
           <li><a class="btn btn--outline" href={`tel:${c.phone}`} data-cta={`services-accommodation-${c.phone.slice(-4)}`}><Icon name="phone" size={18} />{c.name} · <span class="num">{c.display}</span></a></li>

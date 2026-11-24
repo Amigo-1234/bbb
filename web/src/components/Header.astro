@@ -1,7 +1,7 @@
 ---
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
-import { calendar, primaryContact, site } from '../data/site';
+import { calendar, portal, primaryContact, site, spaces } from '../data/site';
 
 interface Props {
   /** The page opens on a full-bleed photograph ([data-hero]): the header starts transparent over it. */
@@ -9,17 +9,26 @@ interface Props {
 }
 const { overlay = false } = Astro.props;
 
-const nav = [
+type NavItem = { label: string; href: string; external?: boolean };
+// Desktop shows the primary links plus a "More" menu; the mobile drawer lists everything.
+const primary: NavItem[] = [
   { label: 'Hall of Excellence', href: '/hall-of-excellence' },
   { label: 'Fees', href: '/fees' },
   { label: 'Timetable', href: '/timetable' },
   { label: 'CBT Practice', href: '/cbt-practice' },
+  { label: 'Register online', href: portal.url, external: true },
+  { label: 'Accommodation', href: spaces.url, external: true },
+];
+const more: NavItem[] = [
   { label: 'Success stories', href: '/success-stories' },
   { label: 'Gallery', href: '/gallery' },
+  { label: 'Services', href: '/services' },
   { label: 'FAQ', href: '/#faq' },
   { label: 'Our team', href: '/team' },
   { label: 'Contact', href: '/contact' },
 ];
+const nav = [...primary, ...more];
+const ext = (n: NavItem) => (n.external ? { target: '_blank', rel: 'noopener' } : {});
 
 // Notice bar shows the next confirmed milestone, worked out at build time.
 const today = new Date().toISOString().slice(0, 10);
@@ -64,7 +73,18 @@ const isCurrent = (href: string) => (Astro.url.pathname === href ? 'page' : unde
 
     <nav class="nav" aria-label="Primary">
       <ul>
-        {nav.map((n) => <li><a href={n.href} aria-current={isCurrent(n.href)}>{n.label}</a></li>)}
+        {primary.map((n) => (
+          <li><a href={n.href} aria-current={isCurrent(n.href)} {...ext(n)}>{n.label}{n.external && <Icon name="arrow-up-right" size={12} class="nav__ext" />}</a></li>
+        ))}
+        <li class="nav__more">
+          <button type="button" class="nav__more-btn" aria-expanded="false" aria-controls="nav-more" data-more-btn>
+            More
+            <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
+          <ul class="nav__menu" id="nav-more" hidden data-more>
+            {more.map((n) => <li><a href={n.href} aria-current={isCurrent(n.href)}>{n.label}</a></li>)}
+          </ul>
+        </li>
       </ul>
     </nav>
 
@@ -104,7 +124,7 @@ const isCurrent = (href: string) => (Astro.url.pathname === href ? 'page' : unde
       <ol class="drawer__list">
         {nav.map((n, i) => (
           <li style={`--i:${i}`}>
-            <a href={n.href} class="drawer__link" aria-current={isCurrent(n.href)} data-menu-link>
+            <a href={n.href} class="drawer__link" aria-current={isCurrent(n.href)} data-menu-link {...ext(n)}>
               <span class="drawer__num num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
               <span class="drawer__label">{n.label}</span>
               <Icon name="arrow-up-right" size={18} class="drawer__arrow" />
@@ -181,6 +201,28 @@ const isCurrent = (href: string) => (Astro.url.pathname === href ? 'page' : unde
       }
     }
   });
+  // Desktop "More" menu: toggle, close on Escape, outside click or when focus leaves it.
+  const moreBtn = document.querySelector<HTMLButtonElement>('[data-more-btn]');
+  const moreMenu = document.querySelector<HTMLElement>('[data-more]');
+  if (moreBtn && moreMenu) {
+    const setMore = (open: boolean) => {
+      moreBtn.setAttribute('aria-expanded', String(open));
+      moreMenu.hidden = !open;
+    };
+    moreBtn.addEventListener('click', () => setMore(moreBtn.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('click', (e) => {
+      if (!moreMenu.hidden && !moreBtn.parentElement!.contains(e.target as Node)) setMore(false);
+    });
+    moreBtn.parentElement!.addEventListener('focusout', (e) => {
+      if (!moreBtn.parentElement!.contains(e.relatedTarget as Node)) setMore(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !moreMenu.hidden) {
+        setMore(false);
+        moreBtn.focus();
+      }
+    });
+  }
   matchMedia('(min-width: 1280px)').addEventListener('change', (e) => e.matches && setOpen(false));
 
   // Hide the header while reading downwards; bring it back on any upward scroll.
@@ -361,7 +403,7 @@ const isCurrent = (href: string) => (Astro.url.pathname === href ? 'page' : unde
   .nav {
     display: none;
   }
-  .nav ul {
+  .nav > ul {
     display: flex;
     gap: 2px;
     list-style: none;
@@ -394,6 +436,74 @@ const isCurrent = (href: string) => (Astro.url.pathname === href ? 'page' : unde
     background: var(--h-current-bg);
   }
 
+  .nav :global(.nav__ext) {
+    margin-left: 3px;
+    vertical-align: -1px;
+    opacity: 0.7;
+  }
+  .nav__more {
+    position: relative;
+  }
+  .nav__more-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 7px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--h-fg-2);
+    font: 600 0.86rem/1.4 var(--sans);
+    cursor: pointer;
+    transition: color 0.2s var(--ease), background-color 0.2s var(--ease);
+  }
+  .nav__more-btn:hover,
+  .nav__more-btn:focus-visible,
+  .nav__more-btn[aria-expanded='true'] {
+    color: var(--h-hover-fg);
+    background: var(--h-hover);
+  }
+  .nav__more-btn svg {
+    transition: transform 0.2s var(--ease);
+  }
+  .nav__more-btn[aria-expanded='true'] svg {
+    transform: rotate(180deg);
+  }
+  /* The dropdown is always a paper panel, also over the hero photograph. */
+  .nav__menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 60;
+    display: grid;
+    gap: 2px;
+    min-width: 200px;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    box-shadow: 0 18px 40px -18px rgb(21 23 30 / 0.35);
+  }
+  .nav__menu[hidden] {
+    display: none;
+  }
+  .nav .nav__menu a {
+    padding: 9px 12px;
+    border-radius: 10px;
+    color: var(--ink-2);
+    background: none;
+  }
+  .nav .nav__menu a:hover,
+  .nav .nav__menu a:focus-visible {
+    color: var(--crimson);
+    background: var(--crimson-wash);
+  }
+  .nav .nav__menu a[aria-current='page'] {
+    color: var(--on-ink);
+    background: var(--ink);
+  }
   .header__actions {
     display: flex;
     align-items: center;

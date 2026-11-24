@@ -2,7 +2,7 @@
 import Logo from './Logo.astro';
 import Icon from './Icon.astro';
 import Badge from './Badge.astro';
-import { address, contacts, email, guides, office, primaryContact, site, whatsapp } from '../data/site';
+import { address, contacts, email, guides, office, portal, primaryContact, site, spaces, whatsapp } from '../data/site';
 ---
 
 <footer class="footer" data-cta-zone>
@@ -68,6 +68,8 @@ import { address, contacts, email, guides, office, primaryContact, site, whatsap
         <li><a href="/about">About BIA JUPEB</a></li>
         <li><a href="/success-stories">Success stories</a></li>
         <li><a href="/services">JAMB, SAT registration &amp; other services</a></li>
+        <li><a href={portal.url} rel="noopener" target="_blank" data-cta="footer-portal">Register online ↗</a></li>
+        <li><a href={spaces.url} rel="noopener" target="_blank" data-cta="footer-spaces">Accommodation — BIA Spaces ↗</a></li>
         <li><a href="/gallery">Gallery</a></li>
         <li><a href="/team">Meet our team</a></li>
         <li><a href="/contact">Contact</a></li>

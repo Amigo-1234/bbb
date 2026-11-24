@@ -6,7 +6,7 @@
  */
 import DocPage from '../components/DocPage.astro';
 import { adsEnabled } from '../data/ads';
-import { cbt, email, office, primaryContact, site } from '../data/site';
+import { cbt, email, office, portal, primaryContact, site } from '../data/site';
 
 const updated = '2026-11-13';
 ---
@@ -38,7 +38,8 @@ const updated = '2026-11-13';
 
   <h2>Registration and payments</h2>
   <p>
-    Registration is handled by the BIA admissions office. This website does not take registrations or payments. Programme fees,
+    Registration is handled by the BIA admissions office and through BIA’s online Student Registration Portal at
+    {' '}{portal.host}, which operates under its own terms. This website itself does not take registrations or payments. Programme fees,
     instalments and payment terms are set out on the <a href="/fees">fees page</a> and in BIA’s official payment documents.
   </p>
 

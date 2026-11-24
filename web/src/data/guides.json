@@ -185,7 +185,7 @@
       {
         "type": "ol",
         "items": [
-          "Call or WhatsApp the admissions office on <a href='tel:+2347012388184'>0701 238 8184</a>, or visit BIA (addresses on the <a href='/contact'>contact page</a>).",
+          "Register online on BIA’s <a href='https://www.biajupeb.org.ng/register' rel='noopener' target='_blank'>Student Registration Portal</a>, or call/WhatsApp the admissions office on <a href='tel:+2347012388184'>0701 238 8184</a> or visit BIA (addresses on the <a href='/contact'>contact page</a>).",
           "Bring your documents: O’Level result (or awaiting result), NIN and birth certificate.",
           "Pay the ₦45,000 registration fee and keep the receipt.",
           "Confirm your subject combination and study option with the admissions office.",
@@ -194,7 +194,7 @@
       },
       {
         "type": "p",
-        "html": "Registration is handled by the admissions office — it is not done through this website."
+        "html": "Registration is handled by the admissions office and BIA’s online Student Registration Portal — not on this website."
       },
       {
         "type": "h2",

@@ -9,7 +9,7 @@
  */
 import DocPage from '../components/DocPage.astro';
 import { adsEnabled } from '../data/ads';
-import { cbt, email, office, primaryContact, site } from '../data/site';
+import { cbt, email, office, portal, primaryContact, site, spaces } from '../data/site';
 
 const updated = '2026-11-13';
 ---
@@ -118,7 +118,9 @@ const updated = '2026-11-13';
 
   <h2>Links to other websites</h2>
   <p>
-    This website links to other services, including WhatsApp, Facebook, TikTok, Google Maps and BIA’s CBT practice platform.
+    This website links to other services, including WhatsApp, Facebook, TikTok, Google Maps, BIA’s CBT practice platform, BIA’s
+    Student Registration Portal ({portal.host}) and BIA Spaces ({spaces.host}). Information you enter on those websites — for example
+    on the registration portal — is handled there, not by this website.
     Their own privacy policies apply when you use them.
   </p>
 
