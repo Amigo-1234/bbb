@@ -130,3 +130,26 @@ export const lectureBanks = {
   /** BIA's own caveat, printed on the document. */
   note: 'The ₦150,000 fee covers the lecture-bank and online academic support package for both semesters. It is not JUPEB registration, examination or residential tuition.',
 };
+
+/** "BIA Special Private Classes 2026/27" flyer (BIA). The timetable is BIA's demonstration timetable. */
+export const privateClasses = {
+  title: 'BIA Special Private Classes 2026/27',
+  text: 'Personalised academic support through special private classes, tailored to each student’s learning pace, academic needs and goals.',
+  demo: [
+    ['Monday', 'Online', 'To be agreed'],
+    ['Tuesday', 'Physical', '11:00am – 2:00pm'],
+    ['Wednesday', 'Online', 'To be agreed'],
+    ['Thursday', 'Physical', '11:00am – 2:00pm'],
+    ['Friday', 'Online', 'To be agreed'],
+    ['Saturday', 'Physical, then online', '5:00 – 6:00pm'],
+  ] as [string, string, string][],
+  demoNote: 'This is a demonstration timetable. Actual schedules and lesson arrangements are agreed with individual students and tutors.',
+  includes: [
+    'One-on-one teaching',
+    'Personalised learning plans',
+    'Regular assessments and assignments',
+    'Continuous progress monitoring',
+    'Targeted academic support',
+    'Class note explanations',
+  ],
+};

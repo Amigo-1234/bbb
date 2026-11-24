@@ -8,6 +8,7 @@ import results from '../assets/flyers/results-16-points.jpg';
 import jamb from '../assets/flyers/jamb-high-scorers.jpg';
 import weekend from '../assets/flyers/weekend-schedule.jpg';
 import online from '../assets/flyers/online-timetable.jpg';
+import privateClasses from '../assets/flyers/special-classes.jpg';
 import pq from '../assets/flyers/past-questions.jpg';
 import accommodation from '../assets/flyers/accommodation.jpg';
 import bsa from '../assets/flyers/bsa-british-curriculum.jpg';
@@ -35,6 +36,13 @@ export const flyers: Flyer[] = [
     title: 'Weekend learning & assessment schedule',
     alt: 'BIA Weekend Learning and Assessment Schedule: Fridays 9:30am–5:30pm and Saturdays 10am–4pm on a four-week rotation; First Semester Mock Examination on Sunday 13 December 2026 at the Faculty of Management Science, UNILAG.',
     href: '/timetable#panel-weekend',
+  },
+  {
+    image: privateClasses,
+    kicker: 'Private classes',
+    title: 'BIA Special Private Classes 2026/27',
+    alt: 'BIA Special Private Classes 2026/27: personalised one-on-one teaching, physical on Tuesdays and Thursdays 11am–2pm, online sessions at agreed times, with personalised learning plans, regular assessments and progress monitoring.',
+    href: '/services#private-classes',
   },
   {
     image: online,

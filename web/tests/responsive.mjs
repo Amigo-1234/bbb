@@ -1410,7 +1410,7 @@ for (const [name, url] of [['home', BASE], ['stories', STORIES]]) {
     const svc = readFileSync(join(dist, 'services/index.html'), 'utf8');
     const tt = readFileSync(join(dist, 'timetable/index.html'), 'utf8');
     const ok =
-      ['id="jamb"', 'id="sat"', 'id="igcse"', 'id="study-abroad"', 'id="past-questions"', 'id="accommodation"'].every((s) => svc.includes(s)) &&
+      ['id="private-classes"', 'id="jamb"', 'id="sat"', 'id="igcse"', 'id="study-abroad"', 'id="past-questions"', 'id="accommodation"'].every((s) => svc.includes(s)) &&
       (svc.match(/class="scores__n num/g) ?? []).length === 18 &&
       /International registration/.test(svc) &&
       ['₦50,000', '₦20,000', '₦5,000', '₦150,000'].every((p) => svc.includes(p)) &&

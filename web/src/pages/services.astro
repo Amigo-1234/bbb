@@ -9,7 +9,7 @@ import Base from '../layouts/Base.astro';
 import Icon from '../components/Icon.astro';
 import { Picture } from 'astro:assets';
 import bsaLogo from '../assets/brand/bsa-logo.jpg';
-import { accommodation, bsa, igcse, jambScorers, lectureBanks, pastQuestionSubjects, utmeFreePrep, utmeTutorial } from '../data/services';
+import { accommodation, bsa, igcse, jambScorers, lectureBanks, pastQuestionSubjects, privateClasses, utmeFreePrep, utmeTutorial } from '../data/services';
 import { naira } from '../data/fees';
 import { site, spaces } from '../data/site';
 const org = { '@id': `${site.url}/#organization` };
@@ -29,6 +29,13 @@ const servicesSchema = [
     provider: org,
     hasCourseInstance: { '@type': 'CourseInstance', courseMode: 'online' },
     offers: { '@type': 'Offer', price: lectureBanks.price, priceCurrency: 'NGN' },
+  },
+  {
+    '@type': 'Service',
+    name: privateClasses.title,
+    description: `${privateClasses.text} Includes: ${privateClasses.includes.join(', ')}.`,
+    provider: org,
+    areaServed: 'Lagos, Nigeria',
   },
   ...[
     ['International registration — SAT (USA)', 'Registration for the SAT (USA) for students applying to universities in the United States.'],
@@ -54,6 +61,7 @@ import { cbt, primaryContact, whatsapp } from '../data/site';
       <p class="lead">Beyond the JUPEB programme: JAMB classes, SAT (USA) registration, Cambridge IGCSE & A-Level programmes, study abroad, past questions, and help finding a place to live near UNILAG.</p>
       <nav class="sh__jump" aria-label="Services on this page">
         <a href="#lecture-banks">JUPEB Lecture Banks</a>
+        <a href="#private-classes">Private classes</a>
         <a href="#jamb">JAMB class</a>
         <a href="#utme-free">Free UTME prep</a>
         <a href="#sat">International registration</a>
@@ -76,6 +84,28 @@ import { cbt, primaryContact, whatsapp } from '../data/site';
       <p><strong>Science:</strong> {lectureBanks.subjects.science}. <strong>Arts &amp; Commercial:</strong> {lectureBanks.subjects.artsCommercial}.</p>
       <p class="lb__note">{lectureBanks.note}</p>
       <p>Weekly online class times are on the <a href="/timetable">timetable page</a> (Online 2026/27). Full programme fees are on the <a href="/fees">fees page</a>.</p>
+    </div>
+  </section>
+
+  <section class="svc" id="private-classes" aria-labelledby="pc-title">
+    <div class="wrap svc__narrow">
+      <p class="svc__kicker">JUPEB · One-on-one</p>
+      <h2 id="pc-title" class="svc__title">{privateClasses.title}.</h2>
+      <p>{privateClasses.text}</p>
+      <h3 class="lb__h">What the classes include</h3>
+      <ul class="rules">{privateClasses.includes.map((i) => <li>{i}</li>)}</ul>
+      <h3 class="lb__h">Demonstration timetable</h3>
+      <table class="prices prices--days">
+        <caption class="sr-only">Special private classes — demonstration timetable</caption>
+        <tbody>
+          {privateClasses.demo.map(([day, mode, time]) => <tr><th scope="row">{day}</th><td>{mode}</td><td class="num">{time}</td></tr>)}
+        </tbody>
+      </table>
+      <p class="lb__note">{privateClasses.demoNote}</p>
+      <div class="svc__ctas">
+        <a class="btn" href={`tel:${primaryContact.phone}`} data-cta="services-private-call"><Icon name="phone" size={18} />Book private classes</a>
+        <a class="btn btn--outline" href={whatsapp} rel="noopener" target="_blank" data-cta="services-private-whatsapp">WhatsApp</a>
+      </div>
     </div>
   </section>
 
