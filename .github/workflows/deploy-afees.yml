@@ -1,0 +1,59 @@
+# Builds the site and uploads changed files to Afees Host (cPanel) over FTPS
+# whenever web/ changes on main — the same "push and it's live" flow Vercel had.
+#
+# Needs three repository secrets (Settings → Secrets and variables → Actions):
+#   FTP_SERVER    e.g. advanced1n.afeeshost.com
+#   FTP_USERNAME  an FTP account whose directory is the biajupeb.com.ng document root
+#   FTP_PASSWORD
+name: Deploy to Afees Host
+
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', '.github/workflows/deploy-afees.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-afees
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - run: npm ci
+      - run: npm run test:unit
+      - run: npm run build
+
+      - name: Check the build
+        run: |
+          test -f dist/index.html
+          test -f dist/.htaccess
+          test -f dist/ads.txt
+
+      - name: Upload changed files
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: web/dist/
+          server-dir: ./
+          exclude: |
+            **/.DS_Store

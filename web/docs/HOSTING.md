@@ -63,3 +63,21 @@ curl -sI https://biajupeb.com.ng/nope        # 404
 ```
 
 Then, in Search Console, check that the property is still verified and resubmit `sitemap.xml`.
+
+## Automatic deploys (GitHub Actions)
+
+`.github/workflows/deploy-afees.yml` runs on every push to `main` that touches `web/`. It runs the unit tests,
+builds the site, and uploads only the changed files to Afees over FTPS (2–3 minutes). It can also be run by hand
+from GitHub → Actions → "Deploy to Afees Host" → Run workflow.
+
+Repository secrets it needs (GitHub → Settings → Secrets and variables → Actions):
+
+| Secret | Value |
+| --- | --- |
+| `FTP_SERVER` | `advanced1n.afeeshost.com` |
+| `FTP_USERNAME` | an FTP account created in cPanel → FTP Accounts with **Directory** set to `biajupeb.com.ng` |
+| `FTP_PASSWORD` | that account's password |
+
+The FTP account must be limited to the `biajupeb.com.ng` folder so a deploy can never touch `public_html`.
+The action keeps a `.ftp-deploy-sync-state.json` file on the server to know what changed; don't delete it
+(if it is deleted, the next run just re-uploads everything).
