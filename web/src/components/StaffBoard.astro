@@ -1,0 +1,516 @@
+---
+/**
+ * "Staff board": three BIA staff on exercise-book pages clipped to a wooden ruler over a
+ * chalkboard, plus a blank page for the next student. Names, photos and titles come from
+ * content/team/team.json; each line is a short summary of that person's documented
+ * responsibilities on /team — not a quotation.
+ */
+import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
+import { initials, team } from '../data/team';
+
+const picks = [
+  {
+    id: 'olukoga-sunday-oluwemimo',
+    display: 'Sir Holly',
+    badge: 'COO',
+    unit: 'Co-founder',
+    line: 'Runs BIA’s day-to-day operations — coordinating departments, staff, tasks and targets, and supervising academics and student affairs.',
+    cover: 'mustard',
+  },
+  {
+    id: 'abolade-victor',
+    display: 'Abolade Victor',
+    badge: 'Academic Director',
+    unit: 'Academics',
+    line: 'Plans and schedules classes, tutorials and academic programmes, and works with tutors on teaching responsibilities and academic plans.',
+    cover: 'rust',
+  },
+  {
+    id: 'adenusi-gloria',
+    display: 'Adenusi Gloria',
+    badge: 'JUPEB Manager',
+    unit: 'Admissions & records',
+    line: 'Manages JUPEB registration, student and payment records and enquiries, and guides newly admitted students through admission.',
+    cover: 'green',
+  },
+] as const;
+
+const people = picks.map((p) => {
+  const member = team.find((m) => m.id === p.id);
+  if (!member?.photo) throw new Error(`StaffBoard: ${p.id} needs a team.json profile and a photo`);
+  return { ...p, member, photo: member.photo };
+});
+
+const formats: ('avif' | 'webp')[] = ['avif', 'webp'];
+---
+
+<section class="board" aria-labelledby="board-title" data-clip>
+  <svg class="board__chalk" viewBox="0 0 1200 520" aria-hidden="true" preserveAspectRatio="xMidYMid slice">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <text x="60" y="120">x² + y² = r²</text>
+      <text x="880" y="90">E = mc²</text>
+      <text x="980" y="470">∫ f(x) dx</text>
+      <text x="90" y="460">pH = −log[H⁺]</text>
+      <text x="520" y="500">F = ma</text>
+      <path d="M720 160c40-30 90-30 120 0s80 30 120 0" />
+      <path d="M300 300l60-60 60 60" />
+    </g>
+  </svg>
+
+  <div class="wrap board__inner">
+    <header class="board__head">
+      <p class="board__eyebrow">The people who run your year</p>
+      <h2 id="board-title" class="board__title">Meet some of the <em>BIA team.</em></h2>
+      <p class="board__lead">From admissions to the timetable, these are the people behind your JUPEB year.</p>
+    </header>
+
+    <div class="board__rig">
+      <div class="ruler" aria-hidden="true"><span class="ruler__ticks"></span></div>
+
+      <ul class="board__list" role="list">
+        {people.map((p) => (
+          <li class={`page page--${p.cover}`}>
+            <span class="clip" aria-hidden="true"></span>
+            <article class="page__sheet" aria-labelledby={`board-${p.id}`}>
+              <div class="page__photo">
+                <Picture src={p.photo} formats={formats} widths={[280, 480]} sizes="(min-width: 1000px) 260px, (min-width: 600px) 40vw, 72vw" alt={`Portrait of ${p.member.name}`} loading="lazy" />
+                <span class="page__tab" id={`board-${p.id}`}>{p.display}</span>
+                <span class="page__badge">
+                  <strong>{p.badge}</strong>
+                  <span>{p.unit}</span>
+                </span>
+              </div>
+              <p class="page__line">{p.line}</p>
+              <footer class="page__foot">
+                <span class="stamp" aria-hidden="true">{initials(p.member.name)}</span>
+                <a class="page__link" href={`/team#${p.id}`} data-cta={`home-board-${p.id}`}>Full profile<Icon name="arrow-right" size={14} /></a>
+              </footer>
+            </article>
+          </li>
+        ))}
+
+        <li class="page page--grey page--blank">
+          <span class="clip" aria-hidden="true"></span>
+          <article class="page__sheet" aria-labelledby="board-you">
+            <div class="page__photo page__photo--blank">
+              <svg viewBox="0 0 200 200" aria-hidden="true">
+                <circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="6 9" stroke-linecap="round" />
+                <circle cx="100" cy="82" r="26" fill="currentColor" opacity="0.18" />
+                <path d="M52 158c8-30 28-44 48-44s40 14 48 44" fill="currentColor" opacity="0.18" />
+              </svg>
+              <span class="page__tab" id="board-you">You?</span>
+              <span class="note" aria-hidden="true">your turn ↓</span>
+            </div>
+            <p class="page__blank">This page is still blank. <br />Your name could be on <br />our next results list.</p>
+            <footer class="page__foot page__foot--cta">
+              <a class="btn page__apply" href="#apply" data-cta="home-board-apply">Start your JUPEB year<Icon name="arrow-right" size={16} /></a>
+            </footer>
+          </article>
+        </li>
+      </ul>
+    </div>
+
+    <a class="board__more" href="/team" data-cta="home-board-team">Meet the whole team<Icon name="arrow-right" size={16} /></a>
+  </div>
+</section>
+
+<style>
+  .board {
+    --chalkboard: #1f3a31;
+    --chalk: #eef0e6;
+    position: relative;
+    overflow: hidden;
+    padding-block: var(--section);
+    background:
+      radial-gradient(60% 50% at 20% 20%, rgb(255 255 255 / 0.06), transparent 70%),
+      radial-gradient(50% 60% at 85% 75%, rgb(255 255 255 / 0.05), transparent 70%),
+      var(--chalkboard);
+    color: var(--chalk);
+  }
+  .board__chalk {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--chalk);
+    opacity: 0.07;
+    font: italic 40px var(--serif);
+    pointer-events: none;
+  }
+  .board__chalk text {
+    fill: currentColor;
+    stroke: none;
+  }
+  .board__inner {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--s-6);
+  }
+  .board__head {
+    display: grid;
+    gap: var(--s-3);
+    max-width: 44rem;
+  }
+  .board__eyebrow {
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #c9d4c6;
+  }
+  .board__title {
+    font-family: var(--serif);
+    font-size: var(--step-4);
+    font-weight: 380;
+    line-height: 1;
+  }
+  .board__title em {
+    color: #f5d27a;
+  }
+  .board__lead {
+    color: #c9d4c6;
+    max-width: 36rem;
+  }
+
+  /* The wooden ruler the pages hang from */
+  .board__rig {
+    position: relative;
+    min-width: 0;
+    padding-top: 22px;
+  }
+  .ruler {
+    position: absolute;
+    top: 0;
+    left: calc(var(--gutter) * -0.5);
+    right: calc(var(--gutter) * -0.5);
+    height: 26px;
+    border-radius: 3px;
+    background: linear-gradient(#d9b071, #b98a48 55%, #9c7137);
+    box-shadow: 0 6px 14px rgb(0 0 0 / 0.45), inset 0 1px 0 rgb(255 255 255 / 0.35);
+  }
+  .ruler__ticks {
+    position: absolute;
+    inset: 0 8px auto;
+    height: 11px;
+    background:
+      repeating-linear-gradient(90deg, rgb(60 38 12 / 0.75) 0 1px, transparent 1px 50px),
+      repeating-linear-gradient(90deg, rgb(60 38 12 / 0.5) 0 1px, transparent 1px 10px);
+    background-size: 100% 11px, 100% 6px;
+    background-repeat: no-repeat;
+  }
+
+  .board__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.75rem);
+    align-items: start;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* A page = a coloured notebook cover with an exercise-book sheet on it */
+  .page {
+    --cover: #b8962e;
+    position: relative;
+    padding: 30px 12px 14px;
+    border-radius: 4px 4px 6px 6px;
+    background: var(--cover);
+    box-shadow: 0 18px 30px rgb(0 0 0 / 0.4);
+    transform-origin: 50% 0;
+    transition: transform 0.5s var(--ease);
+  }
+  .page:nth-child(2) { margin-top: 10px; }
+  .page:nth-child(3) { margin-top: 4px; }
+  .page:nth-child(4) { margin-top: 14px; }
+  .page--mustard { --cover: #a88a2c; }
+  .page--rust { --cover: #a8482c; }
+  .page--green { --cover: #3e6b55; }
+  .page--grey { --cover: #6e7177; }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .page:hover { transform: rotate(-1.2deg); }
+    .page:nth-child(even):hover { transform: rotate(1.2deg); }
+  }
+
+  /* Binder clip holding the page to the ruler */
+  .clip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    width: 46px;
+    height: 34px;
+    translate: -50% 0;
+    z-index: 2;
+  }
+  .clip::before {
+    content: '';
+    position: absolute;
+    inset: 12px 0 0;
+    border-radius: 3px 3px 6px 6px;
+    background: linear-gradient(#3a3d44, #15171c);
+    box-shadow: 0 3px 6px rgb(0 0 0 / 0.5);
+  }
+  .clip::after {
+    content: '';
+    position: absolute;
+    left: 9px;
+    right: 9px;
+    top: 0;
+    height: 18px;
+    border: 3px solid #c7cbd2;
+    border-bottom: 0;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .page__sheet {
+    position: relative;
+    display: grid;
+    gap: var(--s-4);
+    padding: 14px 14px 12px 22px;
+    border-radius: 2px;
+    color: var(--ink);
+    background:
+      linear-gradient(90deg, transparent 13px, rgb(216 0 0 / 0.45) 13px 14px, transparent 14px),
+      repeating-linear-gradient(transparent 0 25px, rgb(70 110 170 / 0.22) 25px 26px),
+      #fbfaf3;
+  }
+
+  .page__photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: 1px solid #d9d4c4;
+    background: #efece2;
+  }
+  .page__photo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    filter: grayscale(1) contrast(1.08) sepia(0.12);
+    transition: filter 0.5s var(--ease);
+  }
+  @media (hover: hover) {
+    .page:hover .page__photo :global(img) { filter: none; }
+  }
+
+  /* Vertical index tab with the name */
+  .page__tab {
+    position: absolute;
+    top: 10px;
+    left: 8px;
+    padding: 10px 6px;
+    writing-mode: vertical-rl;
+    max-height: calc(100% - 90px);
+    overflow: hidden;
+    background: #fbfaf3;
+    border: 1px solid #cfc8b9;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.15);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+
+  /* Slate role badge */
+  .page__badge {
+    position: absolute;
+    right: -1px;
+    bottom: 12px;
+    display: grid;
+    justify-items: end;
+    gap: 2px;
+    max-width: 88%;
+    padding: 8px 12px 8px 14px;
+    background: #17191d;
+    color: var(--chalk);
+    box-shadow: 4px 4px 0 var(--bia-red);
+    text-align: right;
+    rotate: -2deg;
+  }
+  .page__badge strong {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.55rem);
+    font-weight: 600;
+    line-height: 1.05;
+    color: #fff;
+  }
+  .page__badge span {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #c9cdc4;
+  }
+
+  .page__line {
+    font-size: 0.95rem;
+    line-height: 26px;
+  }
+  .page__blank {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 26px;
+    color: var(--ink-2);
+  }
+
+  .page__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-top: var(--s-3);
+    border-top: 1px dashed #bdb6a6;
+  }
+  .page__foot--cta {
+    justify-content: flex-start;
+  }
+
+  /* Teacher's red ink stamp */
+  .stamp {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 2px solid var(--bia-red);
+    border-radius: 50%;
+    color: var(--bia-red);
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 0.95rem;
+    rotate: -10deg;
+    opacity: 0.85;
+    box-shadow: inset 0 0 0 3px #fbfaf3, inset 0 0 0 4px rgb(216 0 0 / 0.5);
+  }
+  .page__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .page__link:hover {
+    color: var(--crimson);
+  }
+
+  .page__photo--blank {
+    display: grid;
+    place-items: center;
+    color: #8b8e94;
+    background:
+      radial-gradient(circle at 50% 45%, rgb(0 0 0 / 0.06), transparent 60%),
+      #f3f2ed;
+  }
+  .page__photo--blank svg {
+    width: 72%;
+  }
+  .note {
+    position: absolute;
+    right: 8px;
+    bottom: 14px;
+    padding: 6px 10px;
+    background: #f5d27a;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 0.95rem;
+    box-shadow: 0 3px 6px rgb(0 0 0 / 0.2);
+    rotate: -6deg;
+  }
+  .page__apply {
+    font-size: 0.9rem;
+  }
+
+  .board__more {
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    color: var(--chalk);
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+  .board__more:hover {
+    color: #f5d27a;
+  }
+
+  @media (max-width: 999px) {
+    .board__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 3.5rem;
+    }
+    .page:nth-child(n) { margin-top: 0; }
+  }
+  /* Tablets: two rows, so each page gets its own piece of ruler */
+  @media (min-width: 600px) and (max-width: 999px) {
+    .board__rig { padding-top: 0; }
+    .ruler { display: none; }
+    .board__list { padding-top: 22px; }
+    .page::before {
+      content: '';
+      position: absolute;
+      top: -22px;
+      left: -10px;
+      right: -10px;
+      height: 22px;
+      border-radius: 3px;
+      background:
+        repeating-linear-gradient(90deg, rgb(60 38 12 / 0.6) 0 1px, transparent 1px 10px) top / 100% 6px no-repeat,
+        linear-gradient(#d9b071, #b98a48 55%, #9c7137);
+      box-shadow: 0 6px 12px rgb(0 0 0 / 0.4);
+    }
+  }
+
+  /* Phones: a swipeable row hanging from the ruler */
+  @media (max-width: 599px) {
+    .board__rig {
+      margin-inline: calc(var(--gutter) * -1);
+    }
+    .ruler {
+      left: 0;
+      right: 0;
+      border-radius: 0;
+    }
+    .board__list {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 34px var(--gutter) 24px;
+      margin-top: -34px;
+      scrollbar-width: none;
+    }
+    .board__list::-webkit-scrollbar { display: none; }
+    .page {
+      flex: 0 0 min(78vw, 300px);
+      scroll-snap-align: center;
+    }
+    /* Keep the phone homepage short */
+    .board {
+      padding-block: var(--s-7);
+    }
+    .board__inner {
+      gap: var(--s-5);
+    }
+    .board__lead {
+      display: none;
+    }
+    .page__photo {
+      aspect-ratio: 1;
+    }
+    .page__sheet {
+      gap: var(--s-3);
+    }
+  }
+</style>

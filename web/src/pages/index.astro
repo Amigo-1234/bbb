@@ -7,6 +7,7 @@ import Icon from '../components/Icon.astro';
 import Laurel from '../components/Laurel.astro';
 import Badge from '../components/Badge.astro';
 import CbtPromo from '../components/CbtPromo.astro';
+import StaffBoard from '../components/StaffBoard.astro';
 import { getImage } from 'astro:assets';
 import { directions, directionsCaptions, founder as founderInfo, mission, routeCaption } from '../data/identity';
 import { programmes, tutorialPackage } from '../data/fees';
@@ -402,6 +403,8 @@ const homeSchema = [
       </div>
     </div>
   </section>
+
+  <StaffBoard />
 
   <!-- 06 LOCATION -->
   <section class="section loc" id="location" aria-labelledby="location-title">
