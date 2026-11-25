@@ -8,8 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --experimental-strip-types --test tests/leads.test.ts tests/fees.test.ts && node tests/responsive.mjs",
-    "test:unit": "node --experimental-strip-types --test tests/leads.test.ts tests/fees.test.ts"
+    "test": "node --experimental-strip-types --test tests/leads.test.ts tests/fees.test.ts tests/hosting.test.ts && node tests/responsive.mjs",
+    "test:unit": "node --experimental-strip-types --test tests/leads.test.ts tests/fees.test.ts tests/hosting.test.ts",
+    "package:cpanel": "bash scripts/package-cpanel.sh"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "5.3.0",
